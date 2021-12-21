@@ -1,0 +1,373 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Student
+{
+private:
+	int indeks;
+	vector<string> predmeti;
+	string ime;
+	string prezime;
+public:
+	Student(int ind, const string& im, const string& prez, const vector<string>& p) :
+		indeks(ind), ime(im), prezime(prez)
+	{
+		for (int i = 0; i < p.size();i++)
+			predmeti.push_back(p[i]);
+	}
+
+	friend ostream& operator << (ostream& os, const Student& s)
+	{
+		cout << "Podaci o studentu" << endl;
+		cout << "indeks: " << s.indeks << endl;
+		cout << "Ime i prezime: " << s.ime << " " << s.prezime << endl;
+		cout << "Predmeti koje slusa: " << endl;
+		for (int i = 0;i < s.predmeti.size();i++)
+			cout << s.predmeti[i] << endl;
+		return os;
+	}
+};
+
+class Bucket
+{
+	int bucketSize;
+	vector<pair<int, Student*> > data;
+
+
+	void removePos(int pos)
+	{
+		data.erase(data.begin() + pos);
+	}
+
+public:
+	Bucket(int bs) : bucketSize(bs) {}
+
+	Student* findStudent(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			if (data[i].first == key)
+				return data[i].second;
+		}
+		return nullptr;
+	}
+
+	void addStudent(int key, Student* student)
+	{
+		data.push_back(make_pair(key,student));
+	}
+
+	bool findKey(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+			if (data[i].first == key)
+				return true;
+		return false;
+	}
+
+	bool removeStudent(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			if (data[i].first == key)
+			{
+				removePos(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool full()
+	{
+		return data.size() == bucketSize;
+	} 
+
+	bool empty()
+	{
+		return data.size() == 0;
+	}
+
+	void empty_into(vector<pair<int, Student*> >& vec)
+	{
+		for (int i = 0; i < data.size();i++)
+			vec.push_back(make_pair(data[i].first, data[i].second));
+
+		data.clear();
+	}
+
+	~Bucket()
+	{
+		for (int i = 0; i < data.size();i++)
+			delete data[i].second;
+
+		data.clear();
+	}
+};
+
+class HashTable
+{
+	int hashTableSize;
+	int numOfKeysInBucket;
+	int d;
+	int p;
+	vector<Bucket*> buckets;
+public:
+	HashTable(int k, int p, int d) : numOfKeysInBucket(k), p(p), d(d)
+	{
+		hashTableSize = 1 << p;
+		buckets.resize(hashTableSize);
+		for (int i = 0; i < hashTableSize;i++)
+			buckets[i] = nullptr;
+	}
+
+	bool keyFound(int key)
+	{
+		int index = indexOfBucket(key);
+		if (buckets[index] == nullptr)
+			return false;
+
+		return buckets[index]->findKey(key);
+	}
+
+	Student* findKey(int key)
+	{
+		int index = indexOfBucket(key);
+		if (buckets[index] == nullptr)
+			return nullptr;
+
+		return buckets[index]->findStudent(key);
+	}
+
+	int originalHash(int key)
+	{
+		return key % (1 << p);
+	}
+
+	int indexOfBucket(int key)
+	{
+		return originalHash(key) % (1 << d);
+	}
+
+	void insertPair(pair<int, Student*> p)
+	{
+		int index = indexOfBucket(p.first);
+		buckets[index]->addStudent(p.first, p.second);
+	}
+
+	void insertFromVector(const vector<pair<int, Student*> >& vec)
+	{
+		for (int i = 0; i < vec.size();i++)
+			insertPair(vec[i]);
+	}
+
+	void split(int index, int key, Student* student)
+	{
+		pair<int, int> bounds = findBounds(index);
+		int low = bounds.first;
+		int high = bounds.second;
+		int mid = (low + high) >> 1;
+		if (low == high)
+		{
+			//moramo da povecamo red hes tabele
+		}
+		else
+		{
+			Bucket* newBucket = new Bucket(numOfKeysInBucket);
+			for (int i = mid + 1;i <= high;i++)
+				buckets[i] = newBucket;
+
+			//rehesiranje podataka
+			vector<pair<int, Student*> > dataHash;
+			buckets[low]->empty_into(dataHash);
+			dataHash.push_back(make_pair(key, student));
+			insertFromVector(dataHash);
+		}
+	}
+
+	bool insertKey(int key, Student* student)
+	{
+		int index = indexOfBucket(key);
+		if (buckets[index] == nullptr)
+		{
+			Bucket* newBucket = new Bucket(numOfKeysInBucket);
+			pair<int, int> bounds = findBounds(index);
+			for (int i = bounds.first;i <= bounds.second;i++)
+				buckets[i] = newBucket;
+
+			newBucket->addStudent(key, student);
+
+			return true;
+		}
+		else if(buckets[index]->full())
+		{
+			split(index, key, student);
+		}
+		else
+		{
+			buckets[index]->addStudent(key, student);
+		}
+	}
+
+	pair<int, int> findBounds(int index)
+	{
+		int div = index / d;
+		int lo = div * d;
+		int hi = lo + d - 1;
+		pair<int, int> p = make_pair(-1, -1);
+		for (int i = lo; i <= hi;i++)
+		{
+			if (buckets[i] == buckets[index])
+			{
+				if (p.first == -1)
+					p.first = i;
+				p.second = i;
+			}
+		}
+		return p;
+	}
+
+
+	bool deleteKey(int key)
+	{
+		int index = indexOfBucket(key);
+		if (buckets[index] == nullptr)
+			return false;
+
+		bool ret = buckets[index]->removeStudent(key);
+		if (!ret)
+			return false;
+
+
+
+		return true;
+	}
+
+	void clear()
+	{
+		for (int i = 0; i < buckets.size();i++)
+		{
+			buckets[i] = nullptr;
+			delete buckets[i];
+		}
+	}
+
+	int keyCount()
+	{
+		
+	}
+
+	int tableSize()
+	{
+		return hashTableSize;
+	}
+
+	friend ostream& operator << (ostream& os, const HashTable& hashTable)
+	{
+		os << "HashTable print" << endl;
+		for (int i = 0; i < hashTable.hashTableSize;i++)
+		{
+			
+		}
+		return os;
+	}
+
+	double fillRatio()
+	{
+		
+	}
+
+	~HashTable()
+	{
+		clear();
+	}
+
+};
+
+void printMenu()
+{
+	cout << endl;
+	cout << "1 - Ubaci studenta" << endl;
+	cout << "2 - Izbrisi studenta" << endl;
+	cout << "3 - Pronadji studenta sa indeksom" << endl;
+	cout << "4 - Isprazni tabelu" << endl;
+	cout << "5 - Broj studenata u tabeli" << endl;
+	cout << "6 - Ispisi tabelu" << endl;
+	cout << "7 - Popunjenost" << endl;
+	cout << "0 - Kraj" << endl;
+	cout << "Uneti izbor: " << endl;
+}
+
+int main()
+{
+	int k;
+	cout << "Unesite broj kljuceva u jednom baketu: "; cin >> k;
+	cout << "Unesite stepen p : "; int p; cin >> p;
+	cout << "Unesite pocetnu dubinu tabele: "; int d;cin >> d;
+	HashTable* hashTable = new HashTable(k, p, d);
+
+	while (1)
+	{
+		printMenu();
+		int izb; cin >> izb;
+		if (izb == 1)
+		{
+			cout << "Izabrali ste ubacivanje studenta" << endl;
+			//procitaj i ubaci studenta
+		}
+		else if (izb == 2)
+		{
+			cout << "Unesite indeks studenta koji se brise: ";
+			int indeks; cin >> indeks;
+			bool del = hashTable->deleteKey(indeks);
+			if (del)
+				cout << "Student je uspesno obrisan" << endl;
+			else
+				cout << "Student sa indeksom nije ni postojao u hes tabeli." << endl;
+		}
+		else if (izb == 3)
+		{
+			cout << "Unesite indeks za pretragu: " << endl;
+			int indeks; cin >> indeks;
+			Student* stud = hashTable->findKey(indeks);
+			if (stud == nullptr)
+				cout << "Nema zadatog studenta u tabeli" << endl;
+			else
+				cout << *stud << endl;
+		}
+		else if (izb == 4)
+		{
+			cout << "Tabela ce biti ispraznjena" << endl;
+			hashTable->clear();
+		}
+		else if (izb == 5)
+		{
+			cout << "Broj studenata u tabeli je " << hashTable->keyCount() << endl;
+		}
+		else if (izb == 6)
+		{
+			cout << "Hes tabela" << endl;
+			cout << *hashTable << endl;
+		}
+		else if (izb == 7)
+		{
+			cout << "Popunjenost je " << hashTable->fillRatio() << "%" << endl;
+		}
+		else if (izb == 0)
+		{
+			hashTable->clear();
+			delete hashTable;
+			hashTable = nullptr;
+			cout << "Kraj programa" << endl;
+			break;
+		}
+		else
+		{
+			cout << "Pogresan unos";
+		}
+	}
+
+	return 0;
+}
