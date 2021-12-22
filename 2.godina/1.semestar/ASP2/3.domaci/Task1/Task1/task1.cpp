@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <queue>
 
 using namespace std;
 
@@ -78,7 +81,7 @@ public:
 
 	double fillRatio()
 	{
-		return numberOfKeys / hashTableSize;
+		return (double)numberOfKeys / hashTableSize * 100.0;
 	}
 
 	~HashTable()
@@ -104,9 +107,9 @@ public:
 	int getAdress(int key, int adr, int attempt, int sz, const HashTable& hashTable) override
 	{
 		if (hashTable.keys[adr] < key)
-			return (1LL*adr + 1LL*s1 * attempt) % sz;
-		
-		return (adr + 1LL* s2 * attempt) % sz;
+			return (1LL * adr + 1LL * s1 * attempt) % sz;
+
+		return (adr + 1LL * s2 * attempt) % sz;
 	}
 };
 
@@ -116,20 +119,24 @@ private:
 	int indeks;
 	vector<string> predmeti;
 	string ime;
-	string prezime;
 public:
-	Student(int ind, const string& im, const string& prez, const vector<string>& p) :
-		indeks(ind), ime(im), prezime(prez)
+	Student(int ind, const string& im, const vector<string>& p) :
+		indeks(ind), ime(im)
 	{
 		for (int i = 0; i < p.size();i++)
 			predmeti.push_back(p[i]);
+	}
+
+	int getIndeks()
+	{
+		return indeks;
 	}
 
 	friend ostream& operator << (ostream& os, const Student& s)
 	{
 		cout << "Podaci o studentu" << endl;
 		cout << "indeks: " << s.indeks << endl;
-		cout << "Ime i prezime: " << s.ime << " " << s.prezime << endl;
+		cout << "Ime i prezime: " << s.ime << endl;
 		cout << "Predmeti koje slusa: " << endl;
 		for (int i = 0;i < s.predmeti.size();i++)
 			cout << s.predmeti[i] << endl;
@@ -169,6 +176,7 @@ int HashTable::findKeyPos(int key)
 		if (mark[adr] != EMPTY && mark[adr] != DELETED && keys[adr] == key)
 			return adr;
 
+		att++;
 	} while (mark[adr] != EMPTY && att < hashTableSize);
 	return -1;
 }
@@ -250,11 +258,46 @@ void printMenu()
 
 int main()
 {
+	string fname = "students_10.csv";
+
+	vector<vector<string>> content;
+	vector<string> row;
+	string line, word;
+
+	fstream file(fname, ios::in);
+	if (file.is_open())
+	{
+		while (getline(file, line))
+		{
+			row.clear();
+
+			stringstream str(line);
+
+			while (getline(str, word, ','))
+				row.push_back(word);
+			content.push_back(row);
+		}
+	}
+	else
+		cout << "Nije moguce otvoriti fajl" << endl;
+
+	deque<Student*> dq;
+
+	for (int i = 1; i < content.size();i++)
+	{
+		int indeks = stoi(content[i][0]);
+		string ime = content[i][1];
+		vector<string> vec;
+		if (content[i].size() > 2) vec.push_back(content[i][2]);
+		Student* stud = new Student(indeks, ime, vec);
+		dq.push_back(stud);
+	}
+	cout << "gotovo" << endl;
 	HashTable* hashTable = nullptr;
 	int k, p;
-	cout << "Uneti parametre k i p: "; 
-	cin >> k >> p;
-	hashTable = new HashTable(k, p);
+	cout << "Uneti parametar p: ";
+	cin >> p;
+	hashTable = new HashTable(1 << p, p);
 	while (1)
 	{
 		printMenu();
@@ -262,7 +305,23 @@ int main()
 		if (izb == 1)
 		{
 			cout << "Izabrali ste ubacivanje studenta" << endl;
-			//procitaj i ubaci studenta
+			if (dq.size() == 0)
+			{
+				cout << "Nema vise studenata" << endl;
+			}
+			else
+			{
+				Student* stud = dq.front();
+				dq.pop_front();
+				bool ok = hashTable->insertKey(stud->getIndeks(), stud);
+				if (ok)
+					cout << "Student je ubacen" << endl;
+				else
+				{
+					dq.push_front(stud);
+					cout << "Nije moguce ubaciti studenta" << endl;
+				}
+			}
 		}
 		else if (izb == 2)
 		{

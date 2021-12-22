@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <queue>
 
 using namespace std;
 
@@ -9,20 +12,24 @@ private:
 	int indeks;
 	vector<string> predmeti;
 	string ime;
-	string prezime;
 public:
-	Student(int ind, const string& im, const string& prez, const vector<string>& p) :
-		indeks(ind), ime(im), prezime(prez)
+	Student(int ind, const string& im, const vector<string>& p) :
+		indeks(ind), ime(im)
 	{
 		for (int i = 0; i < p.size();i++)
 			predmeti.push_back(p[i]);
+	}
+
+	int getIndeks()
+	{
+		return indeks;
 	}
 
 	friend ostream& operator << (ostream& os, const Student& s)
 	{
 		cout << "Podaci o studentu" << endl;
 		cout << "indeks: " << s.indeks << endl;
-		cout << "Ime i prezime: " << s.ime << " " << s.prezime << endl;
+		cout << "Ime i prezime: " << s.ime << endl;
 		cout << "Predmeti koje slusa: " << endl;
 		for (int i = 0;i < s.predmeti.size();i++)
 			cout << s.predmeti[i] << endl;
@@ -98,6 +105,19 @@ public:
 		data.clear();
 	}
 
+	int getSize()
+	{
+		return data.size();
+	}
+
+	void print()
+	{
+		cout << "Bucket print" << endl;
+		cout << "size " << data.size() << endl;
+		for (int i = 0; i < data.size();i++)
+			cout << *data[i].second << endl;
+	}
+
 	~Bucket()
 	{
 		for (int i = 0; i < data.size();i++)
@@ -114,13 +134,21 @@ class HashTable
 	int d;
 	int p;
 	vector<Bucket*> buckets;
+	//vector<int> bucketDepth;
 public:
-	HashTable(int k, int p, int d) : numOfKeysInBucket(k), p(p), d(d)
+	HashTable(int k, int p) : numOfKeysInBucket(k), p(p)
 	{
-		hashTableSize = 1 << p;
+		this->d = 1;
+		hashTableSize = 1 << this->d;
 		buckets.resize(hashTableSize);
+		//bucketDepth.resize(d + 1, 0);
 		for (int i = 0; i < hashTableSize;i++)
 			buckets[i] = nullptr;
+	}
+
+	int getDBits(int num)
+	{
+		return ((1 << d) - 1) & (num >> (p - d));
 	}
 
 	bool keyFound(int key)
@@ -148,13 +176,15 @@ public:
 
 	int indexOfBucket(int key)
 	{
-		return originalHash(key) % (1 << d);
+		return getDBits(originalHash(key));
 	}
 
-	void insertPair(pair<int, Student*> p)
+	void insertPair(pair<int, Student*> pa)
 	{
-		int index = indexOfBucket(p.first);
-		buckets[index]->addStudent(p.first, p.second);
+		int index = indexOfBucket(pa.first);
+		//cout << "index " << index << endl;
+		buckets[index]->addStudent(pa.first, pa.second);
+		//bucketDepth[index / (1 << d)]++;
 	}
 
 	void insertFromVector(const vector<pair<int, Student*> >& vec)
@@ -163,32 +193,62 @@ public:
 			insertPair(vec[i]);
 	}
 
+	void expandTable()
+	{
+		//cout << "expanding..." << endl;
+		d++;
+		vector<Bucket*> newBuckets(1 << d);
+		//vector<int> newBucketD(d + 1, 0);
+		for (int i = 0;i < buckets.size();i++)
+		{
+			//newBucketD[(2*i) / (1 << d)]+=bucketDepth[i / (1 << (d-1))];
+			newBuckets[2 * i] = newBuckets[2 * i + 1] = buckets[i];
+		}
+		hashTableSize = newBuckets.size();
+		buckets = newBuckets;
+		//cout << "expanded..." << endl;
+	}
+
+	void addSplitted(int low, int high, int key, Student* student)
+	{
+		cout << low << " " << high << endl;
+		int mid = (low + high) >> 1;
+		Bucket* newBucket = new Bucket(numOfKeysInBucket);
+		for (int i = mid + 1;i <= high;i++)
+			buckets[i] = newBucket;
+
+		vector<pair<int, Student*> > dataHash;
+		buckets[low]->empty_into(dataHash);
+		dataHash.push_back(make_pair(key, student));
+		cout << dataHash.size() << endl;
+		insertFromVector(dataHash);
+	}
+
 	void split(int index, int key, Student* student)
 	{
 		pair<int, int> bounds = findBounds(index);
 		int low = bounds.first;
 		int high = bounds.second;
-		int mid = (low + high) >> 1;
 		if (low == high)
 		{
-			//moramo da povecamo red hes tabele
+			expandTable();
+			cout << *this << endl;
+			index = indexOfBucket(key);
+			//cout << "index " << index << endl;
+			bounds = findBounds(index);
+			addSplitted(bounds.first, bounds.second, key, student);
 		}
 		else
 		{
-			Bucket* newBucket = new Bucket(numOfKeysInBucket);
-			for (int i = mid + 1;i <= high;i++)
-				buckets[i] = newBucket;
-
-			//rehesiranje podataka
-			vector<pair<int, Student*> > dataHash;
-			buckets[low]->empty_into(dataHash);
-			dataHash.push_back(make_pair(key, student));
-			insertFromVector(dataHash);
+			addSplitted(low, high, key, student);
 		}
 	}
 
 	bool insertKey(int key, Student* student)
 	{
+		if (findKey(key))
+			return false;
+
 		int index = indexOfBucket(key);
 		if (buckets[index] == nullptr)
 		{
@@ -198,8 +258,6 @@ public:
 				buckets[i] = newBucket;
 
 			newBucket->addStudent(key, student);
-
-			return true;
 		}
 		else if(buckets[index]->full())
 		{
@@ -209,26 +267,61 @@ public:
 		{
 			buckets[index]->addStudent(key, student);
 		}
+		return true;
 	}
 
 	pair<int, int> findBounds(int index)
 	{
-		int div = index / d;
-		int lo = div * d;
-		int hi = lo + d - 1;
-		pair<int, int> p = make_pair(-1, -1);
+		int div = index / (1 << (d-1));
+		int lo = div * (1 << (d-1));
+		int hi = lo + (1 << (d-1)) - 1;
+		pair<int, int> pa = make_pair(-1, -1);
 		for (int i = lo; i <= hi;i++)
 		{
 			if (buckets[i] == buckets[index])
 			{
-				if (p.first == -1)
-					p.first = i;
-				p.second = i;
+				if (pa.first == -1)
+					pa.first = i;
+				pa.second = i;
 			}
 		}
-		return p;
+		return pa;
 	}
 
+	void shrinkTable()
+	{
+		d--;
+		vector<Bucket*> newBuckets(1 << d);
+		for (int i = 0; i < newBuckets.size();i++)
+			newBuckets[i] = buckets[2 * i];
+		buckets = newBuckets;
+	}
+
+	void mergeBuckets(int index)
+	{
+		pair<int, int> bounds = findBounds(index);
+		int sz = bounds.second - bounds.first + 1;
+		bool left = (bounds.first / (1 << d)) == ((bounds.first - 1) / (1 << d));
+		bool right = (bounds.second / (1 << d)) == ((bounds.second + 1) / (1 << d));
+		if (left)
+		{
+			delete buckets[bounds.first];
+			for (int i = bounds.first;i <= bounds.second;i++)
+				buckets[i] = buckets[bounds.first - 1];
+		}
+		else if (right)
+		{
+			delete buckets[bounds.first];
+			for (int i = bounds.first;i <= bounds.second;i++)
+				buckets[i] = buckets[bounds.second + 1];
+		}
+		else
+		{
+			for (int i = bounds.first;i <= bounds.second;i++)
+				buckets[i] = nullptr;
+		}
+
+	}
 
 	bool deleteKey(int key)
 	{
@@ -240,7 +333,10 @@ public:
 		if (!ret)
 			return false;
 
-
+		if (buckets[index]->empty())
+		{
+			mergeBuckets(index);
+		}
 
 		return true;
 	}
@@ -256,7 +352,7 @@ public:
 
 	int keyCount()
 	{
-		
+		return 0;
 	}
 
 	int tableSize()
@@ -267,16 +363,19 @@ public:
 	friend ostream& operator << (ostream& os, const HashTable& hashTable)
 	{
 		os << "HashTable print" << endl;
+		cout << "size " << hashTable.hashTableSize << endl;
 		for (int i = 0; i < hashTable.hashTableSize;i++)
 		{
-			
+			cout << "pos " << i << endl;
+			if (hashTable.buckets[i] == nullptr) cout << "nullptr" << endl;
+			else hashTable.buckets[i]->print();
 		}
 		return os;
 	}
 
 	double fillRatio()
 	{
-		
+		return 0.;
 	}
 
 	~HashTable()
@@ -302,11 +401,47 @@ void printMenu()
 
 int main()
 {
+	string fname = "students_5.csv";
+
+	vector<vector<string>> content;
+	vector<string> row;
+	string line, word;
+
+	fstream file(fname, ios::in);
+	if (file.is_open())
+	{
+		while (getline(file, line))
+		{
+			row.clear();
+
+			stringstream str(line);
+
+			while (getline(str, word, ','))
+				row.push_back(word);
+			content.push_back(row);
+		}
+	}
+	else
+		cout << "Nije moguce otvoriti fajl" << endl;
+
+	queue<Student*> q;
+
+	for (int i = 1; i < content.size();i++)
+	{
+		cout << content[i][0] << endl;
+		int indeks = stoi(content[i][0]);
+		string ime = content[i][1];
+		vector<string> vec;
+		if (content[i].size() > 2) vec.push_back(content[i][2]);
+		Student* stud = new Student(indeks, ime, vec);
+		q.push(stud);
+	}
+
 	int k;
 	cout << "Unesite broj kljuceva u jednom baketu: "; cin >> k;
 	cout << "Unesite stepen p : "; int p; cin >> p;
-	cout << "Unesite pocetnu dubinu tabele: "; int d;cin >> d;
-	HashTable* hashTable = new HashTable(k, p, d);
+	//cout << "Unesite pocetnu dubinu tabele: "; int d;cin >> d;
+	HashTable* hashTable = new HashTable(k, p);
 
 	while (1)
 	{
@@ -315,7 +450,16 @@ int main()
 		if (izb == 1)
 		{
 			cout << "Izabrali ste ubacivanje studenta" << endl;
-			//procitaj i ubaci studenta
+			if (q.empty())
+			{
+				cout << "Nema vise studenata" << endl;
+			}
+			else
+			{
+				Student* stud = q.front();
+				q.pop();
+				hashTable->insertKey(stud->getIndeks(), stud);
+			}
 		}
 		else if (izb == 2)
 		{

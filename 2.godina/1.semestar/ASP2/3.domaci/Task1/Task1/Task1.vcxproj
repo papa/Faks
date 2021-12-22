@@ -125,6 +125,18 @@
   <ItemGroup>
     <ClCompile Include="task1.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="students_10.csv" />
+    <None Include="students_1000.csv" />
+    <None Include="students_10000.csv" />
+    <None Include="students_100000.csv" />
+    <None Include="students_150.csv" />
+    <None Include="students_5.csv" />
+    <None Include="students_50.csv" />
+    <None Include="students_500.csv" />
+    <None Include="students_5000.csv" />
+    <None Include="students_50000.csv" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

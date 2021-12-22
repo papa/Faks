@@ -19,4 +19,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="students_5.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_10.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_50.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_150.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_500.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_1000.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_5000.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_10000.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_50000.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="students_100000.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

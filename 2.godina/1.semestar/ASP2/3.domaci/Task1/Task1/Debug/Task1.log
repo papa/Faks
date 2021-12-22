@@ -1,7 +1,9 @@
 ﻿  task1.cpp
-D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Task1\task1.cpp(7,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Task1\task1.cpp(86,1): warning C4150:  deletion of pointer to incomplete type 'SplitSequenceLinearHashing'; no destructor called
-D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Task1\task1.cpp(11): message :  see declaration of 'SplitSequenceLinearHashing'
-D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Task1\task1.cpp(124,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Task1\task1.cpp(134,20): warning C4018:  '<': signed/unsigned mismatch
-  Task1.vcxproj -> D:\Faks materijali\2.godina\1.semestar\ASP2\Domaci\3.domaci\Task1\Debug\Task1.exe
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(10,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(89,1): warning C4150:  deletion of pointer to incomplete type 'SplitSequenceLinearHashing'; no destructor called
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(14): message :  see declaration of 'SplitSequenceLinearHashing'
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(126,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(141,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(286,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(297,6): warning C4101:  'k': unreferenced local variable
+  Task1.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Debug\Task1.exe
