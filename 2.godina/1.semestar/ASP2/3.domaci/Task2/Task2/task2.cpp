@@ -182,9 +182,7 @@ public:
 	void insertPair(pair<int, Student*> pa)
 	{
 		int index = indexOfBucket(pa.first);
-		//cout << "index " << index << endl;
 		buckets[index]->addStudent(pa.first, pa.second);
-		//bucketDepth[index / (1 << d)]++;
 	}
 
 	void insertFromVector(const vector<pair<int, Student*> >& vec)
@@ -195,32 +193,49 @@ public:
 
 	void expandTable()
 	{
-		//cout << "expanding..." << endl;
 		d++;
 		vector<Bucket*> newBuckets(1 << d);
-		//vector<int> newBucketD(d + 1, 0);
 		for (int i = 0;i < buckets.size();i++)
 		{
-			//newBucketD[(2*i) / (1 << d)]+=bucketDepth[i / (1 << (d-1))];
 			newBuckets[2 * i] = newBuckets[2 * i + 1] = buckets[i];
 		}
 		hashTableSize = newBuckets.size();
 		buckets = newBuckets;
-		//cout << "expanded..." << endl;
+	}
+
+	int inTheSameHalf(int ind1, int ind2, int low, int high)
+	{
+		int mid = (low + high) >> 1;
+		bool left1 = (ind1 <= mid);
+		bool left2 = (ind2 <= mid);
+		return left1 == left2;
+	}
+
+	bool allHashesSame(vector<pair<int, Student*> >& vec, int low, int high)
+	{
+		for (int i = 1; i < vec.size();i++)
+			if (!inTheSameHalf(indexOfBucket(vec[i - 1].first), indexOfBucket(vec[i].first), low, high))
+				return false;
+		
+		return true;
 	}
 
 	void addSplitted(int low, int high, int key, Student* student)
 	{
-		cout << low << " " << high << endl;
-		int mid = (low + high) >> 1;
-		Bucket* newBucket = new Bucket(numOfKeysInBucket);
-		for (int i = mid + 1;i <= high;i++)
-			buckets[i] = newBucket;
-
 		vector<pair<int, Student*> > dataHash;
 		buckets[low]->empty_into(dataHash);
 		dataHash.push_back(make_pair(key, student));
 		cout << dataHash.size() << endl;
+		while (allHashesSame(dataHash, low, high))
+		{
+			expandTable();
+			low = low << 1;
+			high = (high << 1) + 1;
+		}
+		int mid = (low + high) >> 1;
+		Bucket* newBucket = new Bucket(numOfKeysInBucket);
+		for (int i = mid + 1;i <= high;i++)
+			buckets[i] = newBucket;
 		insertFromVector(dataHash);
 	}
 
@@ -234,7 +249,6 @@ public:
 			expandTable();
 			cout << *this << endl;
 			index = indexOfBucket(key);
-			//cout << "index " << index << endl;
 			bounds = findBounds(index);
 			addSplitted(bounds.first, bounds.second, key, student);
 		}
@@ -301,26 +315,28 @@ public:
 	{
 		pair<int, int> bounds = findBounds(index);
 		int sz = bounds.second - bounds.first + 1;
-		bool left = (bounds.first / (1 << d)) == ((bounds.first - 1) / (1 << d));
-		bool right = (bounds.second / (1 << d)) == ((bounds.second + 1) / (1 << d));
-		if (left)
+		if (sz == 1)
 		{
-			delete buckets[bounds.first];
-			for (int i = bounds.first;i <= bounds.second;i++)
-				buckets[i] = buckets[bounds.first - 1];
-		}
-		else if (right)
-		{
-			delete buckets[bounds.first];
-			for (int i = bounds.first;i <= bounds.second;i++)
-				buckets[i] = buckets[bounds.second + 1];
+			if (index % 2 == 1)
+				buckets[index] = buckets[index - 1];
+			else
+				buckets[index] = buckets[index + 1];
 		}
 		else
 		{
-			for (int i = bounds.first;i <= bounds.second;i++)
-				buckets[i] = nullptr;
+			bool left = (bounds.first / (1 << (d - 1))) == ((bounds.first - 1) / (1 << (d - 1)));
+			bool right = (bounds.second / (1 << (d - 1))) == ((bounds.second + 1) / (1 << (d - 1)));
+			if (left)
+			{
+				int lo = bounds.first - sz;
+				int hi = bounds.second;
+			}
+			else if (right)
+			{
+				int lo = bounds.first;
+				int hi = bounds.second + sz;
+			}
 		}
-
 	}
 
 	bool deleteKey(int key)
@@ -369,6 +385,7 @@ public:
 			cout << "pos " << i << endl;
 			if (hashTable.buckets[i] == nullptr) cout << "nullptr" << endl;
 			else hashTable.buckets[i]->print();
+
 		}
 		return os;
 	}

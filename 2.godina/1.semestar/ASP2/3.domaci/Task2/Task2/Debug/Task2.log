@@ -7,9 +7,10 @@ D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(79,21): warning 
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(102,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(117,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(123,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(192,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(202,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(295,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(346,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(429,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(191,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(199,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(218,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(312,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(363,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(446,20): warning C4018:  '<': signed/unsigned mismatch
   Task2.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Debug\Task2.exe
