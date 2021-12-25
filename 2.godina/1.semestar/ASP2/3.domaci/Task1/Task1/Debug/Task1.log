@@ -1,9 +1,25 @@
 ﻿  task1.cpp
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(10,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(89,1): warning C4150:  deletion of pointer to incomplete type 'SplitSequenceLinearHashing'; no destructor called
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(14): message :  see declaration of 'SplitSequenceLinearHashing'
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(9,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(31,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(39,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(49,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(58,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(64,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(80,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(88,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(93,1): warning C4150:  deletion of pointer to incomplete type 'Student'; no destructor called
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(14): message :  see declaration of 'Student'
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(113,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(126,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(141,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(286,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(297,6): warning C4101:  'k': unreferenced local variable
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(139,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(153,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(154,1): warning C4150:  deletion of pointer to incomplete type 'Student'; no destructor called
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(14): message :  see declaration of 'Student'
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(219,1): warning C4150:  deletion of pointer to incomplete type 'SplitSequenceLinearHashing'; no destructor called
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(13): message :  see declaration of 'SplitSequenceLinearHashing'
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(257,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(272,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(283,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(443,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(454,6): warning C4101:  'k': unreferenced local variable
   Task1.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Debug\Task1.exe

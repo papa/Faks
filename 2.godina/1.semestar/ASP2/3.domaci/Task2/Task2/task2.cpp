@@ -118,6 +118,20 @@ public:
 			cout << *data[i].second << endl;
 	}
 
+	void moveTo(Bucket* b)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			b->addStudent(data[i].first, data[i].second);
+			data[i].second = nullptr;
+		}
+	}
+
+	void clear()
+	{
+		data.clear();
+	}
+
 	~Bucket()
 	{
 		for (int i = 0; i < data.size();i++)
@@ -143,7 +157,7 @@ public:
 		buckets.resize(hashTableSize);
 		//bucketDepth.resize(d + 1, 0);
 		for (int i = 0; i < hashTableSize;i++)
-			buckets[i] = nullptr;
+			buckets[i] = new Bucket(numOfKeysInBucket);
 	}
 
 	int getDBits(int num)
@@ -203,21 +217,63 @@ public:
 		buckets = newBuckets;
 	}
 
-	int inTheSameHalf(int ind1, int ind2, int low, int high)
+	bool allHashesInRange(int low, int high, vector<int>& vec)
 	{
-		int mid = (low + high) >> 1;
-		bool left1 = (ind1 <= mid);
-		bool left2 = (ind2 <= mid);
-		return left1 == left2;
+		for (int i = 0;i < vec.size();i++)
+			if (!(vec[i] >= low && vec[i] <= high))
+				return false;
+		return true;
 	}
 
 	bool allHashesSame(vector<pair<int, Student*> >& vec, int low, int high)
 	{
-		for (int i = 1; i < vec.size();i++)
-			if (!inTheSameHalf(indexOfBucket(vec[i - 1].first), indexOfBucket(vec[i].first), low, high))
+		vector<int> hashes;
+
+		for (int i = 0; i < vec.size();i++)
+		{
+			cout << "data student " << endl;
+			cout << vec[i].first << endl;
+			cout << indexOfBucket(vec[i].first) << endl;
+			hashes.push_back(indexOfBucket(vec[i].first));
+		}
+
+		bool flag = false;
+		for (int i = 1; i < hashes.size() && !flag;i++)
+		{
+			if (hashes[i] != hashes[i - 1])
+				flag = true;
+		}
+
+		if (!flag)
+			return true;
+
+		while (high - low > 0 && allHashesInRange(low, high, hashes))
+		{
+			int mid = (low + high) >> 1;
+			if (allHashesInRange(low, mid, hashes))
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = mid + 1; i <= high;i++)
+					buckets[i] = newBucket;
+				high = mid;
+			}
+			else if (allHashesInRange(mid + 1, high, hashes))
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = low; i <= mid;i++)
+					buckets[i] = newBucket;
+				low = mid + 1;
+			}
+			else
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = low; i <= mid;i++)
+					buckets[i] = newBucket;
 				return false;
+			}
+		}
 		
-		return true;
+		return false;
 	}
 
 	void addSplitted(int low, int high, int key, Student* student)
@@ -225,18 +281,20 @@ public:
 		vector<pair<int, Student*> > dataHash;
 		buckets[low]->empty_into(dataHash);
 		dataHash.push_back(make_pair(key, student));
-		cout << dataHash.size() << endl;
+		cout <<  "size " << dataHash.size() << endl;
 		while (allHashesSame(dataHash, low, high))
 		{
+			cout << "expanindg all hashes same " << endl;
 			expandTable();
 			low = low << 1;
 			high = (high << 1) + 1;
 		}
-		int mid = (low + high) >> 1;
-		Bucket* newBucket = new Bucket(numOfKeysInBucket);
-		for (int i = mid + 1;i <= high;i++)
-			buckets[i] = newBucket;
 		insertFromVector(dataHash);
+		//int mid = (low + high) >> 1;
+		//Bucket* newBucket = new Bucket(numOfKeysInBucket);
+		//for (int i = mid + 1;i <= high;i++)
+		//	buckets[i] = newBucket;
+		//insertFromVector(dataHash);
 	}
 
 	void split(int index, int key, Student* student)
@@ -264,16 +322,8 @@ public:
 			return false;
 
 		int index = indexOfBucket(key);
-		if (buckets[index] == nullptr)
-		{
-			Bucket* newBucket = new Bucket(numOfKeysInBucket);
-			pair<int, int> bounds = findBounds(index);
-			for (int i = bounds.first;i <= bounds.second;i++)
-				buckets[i] = newBucket;
-
-			newBucket->addStudent(key, student);
-		}
-		else if(buckets[index]->full())
+		cout << "index " << index << endl;
+		if(buckets[index]->full())
 		{
 			split(index, key, student);
 		}
@@ -304,54 +354,134 @@ public:
 
 	void shrinkTable()
 	{
+		cout << "shrinking" << endl;
 		d--;
 		vector<Bucket*> newBuckets(1 << d);
 		for (int i = 0; i < newBuckets.size();i++)
 			newBuckets[i] = buckets[2 * i];
 		buckets = newBuckets;
+		hashTableSize = 1 << d;
 	}
 
-	void mergeBuckets(int index)
+	bool shouldShrink()
 	{
+		for (int i = 1;i < buckets.size();i += 2)
+			if (buckets[i] != buckets[i - 1])
+				return false;
+		return true;
+	}
+
+	bool canMergeLeft(int index)
+	{
+		cout << "ovde sam" << endl;
+		cout << index << endl;
+		if (index == 0) return false;
 		pair<int, int> bounds = findBounds(index);
-		int sz = bounds.second - bounds.first + 1;
-		if (sz == 1)
+		if (bounds.first == 0) return false;
+		pair<int, int> boundsLeft = findBounds(bounds.first - 1);
+		int sz1 = bounds.second - bounds.first + 1;
+		int sz2 = boundsLeft.second - boundsLeft.first + 1;
+
+		cout << "bounds" << endl;
+		cout << bounds.first << " " << bounds.second << endl;
+		cout << boundsLeft.first << " " << boundsLeft.second << endl;
+
+		if (sz1 != sz2)
+			return false;
+
+		if (sz1 == 1 && index % 2 == 0)
+			return false;
+
+		if (bounds.first / (1 << (d - 1)) != boundsLeft.first / (1 << (d - 1)))
+			return false;
+
+		if (buckets[bounds.first]->getSize() + buckets[boundsLeft.first]->getSize() > numOfKeysInBucket)
+			return false;
+
+		buckets[boundsLeft.first]->moveTo(buckets[bounds.first]);
+
+		delete buckets[boundsLeft.first];
+
+		for (int i = boundsLeft.first;i <= boundsLeft.second;i++)
+			buckets[i] = buckets[bounds.first];
+
+		cout << "izaso" << endl;
+
+		return true;
+	}
+
+	bool canMergeRight(int index)
+	{
+		if (index == (1 << d) - 1) return false;
+		pair<int, int> bounds = findBounds(index);
+		if (bounds.second == (1 << d) - 1) return false;
+		pair<int, int> boundsRight = findBounds(bounds.second + 1);
+		int sz1 = bounds.second - bounds.first + 1;
+		int sz2 = boundsRight.second - boundsRight.first + 1;
+
+		if (sz1 != sz2)
+			return false;
+
+		if (sz1 == 1 && index % 2 ==1)
+			return false;
+
+		if (bounds.first / (1 << (d - 1)) != boundsRight.first / (1 << (d - 1)))
+			return false;
+
+		if (buckets[bounds.first]->getSize() + buckets[boundsRight.first]->getSize() > numOfKeysInBucket)
+			return false;
+
+		buckets[boundsRight.first]->moveTo(buckets[bounds.first]);
+
+		delete buckets[boundsRight.first];
+
+		for (int i = boundsRight.first;i <= boundsRight.second;i++)
+			buckets[i] = buckets[bounds.first];
+
+		return true;
+	}
+
+	bool merge()
+	{
+		bool merged = false;
+		for (int i = 0; i < buckets.size();i++)
 		{
-			if (index % 2 == 1)
-				buckets[index] = buckets[index - 1];
-			else
-				buckets[index] = buckets[index + 1];
+			if (canMergeLeft(i))
+				merged = true;
+			else if (canMergeRight(i))
+				merged = true;
 		}
-		else
+		return merged;
+	}
+
+	void tryMerging()
+	{
+		while (1)
 		{
-			bool left = (bounds.first / (1 << (d - 1))) == ((bounds.first - 1) / (1 << (d - 1)));
-			bool right = (bounds.second / (1 << (d - 1))) == ((bounds.second + 1) / (1 << (d - 1)));
-			if (left)
+			if (d == 1) return;
+			while (merge())
 			{
-				int lo = bounds.first - sz;
-				int hi = bounds.second;
+				cout << *this << endl;
 			}
-			else if (right)
-			{
-				int lo = bounds.first;
-				int hi = bounds.second + sz;
-			}
+			cout << "zavrsio" << endl;
+			if (shouldShrink())
+				shrinkTable();
+			else
+				break;
 		}
 	}
 
 	bool deleteKey(int key)
 	{
 		int index = indexOfBucket(key);
-		if (buckets[index] == nullptr)
-			return false;
-
+		cout << index << endl;
 		bool ret = buckets[index]->removeStudent(key);
 		if (!ret)
 			return false;
 
 		if (buckets[index]->empty())
 		{
-			mergeBuckets(index);
+			tryMerging();
 		}
 
 		return true;
@@ -364,6 +494,10 @@ public:
 			buckets[i] = nullptr;
 			delete buckets[i];
 		}
+		d = 1;
+		buckets.resize(1 << d);
+		for (int i = 0; i < buckets.size();i++)
+			buckets[i] = new Bucket(numOfKeysInBucket);
 	}
 
 	int keyCount()
@@ -532,3 +666,17 @@ int main()
 
 	return 0;
 }
+
+/*
+
+2
+20
+1
+1
+1
+1
+2
+20200245
+2
+19980735
+*/

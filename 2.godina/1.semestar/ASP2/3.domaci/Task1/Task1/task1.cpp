@@ -6,7 +6,6 @@
 
 using namespace std;
 
-//probaj ovde vise stvari
 const int prime1 = (1e9) + 7;
 const int prime2 = 1299709;
 
@@ -15,16 +14,158 @@ class SplitSequenceLinearHashing;
 class Student;
 class HashTable;
 
+class Bucket
+{
+	int bucketSize;
+	vector<pair<int, Student*> > data;
+	vector<int> mark;
+
+public:
+	static const int EMPTY = -1;
+	static const int DELETED = -2;
+	static const int FULL = 0;
+	Bucket(int bs) : bucketSize(bs) {}
+
+	int getFirstKey()
+	{
+		for (int i = 0; i < data.size();i++)
+			if (mark[i] == FULL)
+				return data[i].first;
+		return -1;
+	}
+
+	Student* findStudent(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			if (data[i].first == key)
+				return data[i].second;
+		}
+		return nullptr;
+	}
+
+	bool allEmpty()
+	{
+		for (int i = 0; i < data.size();i++)
+			if (mark[i] != EMPTY)
+				return false;
+		return true;
+	}
+
+	bool addStudent(int key, Student* student)
+	{
+
+		for (int i = 0; i < data.size();i++)
+		{
+			if (mark[i] == FULL && data[i].first == key)
+				return false;
+		}
+
+		for (int i = 0; i < data.size();i++)
+		{
+			if (mark[i] == EMPTY || mark[i] == DELETED)
+			{
+				mark[i] = FULL;
+				data[i].first = key;
+				data[i].second = student;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool findKey(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+			if (data[i].first == key)
+				return true;
+		return false;
+	}
+
+	bool removeStudent(int key)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			if (data[i].first == key)
+			{
+				mark[i] = DELETED;
+				delete data[i].second;
+				data[i].second = nullptr;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool full()
+	{
+		return data.size() == bucketSize;
+	}
+
+	bool empty()
+	{
+		return data.size() == 0;
+	}
+
+	void empty_into(vector<pair<int, Student*> >& vec)
+	{
+		for (int i = 0; i < data.size();i++)
+			vec.push_back(make_pair(data[i].first, data[i].second));
+
+		data.clear();
+	}
+
+	int getSize()
+	{
+		return data.size();
+	}
+
+	void print()
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			if (mark[i] == EMPTY)
+				cout << "EMPTY ";
+			else if (mark[i] == DELETED)
+				cout << "DELETED ";
+			else
+				cout << data[i].first << " ";
+		}
+	}
+
+	void moveTo(Bucket* b)
+	{
+		for (int i = 0; i < data.size();i++)
+		{
+			b->addStudent(data[i].first, data[i].second);
+			data[i].second = nullptr;
+		}
+	}
+
+	void clear()
+	{
+		data.clear();
+	}
+
+	~Bucket()
+	{
+		for (int i = 0; i < data.size();i++)
+			delete data[i].second;
+
+		data.clear();
+	}
+};
+
 class HashTable
 {
 	int hashTableSize = 0;
 	int numberOfKeys = 0;
 	int p;
-	vector<Student*> values;
+	vector<Bucket*> values;
 	SplitSequenceLinearHashing* collisionH = nullptr;
 public:
 	vector<int> keys;
-	vector<int> mark;
 	friend SplitSequenceLinearHashing;
 	static const int EMPTY = -1;
 	static const int DELETED = 0;
@@ -62,19 +203,8 @@ public:
 		os << "HashTable print" << endl;
 		for (int i = 0; i < hashTable.hashTableSize;i++)
 		{
-			cout << i << " ";
-			if (hashTable.mark[i] == HashTable::EMPTY)
-			{
-				cout << "EMPTY" << endl;
-			}
-			else if (hashTable.mark[i] == HashTable::DELETED)
-			{
-				cout << "DELETED" << endl;
-			}
-			else
-			{
-				cout << hashTable.keys[i] << endl;
-			}
+			cout << "pos " << i << " ";
+			hashTable.values[i]->print();
 		}
 		return os;
 	}
@@ -106,7 +236,8 @@ public:
 
 	int getAdress(int key, int adr, int attempt, int sz, const HashTable& hashTable) override
 	{
-		if (hashTable.keys[adr] < key)
+		int keyOther = hashTable.values[adr]->getFirstKey();
+		if (keyOther < key)
 			return (1LL * adr + 1LL * s1 * attempt) % sz;
 
 		return (adr + 1LL * s2 * attempt) % sz;
@@ -148,17 +279,17 @@ HashTable::HashTable(int k, int p) : hashTableSize(k), p(p)
 {
 	collisionH = new SplitSequenceLinearHashing(prime1, prime2); // podesi ove korake
 	keys.resize(hashTableSize);
-	mark.resize(hashTableSize);
 	values.resize(hashTableSize);
+	for (int i = 0; i < values.size();i++)
+		values[i] = new Bucket(k);
 	for (int i = 0; i < hashTableSize;i++)
 	{
 		keys[i] = EMPTY;
-		mark[i] = EMPTY;
 		values[i] = nullptr;
 	}
 }
 
-int HashTable::findKeyPos(int key)
+/*int HashTable::findKeyPos(int key)
 {
 	int att = 0;
 	int adr;
@@ -179,35 +310,63 @@ int HashTable::findKeyPos(int key)
 		att++;
 	} while (mark[adr] != EMPTY && att < hashTableSize);
 	return -1;
-}
+}*/
 
 Student* HashTable::findKey(int key)
 {
-	int pos = findKeyPos(key);
-	if (pos == -1) return nullptr;
-	return values[pos];
+	int att = 0;
+	int adr;
+	do
+	{
+		if (att == 0)
+		{
+			adr = originalHash(key);
+		}
+		else
+		{
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
+		}
+
+		Student* stud = values[adr]->findStudent(key);
+		if (stud != nullptr)
+			return stud;
+
+		att++;
+	} while (!values[adr]->allEmpty() && att < hashTableSize);
+	return nullptr;
 }
 
 bool HashTable::deleteKey(int key)
 {
-	int pos = findKeyPos(key);
-	if (pos == -1) return false;
-	mark[pos] = DELETED;
-	keys[pos] = DELETED;
-	delete values[pos];
-	values[pos] = nullptr;
-	numberOfKeys--;
-	return true;
+	int att = 0;
+	int adr;
+	do
+	{
+		if (att == 0)
+		{
+			adr = originalHash(key);
+		}
+		else
+		{
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
+		}
+
+		if (values[adr]->removeStudent(key))
+			true;
+
+		att++;
+	} while (!values[adr]->allEmpty() && att < hashTableSize);
+
+	return false;
 }
 
 void HashTable::clear()
 {
 	for (int i = 0; i < hashTableSize;i++)
 	{
-		mark[i] = EMPTY;
 		keys[i] = EMPTY;
 		delete values[i];
-		values[i] = nullptr;
+		values[i] = new Bucket(hashTableSize);
 	}
 	numberOfKeys = 0;
 }
@@ -227,15 +386,13 @@ bool HashTable::insertKey(int key, Student* student)
 			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
 		}
 
-		if (mark[adr] == EMPTY || mark[adr] == DELETED)
+		if (values[adr]->addStudent(key,student))
 		{
-			keys[adr] = key;
-			mark[adr] = FULL;
-			values[adr] = student;
+			//keys[adr] = key;
+			//values[adr] = student;
 			numberOfKeys++;
 			return true;
 		}
-		else if (keys[adr] == key) return false;
 
 		att++;
 	} while (att < hashTableSize);
