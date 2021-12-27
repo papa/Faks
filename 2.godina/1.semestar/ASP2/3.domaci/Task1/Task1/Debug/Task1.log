@@ -1,5 +1,6 @@
 ﻿  task1.cpp
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(10,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(11,26): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(41,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(49,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(59,21): warning C4018:  '<': signed/unsigned mismatch
@@ -19,7 +20,7 @@ D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(262,20): warning
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(430,15): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(432,20): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(436,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(440,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(477,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(448,9): warning C4101:  'duration': unreferenced local variable
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(441,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(478,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(449,9): warning C4101:  'duration': unreferenced local variable
   Task1.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Debug\Task1.exe

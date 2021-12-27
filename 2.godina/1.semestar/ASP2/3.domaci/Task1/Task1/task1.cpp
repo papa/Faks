@@ -8,7 +8,7 @@
 using namespace std;
 
 const int prime1 = (1e9) + 7;
-const int prime2 = 1299709;
+const int prime2 = (1e9) + 7;
 
 class AdressFunction;
 class SplitSequenceLinearHashing;
@@ -381,7 +381,7 @@ bool HashTable::insertKey(int key, Student* student)
 		{
 			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, step);
 		}
-
+		
 		if (values[adr]->addStudent(key,student))
 		{
 			numberOfKeys++;
@@ -423,7 +423,8 @@ void static_test(int k, int p, int bs, deque<Student*>& dq)
 	{
 		Student* stud = dq.front();
 		dq.pop_front();
-		hashTable->insertKey(stud->getIndeks(), stud);
+		bool ok = hashTable->insertKey(stud->getIndeks(), stud);
+		if (!ok) exit(-2);
 		keys.push_back(stud->getIndeks());
 	}
 	int duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
@@ -436,6 +437,7 @@ void static_test(int k, int p, int bs, deque<Student*>& dq)
 	{
 		bool ok = hashTable->deleteKey(keys[i]);
 	}
+	//cout << *hashTable << endl;
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	cout << duration << endl;
 	exit(0);
@@ -448,7 +450,7 @@ int main()
 
 	start = std::clock();
 
-	string fname = "students_50.csv";
+	string fname = "students_150.csv";
 
 	vector<vector<string>> content;
 	vector<string> row;
@@ -485,7 +487,7 @@ int main()
 	HashTable* hashTable = nullptr;
 	int k, p, bs;
 
-	//static_test(100000, 20, 10, dq);
+	//static_test(1000, 20, 200, dq);
 
 	cout << "Uneti parametar p (stepen dvojke): "; cin >> p;
 	cout << "Unesite velicinu tabele: "; cin >> k;

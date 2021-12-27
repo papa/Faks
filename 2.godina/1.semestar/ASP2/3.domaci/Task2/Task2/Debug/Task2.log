@@ -1,28 +1,27 @@
 ﻿  task2.cpp
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(21,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(36,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(58,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(73,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(81,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(104,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(123,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(145,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(220,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(228,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(238,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(248,12): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(250,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(261,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(406,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(414,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(496,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(513,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(574,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(591,21): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(651,15): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(666,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(671,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(679,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(693,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(726,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(57,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(72,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(80,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(103,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(122,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(140,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(215,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(223,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(233,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(243,12): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(245,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(253,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(363,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(371,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(455,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(501,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(517,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(550,21): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(599,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(604,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(610,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(621,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Task2\task2.cpp(654,20): warning C4018:  '<': signed/unsigned mismatch
   Task2.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task2\Debug\Task2.exe
