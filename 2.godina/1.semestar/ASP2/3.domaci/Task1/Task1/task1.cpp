@@ -48,7 +48,7 @@ public:
 	{
 		for (int i = 0; i < data.size();i++)
 		{
-			if (data[i].first == key)
+			if (data[i].first == key && mark[i] == FULL)
 				return data[i].second;
 		}
 		return nullptr;
@@ -65,11 +65,8 @@ public:
 	bool addStudent(int key, Student* student)
 	{
 
-		for (int i = 0; i < data.size();i++)
-		{
-			if (mark[i] == FULL && data[i].first == key)
-				return false;
-		}
+		if (findKey(key))
+			return false;
 
 		for (int i = 0; i < data.size();i++)
 		{
@@ -87,17 +84,14 @@ public:
 
 	bool findKey(int key)
 	{
-		for (int i = 0; i < data.size();i++)
-			if (data[i].first == key)
-				return true;
-		return false;
+		return findStudent(key) != nullptr;
 	}
 
 	bool removeStudent(int key)
 	{
 		for (int i = 0; i < data.size();i++)
 		{
-			if (data[i].first == key)
+			if (data[i].first == key && mark[i] == FULL)
 			{
 				mark[i] = DELETED;
 				delete data[i].second;
@@ -129,7 +123,6 @@ public:
 
 	void clear()
 	{
-		//data.clear();
 		for (int i = 0; i < data.size();i++)
 		{
 			delete data[i].second;
@@ -140,9 +133,6 @@ public:
 
 	~Bucket()
 	{
-		//for (int i = 0; i < data.size();i++)
-		//	delete data[i].second;
-
 		clear();
 	}
 };
@@ -334,7 +324,10 @@ bool HashTable::deleteKey(int key)
 		}
 
 		if (values[adr]->removeStudent(key))
+		{
+			numberOfKeys--;
 			return true;
+		}
 
 		att++;
 	} while (!values[adr]->allEmpty() && att < hashTableSize);
@@ -352,7 +345,10 @@ bool HashTable::deleteKey(int key)
 		}
 
 		if (values[adr]->removeStudent(key))
+		{
+			numberOfKeys--;
 			return true;
+		}
 
 		att++;
 	} while (!values[adr]->allEmpty() && att < hashTableSize);
@@ -388,8 +384,6 @@ bool HashTable::insertKey(int key, Student* student)
 
 		if (values[adr]->addStudent(key,student))
 		{
-			//keys[adr] = key;
-			//values[adr] = student;
 			numberOfKeys++;
 			return true;
 		}
@@ -419,6 +413,34 @@ void printMenu()
 	cout << "Uneti izbor: " << endl;
 }
 
+void static_test(int k, int p, int bs, deque<Student*>& dq)
+{
+	int start = clock();
+
+	HashTable* hashTable = new HashTable(k, p, bs);
+	vector<int> keys;
+	while (!dq.empty())
+	{
+		Student* stud = dq.front();
+		dq.pop_front();
+		hashTable->insertKey(stud->getIndeks(), stud);
+		keys.push_back(stud->getIndeks());
+	}
+	int duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	for (int i = 0; i < keys.size();i++)
+	{
+		Student* ok = hashTable->findKey(keys[i]);
+	}
+	for (int i = 0; i < keys.size();i++)
+	{
+		bool ok = hashTable->deleteKey(keys[i]);
+	}
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	exit(0);
+}
+
 int main()
 {
 	std::clock_t start;
@@ -426,7 +448,7 @@ int main()
 
 	start = std::clock();
 
-	string fname = "students_100000.csv";
+	string fname = "students_50.csv";
 
 	vector<vector<string>> content;
 	vector<string> row;
@@ -460,41 +482,17 @@ int main()
 		Student* stud = new Student(indeks, ime, vec);
 		dq.push_back(stud);
 	}
-	cout << "gotovo" << endl;
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-	cout << duration << endl;
 	HashTable* hashTable = nullptr;
 	int k, p, bs;
-	//cout << "Uneti parametar p: "; cin >> p;
-	//cout << "Unesite velicinu tabele: "; cin >> k;
-	//cout << "Velicina baketa: "; cin >> bs;
-	k = 100000;
-	p = 20;
-	bs = 10;
+
+	//static_test(100000, 20, 10, dq);
+
+	cout << "Uneti parametar p (stepen dvojke): "; cin >> p;
+	cout << "Unesite velicinu tabele: "; cin >> k;
+	cout << "Velicina baketa: "; cin >> bs;
+
 	hashTable = new HashTable(k, p, bs);
-	vector<int> keys;
-	while (!dq.empty())
-	{
-		Student* stud = dq.front();
-		dq.pop_front();
-		hashTable->insertKey(stud->getIndeks(), stud);
-		keys.push_back(stud->getIndeks());
-	}
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-	cout << duration << endl;
-	cout << hashTable->keyCount() << endl;
-	
-	int cnt = 0;
-	for (int i = 0; i < keys.size();i++)
-	{
-		Student* ok = hashTable->findKey(keys[i]);
-		if (ok != nullptr) cnt++;
-	}
-	if (cnt == 100000)
-		cout << "OK" << endl;
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-	cout << duration << endl;
-	return 0;
+
 	while (1)
 	{
 		printMenu();
@@ -551,7 +549,7 @@ int main()
 		}
 		else if (izb == 6)
 		{
-			cout << "Hes tabela" << endl;
+			//cout << "Hes tabela" << endl;
 			cout << *hashTable << endl;
 		}
 		else if (izb == 7)

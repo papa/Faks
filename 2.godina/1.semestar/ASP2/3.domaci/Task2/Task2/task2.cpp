@@ -102,8 +102,10 @@ public:
 	void empty_into(vector<pair<int, Student*> >& vec)
 	{
 		for (int i = 0; i < data.size();i++)
+		{
 			vec.push_back(make_pair(data[i].first, data[i].second));
-
+			data[i].second = nullptr;
+		}
 		data.clear();
 	}
 
@@ -114,10 +116,13 @@ public:
 
 	void print()
 	{
+		cout << endl;
 		cout << "Bucket print" << endl;
 		cout << "size " << data.size() << endl;
+		cout << endl;
 		for (int i = 0; i < data.size();i++)
 			cout << *data[i].second << endl;
+		cout << endl;
 	}
 
 	void moveTo(Bucket* b)
@@ -136,15 +141,19 @@ public:
 
 	void clear()
 	{
+		cout << "brisem bucket" << endl;
+		for (int i = 0; i < data.size();i++)
+		{
+			delete data[i].second;
+			data[i].second = nullptr;
+		}
 		data.clear();
+		cout << "obrisao" << endl;
 	}
 
 	~Bucket()
 	{
-		for (int i = 0; i < data.size();i++)
-			delete data[i].second;
-
-		data.clear();
+		clear();
 	}
 };
 
@@ -550,24 +559,35 @@ public:
 		}
 		//cout << "ovde" << endl;
 		//cout << hashTableSize << endl;
-		if (buckets[index]->empty())
-		{
+		//if (buckets[index]->empty())
+		//{
 			//cout << "trying" << endl;
 			tryMerging();
-		}
+		//}
 		//cout << *this << endl;
 		return true;
 	}
 
 	void clear()
 	{
+		cout << "brisem" << endl;
 		for (int i = 0; i < buckets.size();i++)
 		{
-			buckets[i] = nullptr;
-			delete buckets[i];
+			cout << i << endl;
+			if (i == 0) continue;
+			if (buckets[i] != buckets[i - 1])
+			{
+				delete buckets[i - 1];
+				buckets[i - 1] = nullptr;
+			}
 		}
+		delete buckets[buckets.size() - 1];
+		buckets[buckets.size() - 1] = nullptr;
+		buckets.clear();
+		cout << "ovde " << endl;
 		d = 1;
 		buckets.resize(1 << d);
+		hashTableSize = 1 << d;
 		for (int i = 0; i < buckets.size();i++)
 			buckets[i] = new Bucket(numOfKeysInBucket);
 	}
@@ -586,11 +606,14 @@ public:
 	{
 		os << "HashTable print" << endl;
 		cout << "size " << hashTable.hashTableSize << endl;
+		cout << endl;
 		for (int i = 0; i < hashTable.hashTableSize;i++)
 		{
-			cout << "pos " << i << endl;
-			if(i == hashTable.hashTableSize -1 || hashTable.buckets[i] != hashTable.buckets[i+1]) 
+			cout << "POZICIJA " << i << endl;
+			if (i == hashTable.hashTableSize - 1 || hashTable.buckets[i] != hashTable.buckets[i + 1])
+			{
 				hashTable.buckets[i]->print();
+			}
 		}
 		return os;
 	}
@@ -661,9 +684,10 @@ void static_test(int k, int p, deque<Student*> &dq)
 		if (ok) cnt2++;
 		//else { cout << "ne brise"; exit(-1); }
 	}
-	if (cnt2 == 10)
+	cout << cnt2 << endl;
+	if (cnt2 == 50)
 		cout << "ok delete" << endl;
-	if (cnt == 10)
+	if (cnt == 50)
 		cout << "OK" << endl;
 	cout << cnt << endl;
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
@@ -674,7 +698,7 @@ void static_test(int k, int p, deque<Student*> &dq)
 
 int main()
 {
-	string fname = "students_50000.csv";
+	string fname = "students_50.csv";
 	
 	vector<vector<string>> content;
 	vector<string> row;
@@ -710,7 +734,7 @@ int main()
 		dq.push_back(stud);
 	}
 	
-	static_test(1000, 25, dq);
+	//static_test(4, 25, dq);
 
 	int k,p;
 	cout << "Unesite broj kljuceva u jednom baketu: "; cin >> k;
