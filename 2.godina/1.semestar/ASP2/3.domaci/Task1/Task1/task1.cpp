@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 #include <queue>
 
 using namespace std;
@@ -24,12 +25,21 @@ public:
 	static const int EMPTY = -1;
 	static const int DELETED = -2;
 	static const int FULL = 0;
-	Bucket(int bs) : bucketSize(bs) {}
+	Bucket(int bs) : bucketSize(bs)
+	{
+		data.resize(bs);
+		mark.resize(bs);
+		for (int i = 0; i < bs;i++)
+		{
+			data[i].second = nullptr;
+			mark[i] = EMPTY;
+		}
+	}
 
 	int getFirstKey()
 	{
 		for (int i = 0; i < data.size();i++)
-			if (mark[i] == FULL)
+			if (mark[i] == FULL || mark[i] == DELETED)
 				return data[i].first;
 		return -1;
 	}
@@ -98,24 +108,6 @@ public:
 		return false;
 	}
 
-	bool full()
-	{
-		return data.size() == bucketSize;
-	}
-
-	bool empty()
-	{
-		return data.size() == 0;
-	}
-
-	void empty_into(vector<pair<int, Student*> >& vec)
-	{
-		for (int i = 0; i < data.size();i++)
-			vec.push_back(make_pair(data[i].first, data[i].second));
-
-		data.clear();
-	}
-
 	int getSize()
 	{
 		return data.size();
@@ -132,54 +124,50 @@ public:
 			else
 				cout << data[i].first << " ";
 		}
-	}
-
-	void moveTo(Bucket* b)
-	{
-		for (int i = 0; i < data.size();i++)
-		{
-			b->addStudent(data[i].first, data[i].second);
-			data[i].second = nullptr;
-		}
+		cout << endl;
 	}
 
 	void clear()
 	{
-		data.clear();
+		//data.clear();
+		for (int i = 0; i < data.size();i++)
+		{
+			delete data[i].second;
+			data[i].second = nullptr;
+			mark[i] = EMPTY;
+		}
 	}
 
 	~Bucket()
 	{
-		for (int i = 0; i < data.size();i++)
-			delete data[i].second;
+		//for (int i = 0; i < data.size();i++)
+		//	delete data[i].second;
 
-		data.clear();
+		clear();
 	}
 };
 
 class HashTable
 {
 	int hashTableSize = 0;
+	int bucketSize = 0;
 	int numberOfKeys = 0;
 	int p;
 	vector<Bucket*> values;
 	SplitSequenceLinearHashing* collisionH = nullptr;
 public:
-	vector<int> keys;
 	friend SplitSequenceLinearHashing;
 	static const int EMPTY = -1;
 	static const int DELETED = 0;
 	static const int FULL = 1;
 
-	HashTable(int k, int p);
-
-	int findKeyPos(int key);
+	HashTable(int k, int p, int bucketSize);
 
 	Student* findKey(int key);
 
 	int originalHash(int key)
 	{
-		return key % (1 << p);
+		return (key % (1 << p)) % hashTableSize;
 	}
 
 	bool insertKey(int key, Student* student);
@@ -211,7 +199,7 @@ public:
 
 	double fillRatio()
 	{
-		return (double)numberOfKeys / hashTableSize * 100.0;
+		return (double)numberOfKeys / (bucketSize* hashTableSize) * 100.0;
 	}
 
 	~HashTable()
@@ -224,18 +212,19 @@ public:
 class AdressFunction
 {
 public:
-	virtual int getAdress(int key, int adr, int attempt, int sz, const HashTable& hastTable) = 0;
+	virtual int getAdress(int key, int adr, int attempt, int sz, const HashTable& hastTable, int step) = 0;
 };
 
 class SplitSequenceLinearHashing : public AdressFunction
 {
-private:
-	int s1, s2;
 public:
+	int s1, s2;
 	SplitSequenceLinearHashing(int s1, int s2) : s1(s1), s2(s2) {}
 
-	int getAdress(int key, int adr, int attempt, int sz, const HashTable& hashTable) override
+	int getAdress(int key, int adr, int attempt, int sz, const HashTable& hashTable, int step) override
 	{
+		return (adr + 1LL * step * attempt) % sz;
+
 		int keyOther = hashTable.values[adr]->getFirstKey();
 		if (keyOther < key)
 			return (1LL * adr + 1LL * s1 * attempt) % sz;
@@ -275,42 +264,14 @@ public:
 	}
 };
 
-HashTable::HashTable(int k, int p) : hashTableSize(k), p(p)
+HashTable::HashTable(int k, int p, int bucketSize) : hashTableSize(k), p(p)
 {
+	this->bucketSize = bucketSize;
 	collisionH = new SplitSequenceLinearHashing(prime1, prime2); // podesi ove korake
-	keys.resize(hashTableSize);
 	values.resize(hashTableSize);
 	for (int i = 0; i < values.size();i++)
-		values[i] = new Bucket(k);
-	for (int i = 0; i < hashTableSize;i++)
-	{
-		keys[i] = EMPTY;
-		values[i] = nullptr;
-	}
+		values[i] = new Bucket(bucketSize);
 }
-
-/*int HashTable::findKeyPos(int key)
-{
-	int att = 0;
-	int adr;
-	do
-	{
-		if (att == 0)
-		{
-			adr = originalHash(key);
-		}
-		else
-		{
-			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
-		}
-
-		if (mark[adr] != EMPTY && mark[adr] != DELETED && keys[adr] == key)
-			return adr;
-
-		att++;
-	} while (mark[adr] != EMPTY && att < hashTableSize);
-	return -1;
-}*/
 
 Student* HashTable::findKey(int key)
 {
@@ -324,7 +285,7 @@ Student* HashTable::findKey(int key)
 		}
 		else
 		{
-			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, collisionH->s1);
 		}
 
 		Student* stud = values[adr]->findStudent(key);
@@ -333,6 +294,27 @@ Student* HashTable::findKey(int key)
 
 		att++;
 	} while (!values[adr]->allEmpty() && att < hashTableSize);
+
+	att = 0;
+	do
+	{
+		if (att == 0)
+		{
+			adr = originalHash(key);
+		}
+		else
+		{
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, collisionH->s2);
+		}
+
+		Student* stud = values[adr]->findStudent(key);
+		if (stud != nullptr)
+			return stud;
+
+		att++;
+	} while (!values[adr]->allEmpty() && att < hashTableSize);
+
+
 	return nullptr;
 }
 
@@ -348,11 +330,29 @@ bool HashTable::deleteKey(int key)
 		}
 		else
 		{
-			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, collisionH->s1);
 		}
 
 		if (values[adr]->removeStudent(key))
-			true;
+			return true;
+
+		att++;
+	} while (!values[adr]->allEmpty() && att < hashTableSize);
+
+	att = 0;
+	do
+	{
+		if (att == 0)
+		{
+			adr = originalHash(key);
+		}
+		else
+		{
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, collisionH->s2);
+		}
+
+		if (values[adr]->removeStudent(key))
+			return true;
 
 		att++;
 	} while (!values[adr]->allEmpty() && att < hashTableSize);
@@ -364,9 +364,8 @@ void HashTable::clear()
 {
 	for (int i = 0; i < hashTableSize;i++)
 	{
-		keys[i] = EMPTY;
 		delete values[i];
-		values[i] = new Bucket(hashTableSize);
+		values[i] = new Bucket(bucketSize);
 	}
 	numberOfKeys = 0;
 }
@@ -375,6 +374,7 @@ bool HashTable::insertKey(int key, Student* student)
 {
 	int att = 0;
 	int adr;
+	int step = -1;
 	do
 	{
 		if (att == 0)
@@ -383,7 +383,7 @@ bool HashTable::insertKey(int key, Student* student)
 		}
 		else
 		{
-			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this);
+			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, step);
 		}
 
 		if (values[adr]->addStudent(key,student))
@@ -392,6 +392,12 @@ bool HashTable::insertKey(int key, Student* student)
 			//values[adr] = student;
 			numberOfKeys++;
 			return true;
+		}
+		else if (att == 0)
+		{
+			int keyOther = values[adr]->getFirstKey();
+			if (keyOther < key) step = collisionH->s1;
+			else step = collisionH->s2;
 		}
 
 		att++;
@@ -415,7 +421,12 @@ void printMenu()
 
 int main()
 {
-	string fname = "students_10.csv";
+	std::clock_t start;
+	double duration;
+
+	start = std::clock();
+
+	string fname = "students_100000.csv";
 
 	vector<vector<string>> content;
 	vector<string> row;
@@ -450,11 +461,40 @@ int main()
 		dq.push_back(stud);
 	}
 	cout << "gotovo" << endl;
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
 	HashTable* hashTable = nullptr;
-	int k, p;
-	cout << "Uneti parametar p: ";
-	cin >> p;
-	hashTable = new HashTable(1 << p, p);
+	int k, p, bs;
+	//cout << "Uneti parametar p: "; cin >> p;
+	//cout << "Unesite velicinu tabele: "; cin >> k;
+	//cout << "Velicina baketa: "; cin >> bs;
+	k = 100000;
+	p = 20;
+	bs = 10;
+	hashTable = new HashTable(k, p, bs);
+	vector<int> keys;
+	while (!dq.empty())
+	{
+		Student* stud = dq.front();
+		dq.pop_front();
+		hashTable->insertKey(stud->getIndeks(), stud);
+		keys.push_back(stud->getIndeks());
+	}
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	cout << hashTable->keyCount() << endl;
+	
+	int cnt = 0;
+	for (int i = 0; i < keys.size();i++)
+	{
+		Student* ok = hashTable->findKey(keys[i]);
+		if (ok != nullptr) cnt++;
+	}
+	if (cnt == 100000)
+		cout << "OK" << endl;
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	return 0;
 	while (1)
 	{
 		printMenu();

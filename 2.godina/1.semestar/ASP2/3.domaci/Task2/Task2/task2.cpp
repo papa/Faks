@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <algorithm>
+#include <ctime>
 
 using namespace std;
 
@@ -120,11 +122,16 @@ public:
 
 	void moveTo(Bucket* b)
 	{
-		for (int i = 0; i < data.size();i++)
+		cout << data.size() << endl;
+		int x = data.size();
+		//system("pause");
+		for (int i = 0; i < x;i++)
 		{
+			cout << i << " " << x << endl;
 			b->addStudent(data[i].first, data[i].second);
 			data[i].second = nullptr;
 		}
+		data.clear();
 	}
 
 	void clear()
@@ -229,12 +236,16 @@ public:
 	{
 		vector<int> hashes;
 
+		int mini = 1e9;
+		int maks = -1;
 		for (int i = 0; i < vec.size();i++)
 		{
-			cout << "data student " << endl;
-			cout << vec[i].first << endl;
-			cout << indexOfBucket(vec[i].first) << endl;
+			//cout << "data student " << endl;
+			//cout << vec[i].first << endl;
+			//cout << indexOfBucket(vec[i].first) << endl;
 			hashes.push_back(indexOfBucket(vec[i].first));
+			maks = max(indexOfBucket(vec[i].first), maks);
+			mini = min(indexOfBucket(vec[i].first), mini);
 		}
 
 		bool flag = false;
@@ -247,7 +258,7 @@ public:
 		if (!flag)
 			return true;
 
-		while (high - low > 0 && allHashesInRange(low, high, hashes))
+		/*while (high - low > 0 && allHashesInRange(low, high, hashes))
 		{
 			int mid = (low + high) >> 1;
 			if (allHashesInRange(low, mid, hashes))
@@ -271,6 +282,32 @@ public:
 					buckets[i] = newBucket;
 				return false;
 			}
+		}*/
+
+		while (high - low > 0 && mini>=low && maks <= high)
+		{
+			int mid = (low + high) >> 1;
+			if (mini >= low && maks <= mid)
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = mid + 1; i <= high;i++)
+					buckets[i] = newBucket;
+				high = mid;
+			}
+			else if(mini >= mid + 1 && maks <= high)
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = low; i <= mid;i++)
+					buckets[i] = newBucket;
+				low = mid + 1;
+			}
+			else
+			{
+				Bucket* newBucket = new Bucket(numOfKeysInBucket);
+				for (int i = low; i <= mid;i++)
+					buckets[i] = newBucket;
+				return false;
+			}
 		}
 		
 		return false;
@@ -281,10 +318,10 @@ public:
 		vector<pair<int, Student*> > dataHash;
 		buckets[low]->empty_into(dataHash);
 		dataHash.push_back(make_pair(key, student));
-		cout <<  "size " << dataHash.size() << endl;
+		//cout <<  "size " << dataHash.size() << endl;
 		while (allHashesSame(dataHash, low, high))
 		{
-			cout << "expanindg all hashes same " << endl;
+			//cout << "expanindg all hashes same " << endl;
 			expandTable();
 			low = low << 1;
 			high = (high << 1) + 1;
@@ -305,7 +342,7 @@ public:
 		if (low == high)
 		{
 			expandTable();
-			cout << *this << endl;
+			//cout << *this << endl;
 			index = indexOfBucket(key);
 			bounds = findBounds(index);
 			addSplitted(bounds.first, bounds.second, key, student);
@@ -322,7 +359,7 @@ public:
 			return false;
 
 		int index = indexOfBucket(key);
-		cout << "index " << index << endl;
+		//cout << "index " << index << endl;
 		if(buckets[index]->full())
 		{
 			split(index, key, student);
@@ -354,7 +391,7 @@ public:
 
 	void shrinkTable()
 	{
-		cout << "shrinking" << endl;
+		//cout << "shrinking" << endl;
 		d--;
 		vector<Bucket*> newBuckets(1 << d);
 		for (int i = 0; i < newBuckets.size();i++)
@@ -373,8 +410,9 @@ public:
 
 	bool canMergeLeft(int index)
 	{
-		cout << "ovde sam" << endl;
-		cout << index << endl;
+		//cout << "left" << endl;
+		//cout << "ovde sam" << endl;
+		//cout << index << endl;
 		if (index == 0) return false;
 		pair<int, int> bounds = findBounds(index);
 		if (bounds.first == 0) return false;
@@ -382,19 +420,22 @@ public:
 		int sz1 = bounds.second - bounds.first + 1;
 		int sz2 = boundsLeft.second - boundsLeft.first + 1;
 
-		cout << "bounds" << endl;
-		cout << bounds.first << " " << bounds.second << endl;
-		cout << boundsLeft.first << " " << boundsLeft.second << endl;
+		//cout << "bounds" << endl;
+		//cout << bounds.first << " " << bounds.second << endl;
+		//cout << boundsLeft.first << " " << boundsLeft.second << endl;
 
 		if (sz1 != sz2)
 			return false;
 
+		if(sz1 == (1 << (d-1)))
+			return false;
+
 		if (sz1 == 1 && index % 2 == 0)
 			return false;
-
-		if (bounds.first / (1 << (d - 1)) != boundsLeft.first / (1 << (d - 1)))
+		int mod = 2*sz1;
+		if (bounds.first / mod != boundsLeft.first / mod)
 			return false;
-
+		
 		if (buckets[bounds.first]->getSize() + buckets[boundsLeft.first]->getSize() > numOfKeysInBucket)
 			return false;
 
@@ -405,36 +446,51 @@ public:
 		for (int i = boundsLeft.first;i <= boundsLeft.second;i++)
 			buckets[i] = buckets[bounds.first];
 
-		cout << "izaso" << endl;
+		//cout << "izaso" << endl;
 
 		return true;
 	}
 
 	bool canMergeRight(int index)
 	{
+		//cout << "right" << endl;
 		if (index == (1 << d) - 1) return false;
 		pair<int, int> bounds = findBounds(index);
+		//cout << "bounds1" << endl;
 		if (bounds.second == (1 << d) - 1) return false;
 		pair<int, int> boundsRight = findBounds(bounds.second + 1);
+		//cout << "bounds2" << endl;
 		int sz1 = bounds.second - bounds.first + 1;
 		int sz2 = boundsRight.second - boundsRight.first + 1;
 
 		if (sz1 != sz2)
 			return false;
 
+		if (sz1 == (1 << (d - 1)))
+			return false;
+
 		if (sz1 == 1 && index % 2 ==1)
 			return false;
-
-		if (bounds.first / (1 << (d - 1)) != boundsRight.first / (1 << (d - 1)))
+		//cout << "ajde mod" << endl;
+		int mod = 2*sz1;
+		cout << mod << endl;
+		cout << bounds.first << " " << boundsRight.first << endl;
+		if (bounds.first / mod != boundsRight.first / mod)
 			return false;
-
+		//cout << "modovao" << endl;
 		if (buckets[bounds.first]->getSize() + buckets[boundsRight.first]->getSize() > numOfKeysInBucket)
 			return false;
-
-		buckets[boundsRight.first]->moveTo(buckets[bounds.first]);
-
+		//cout << "prebacujem..." << endl;
+		vector<pair<int, Student*> > vec;
+		buckets[boundsRight.first]->empty_into(vec);
+		//cout << "ispraznio" << endl;
+		for (int i = 0; i < vec.size();i++)
+			buckets[bounds.first]->addStudent(vec[i].first, vec[i].second);
+		//buckets[boundsRight.first]->moveTo(buckets[bounds.first]);
+		//cout << "prebacio" << endl;
 		delete buckets[boundsRight.first];
 
+		//cout << "iteriram" << endl;
 		for (int i = boundsRight.first;i <= boundsRight.second;i++)
 			buckets[i] = buckets[bounds.first];
 
@@ -443,14 +499,18 @@ public:
 
 	bool merge()
 	{
+		//cout << "d " << d << endl;
 		bool merged = false;
 		for (int i = 0; i < buckets.size();i++)
 		{
+			if (i > 0 && buckets[i] == buckets[i - 1]) 
+				continue;
 			if (canMergeLeft(i))
 				merged = true;
 			else if (canMergeRight(i))
 				merged = true;
 		}
+		cout << merged << endl;
 		return merged;
 	}
 
@@ -461,11 +521,17 @@ public:
 			if (d == 1) return;
 			while (merge())
 			{
-				cout << *this << endl;
+				//cout << "merging" << endl;
+				//cout << *this << endl;
 			}
-			cout << "zavrsio" << endl;
+			//cout << "zavrsio" << endl;
+
 			if (shouldShrink())
+			{
+				//cout << "old d " << d << endl;
 				shrinkTable();
+				//cout << "new d " << d << endl;
+			}
 			else
 				break;
 		}
@@ -474,16 +540,22 @@ public:
 	bool deleteKey(int key)
 	{
 		int index = indexOfBucket(key);
-		cout << index << endl;
+		//cout << index << endl;
 		bool ret = buckets[index]->removeStudent(key);
 		if (!ret)
+		{
+			//cout << "nema ga " << key << endl;
+			//buckets[index]->print();
 			return false;
-
+		}
+		//cout << "ovde" << endl;
+		//cout << hashTableSize << endl;
 		if (buckets[index]->empty())
 		{
+			//cout << "trying" << endl;
 			tryMerging();
 		}
-
+		//cout << *this << endl;
 		return true;
 	}
 
@@ -517,9 +589,8 @@ public:
 		for (int i = 0; i < hashTable.hashTableSize;i++)
 		{
 			cout << "pos " << i << endl;
-			if (hashTable.buckets[i] == nullptr) cout << "nullptr" << endl;
-			else hashTable.buckets[i]->print();
-
+			if(i == hashTable.hashTableSize -1 || hashTable.buckets[i] != hashTable.buckets[i+1]) 
+				hashTable.buckets[i]->print();
 		}
 		return os;
 	}
@@ -550,10 +621,61 @@ void printMenu()
 	cout << "Uneti izbor: " << endl;
 }
 
+void static_test(int k, int p, deque<Student*> &dq)
+{
+	int start = clock();
+	cout << "gotovo" << endl;
+	int duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+
+	HashTable* hashTable = new HashTable(k, p);
+	vector<int> keys;
+	int cntx = 0;
+	while (!dq.empty())
+	{
+		cntx++;
+		//cout << cntx << endl;
+		Student* stud = dq.front();
+		dq.pop_front();
+		hashTable->insertKey(stud->getIndeks(), stud);
+		keys.push_back(stud->getIndeks());
+	}
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	cout << hashTable->keyCount() << endl;
+
+	int cnt = 0;
+	for (int i = 0; i < keys.size();i++)
+	{
+		//cout << i << endl;
+		Student* ok = hashTable->findKey(keys[i]);
+		if (ok != nullptr) cnt++;
+	}
+	//cout << *hashTable << endl;
+	int cnt2 = 0;
+	for (int i = 0; i < keys.size();i++)
+	{
+		cout << i << endl;
+		bool ok = hashTable->deleteKey(keys[i]);
+		//cout << *hashTable << endl;
+		if (ok) cnt2++;
+		//else { cout << "ne brise"; exit(-1); }
+	}
+	if (cnt2 == 10)
+		cout << "ok delete" << endl;
+	if (cnt == 10)
+		cout << "OK" << endl;
+	cout << cnt << endl;
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << duration << endl;
+	cout << *hashTable << endl;
+	exit(0);
+}
+
 int main()
 {
-	string fname = "students_5.csv";
-
+	string fname = "students_50000.csv";
+	
 	vector<vector<string>> content;
 	vector<string> row;
 	string line, word;
@@ -575,25 +697,26 @@ int main()
 	else
 		cout << "Nije moguce otvoriti fajl" << endl;
 
-	queue<Student*> q;
+	deque<Student*> dq;
 
 	for (int i = 1; i < content.size();i++)
 	{
-		cout << content[i][0] << endl;
+		//cout << content[i][0] << endl;
 		int indeks = stoi(content[i][0]);
 		string ime = content[i][1];
 		vector<string> vec;
 		if (content[i].size() > 2) vec.push_back(content[i][2]);
 		Student* stud = new Student(indeks, ime, vec);
-		q.push(stud);
+		dq.push_back(stud);
 	}
+	
+	static_test(1000, 25, dq);
 
-	int k;
+	int k,p;
 	cout << "Unesite broj kljuceva u jednom baketu: "; cin >> k;
-	cout << "Unesite stepen p : "; int p; cin >> p;
-	//cout << "Unesite pocetnu dubinu tabele: "; int d;cin >> d;
+	cout << "Unesite stepen p : "; cin >> p;
+	//cout << "Unesite pocetnu dubinu tabele: "; cin >> d;
 	HashTable* hashTable = new HashTable(k, p);
-
 	while (1)
 	{
 		printMenu();
@@ -601,14 +724,14 @@ int main()
 		if (izb == 1)
 		{
 			cout << "Izabrali ste ubacivanje studenta" << endl;
-			if (q.empty())
+			if (dq.empty())
 			{
 				cout << "Nema vise studenata" << endl;
 			}
 			else
 			{
-				Student* stud = q.front();
-				q.pop();
+				Student* stud = dq.front();
+				dq.pop_front();
 				hashTable->insertKey(stud->getIndeks(), stud);
 			}
 		}
