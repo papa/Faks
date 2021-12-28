@@ -17,10 +17,10 @@ D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(14): message :  
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(236,21): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(251,20): warning C4018:  '<': signed/unsigned mismatch
 D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(262,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(430,15): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(432,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(436,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(441,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(478,20): warning C4018:  '<': signed/unsigned mismatch
-D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(449,9): warning C4101:  'duration': unreferenced local variable
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(433,15): warning C4244:  'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(435,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(439,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(444,36): warning C4244:  '=': conversion from 'double' to 'int', possible loss of data
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(481,20): warning C4018:  '<': signed/unsigned mismatch
+D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Task1\task1.cpp(452,9): warning C4101:  'duration': unreferenced local variable
   Task1.vcxproj -> D:\Faks\2.godina\1.semestar\ASP2\3.domaci\Task1\Debug\Task1.exe

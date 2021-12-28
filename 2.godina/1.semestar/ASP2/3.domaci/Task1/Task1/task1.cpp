@@ -39,7 +39,7 @@ public:
 	int getFirstKey()
 	{
 		for (int i = 0; i < data.size();i++)
-			if (mark[i] == FULL || mark[i] == DELETED)
+			if (mark[i] == FULL)
 				return data[i].first;
 		return -1;
 	}
@@ -382,6 +382,9 @@ bool HashTable::insertKey(int key, Student* student)
 			adr = collisionH->getAdress(key, adr, att, hashTableSize, *this, step);
 		}
 		
+		if (values[adr]->findKey(key))
+			return false;
+
 		if (values[adr]->addStudent(key,student))
 		{
 			numberOfKeys++;
