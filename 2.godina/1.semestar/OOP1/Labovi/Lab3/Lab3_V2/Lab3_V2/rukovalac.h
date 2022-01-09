@@ -1,0 +1,16 @@
+#ifndef _rukovalac_h_
+#define _rukovalac_h_
+
+class Posiljka;
+
+class Rukovalac
+{
+public:
+	Rukovalac() = default;
+
+	virtual void obradiPosiljku(Posiljka& p) = 0;
+
+	static void rukujPosiljkom(Posiljka& p, int dani, double cena);
+};
+
+#endif

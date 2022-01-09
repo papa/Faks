@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\pavle.DESKTOP-95D95E9\source\repos\Lab3_V4\Lab3_V4\mec.h(10): warning C4091: 'static ': ignored on left of 'Mec::ISHOD' when no variable is declared
+  Lab3_V4.vcxproj -> C:\Users\pavle.DESKTOP-95D95E9\source\repos\Lab3_V4\Debug\Lab3_V4.exe
