@@ -16,6 +16,11 @@ void ElektronskaPorukaSaTekstom::posaljiPoruku()
 	stanjePoruke = stanje::POSLATA;
 }
 
+ElektronskaPoruka* ElektronskaPorukaSaTekstom::kopiraj() const
+{
+	return new ElektronskaPorukaSaTekstom(*this);
+}
+
 void ElektronskaPorukaSaTekstom::postaviTekst(const string& tekst)
 {
 	if (stanjePoruke == stanje::POSLATA) throw GPoslataPoruka();

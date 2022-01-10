@@ -25,6 +25,8 @@ public:
 	ElektronskaPoruka(const ElektronskaPoruka& ep) = default;
 	ElektronskaPoruka& operator = (const ElektronskaPoruka& ep) = default;
 
+	virtual ElektronskaPoruka* kopiraj() const = 0;
+
 	virtual void posaljiPoruku() = 0;
 
 	friend ostream& operator << (ostream& os, const ElektronskaPoruka& ep);

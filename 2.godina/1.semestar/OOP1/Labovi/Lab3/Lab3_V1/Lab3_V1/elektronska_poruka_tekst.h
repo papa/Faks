@@ -18,7 +18,12 @@ protected:
 public:
 	ElektronskaPorukaSaTekstom(Korisnik& pos, Korisnik& prim, const string& nasl);
 
+	ElektronskaPorukaSaTekstom(const ElektronskaPorukaSaTekstom& ep) = default;
+	ElektronskaPorukaSaTekstom& operator = (ElektronskaPorukaSaTekstom&& ep) = default;
+
 	void posaljiPoruku() override;
+
+	ElektronskaPoruka* kopiraj() const override;
 
 	void postaviTekst(const string& tekst);
 
