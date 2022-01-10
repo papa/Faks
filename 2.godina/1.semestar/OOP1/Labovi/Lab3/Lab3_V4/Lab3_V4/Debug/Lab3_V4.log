@@ -1,1 +1,5 @@
-﻿  Lab3_V4.vcxproj -> D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V4\Debug\Lab3_V4.exe
+﻿  mec.cpp
+  tim.cpp
+  Generating Code...
+D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V4\Lab3_V4\mec.h(10): warning C4091:  'static ': ignored on left of 'Mec::ISHOD' when no variable is declared
+  Lab3_V4.vcxproj -> D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V4\Debug\Lab3_V4.exe

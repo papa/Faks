@@ -25,8 +25,10 @@ void Mec::uvecajVrednost(Tim& t)
 {
 	for (int i = 0; i < t.getKap();i++)
 	{
-		if (t[i])
+		if (t[i] != nullptr)
+		{
 			t[i]->povecajVrednost(10);
+		}
 	}
 }
 
@@ -34,8 +36,10 @@ void Mec::smanjiVrednost(Tim& t)
 {
 	for (int i = 0; i < t.getKap();i++)
 	{
-		if (t[i])
+		if (t[i] != nullptr)
+		{
 			t[i]->smanjiVrednost(10);
+		}
 	}
 }
 
@@ -43,6 +47,7 @@ void Mec::odigrajMec()
 {
 	double v1 = timovi.getPrvi()->getSrednjaVrednostTima();
 	double v2 = timovi.getDrugi()->getSrednjaVrednostTima();
+	cout << v1 << " " << v2 << endl;
 	if (v1 > v2)
 	{
 		ishod = POBEDA_DOMACIN;

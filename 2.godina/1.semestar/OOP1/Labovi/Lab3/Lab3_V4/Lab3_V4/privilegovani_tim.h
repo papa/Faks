@@ -21,7 +21,7 @@ public:
 	PrivilegovaniTim& operator = (const PrivilegovaniTim& pt);
 	PrivilegovaniTim& operator = (PrivilegovaniTim&& pt);
 
-	void prikljuciIgraca(Igrac* igrac, int pos) override;
+	void prikljuciIgraca(Igrac& igrac, int pos) override;
 
 	virtual ~PrivilegovaniTim();
 };

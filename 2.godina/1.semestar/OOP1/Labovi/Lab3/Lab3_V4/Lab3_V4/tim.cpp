@@ -23,7 +23,7 @@ void Tim::kopiraj(const Tim& t)
 	naziv = t.naziv;
 	igraci = new Igrac * [maksBrIgraca];
 	for (int i = 0; i < maksBrIgraca; i++)
-		igraci[i] = t.igraci[i];
+		igraci[i] = new Igrac(*t.igraci[i]);
 }
 
 void Tim::premesti(Tim& t)
@@ -75,20 +75,17 @@ Tim& Tim::operator=(Tim&& t)
 
 Igrac* Tim::operator[](int pos)
 {
-	pos--;
 	return igraci[pos];
 }
 
 const Igrac* Tim::operator[](int pos) const
 {
-	pos--;
 	return igraci[pos];
 }
 
-void Tim::prikljuciIgraca(Igrac* igrac, int pos)
+void Tim::prikljuciIgraca(Igrac& igrac, int pos)
 {
-	pos--;
-	igraci[pos] = igrac;
+	igraci[pos] = new Igrac(igrac);
 }
 
 int Tim::getTrenutniBrojIgraca() const
@@ -124,6 +121,11 @@ int Tim::getKap() const
 
 Tim::~Tim()
 {
+	for (int i = 0; i < maksBrIgraca;i++)
+	{
+		delete igraci[i];
+		igraci[i] = nullptr;
+	}
 	delete[] igraci;
 }
 

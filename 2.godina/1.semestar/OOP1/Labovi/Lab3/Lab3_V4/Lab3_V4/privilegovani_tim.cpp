@@ -38,9 +38,9 @@ PrivilegovaniTim& PrivilegovaniTim::operator=(PrivilegovaniTim&& pt)
 	return *this;
 }
 
-void PrivilegovaniTim::prikljuciIgraca(Igrac* igrac, int pos)
+void PrivilegovaniTim::prikljuciIgraca(Igrac& igrac, int pos)
 {
-	if (igrac->getVrednost() < minVrednost) throw GMinVrednost();
+	if (igrac.getVrednost() < minVrednost) throw GMinVrednost();
 	Tim::prikljuciIgraca(igrac, pos);
 }
 

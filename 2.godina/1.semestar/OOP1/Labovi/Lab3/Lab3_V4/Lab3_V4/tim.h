@@ -28,7 +28,7 @@ public:
 	Igrac* operator [] (int pos);
 	const Igrac* operator [] (int pos) const;
 
-	virtual void prikljuciIgraca(Igrac* igrac, int pos);
+	virtual void prikljuciIgraca(Igrac& igrac, int pos);
 
 	int getTrenutniBrojIgraca() const;
 
