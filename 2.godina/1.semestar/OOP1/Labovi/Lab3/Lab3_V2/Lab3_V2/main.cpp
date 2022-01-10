@@ -32,18 +32,14 @@ void testPosiljka()
 	Posiljka p(a1);
 
 	Prodavac* p1 = new Prodavac("Naziv prodavca");
-	tuple<Artikal*, int, double> tup = make_tuple(&a1, 200, 10);
-	p1->dodajUKatalog(tup);
-	tup = make_tuple(&a2, 200, 15);
-	p1->dodajUKatalog(tup);
+	p1->dodajUKatalog(a1, 200, 10);
+	p1->dodajUKatalog(a2,200,15);
 
 	p += p1;
 
 	Prodavac* p2 = new Prodavac("Naziv prodavca2");
-	tup = make_tuple(&a1, 50, 10);
-	p2->dodajUKatalog(tup);
-	tup = make_tuple(&a1, 50, 15);
-	p2->dodajUKatalog(tup);
+	p2->dodajUKatalog(a1,50,10);
+	p2->dodajUKatalog(a1,50,15);
 
 	p += p2;
 

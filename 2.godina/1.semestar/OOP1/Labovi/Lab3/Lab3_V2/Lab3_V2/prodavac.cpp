@@ -4,9 +4,10 @@
 Prodavac::Prodavac(const string& naz)
 	:naziv(naz) { }
 
-void Prodavac::dodajUKatalog(tuple<Artikal*, double, int> t)
+void Prodavac::dodajUKatalog(const Artikal& a, double m, int d)
 {
-	katalog += t;
+	Trojka tr(a, m, d);
+	katalog += tr;
 }
 
 void Prodavac::obradiPosiljku(Posiljka& p)
@@ -15,15 +16,12 @@ void Prodavac::obradiPosiljku(Posiljka& p)
 	int sDani = 0;
 	int len = katalog.getBrElem();
 	for (int i = 0; i < len; i++)
-	{
-		Artikal* a = nullptr;
-		double cenaTuple;
-		int daniTuple;
-		tie(a, cenaTuple, daniTuple) = katalog[i];
-		if (*a == p.getArtikal())
+	{	
+		Trojka tr = katalog[i];
+		if (tr.art == p.getArtikal())
 		{
-			sDani += daniTuple;
-			sCena += a->getCena() * cenaTuple;
+			sDani += tr.dani;
+			sCena += tr.art.getCena() * tr.marza;
 			break;
 		}
 	}

@@ -13,12 +13,19 @@ using namespace std;
 class Prodavac : public Rukovalac
 {
 protected:
+	struct Trojka
+	{
+		Artikal art;
+		double marza;
+		int dani;
+		Trojka(const Artikal& a, double m, int d) : art(a), marza(m), dani(d) {}
+	};
 	string naziv;
-	Lista<tuple<Artikal*, double, int> > katalog;
+	Lista<Trojka> katalog;
 public:
 	Prodavac(const string& naz);
 
-	void dodajUKatalog(tuple<Artikal*, double, int> t);
+	void dodajUKatalog(const Artikal& a, double m, int d);
 
 	void obradiPosiljku(Posiljka& p) override;
 
