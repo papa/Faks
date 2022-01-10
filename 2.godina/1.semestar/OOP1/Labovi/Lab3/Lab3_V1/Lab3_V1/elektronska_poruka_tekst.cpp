@@ -16,7 +16,7 @@ void ElektronskaPorukaSaTekstom::posaljiPoruku()
 	stanjePoruke = stanje::POSLATA;
 }
 
-ElektronskaPoruka* ElektronskaPorukaSaTekstom::kopiraj() const
+ElektronskaPorukaSaTekstom* ElektronskaPorukaSaTekstom::kopiraj() const
 {
 	return new ElektronskaPorukaSaTekstom(*this);
 }

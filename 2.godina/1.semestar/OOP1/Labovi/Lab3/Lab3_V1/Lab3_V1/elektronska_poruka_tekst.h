@@ -23,7 +23,7 @@ public:
 
 	void posaljiPoruku() override;
 
-	ElektronskaPoruka* kopiraj() const override;
+	ElektronskaPorukaSaTekstom* kopiraj() const override;
 
 	void postaviTekst(const string& tekst);
 
