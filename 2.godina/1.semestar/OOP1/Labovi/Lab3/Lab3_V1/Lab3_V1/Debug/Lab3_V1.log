@@ -1,3 +1,6 @@
-﻿  elektronska_poruka.cpp
+﻿  elektronska_poruka_tekst.cpp
+  main.cpp
+D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V1\Lab3_V1\elektronska_poruka.h(17): warning C4091:  'static ': ignored on left of 'ElektronskaPoruka::stanje' when no variable is declared
+  Generating Code...
 D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V1\Lab3_V1\elektronska_poruka.h(17): warning C4091:  'static ': ignored on left of 'ElektronskaPoruka::stanje' when no variable is declared
   Lab3_V1.vcxproj -> D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V1\Debug\Lab3_V1.exe

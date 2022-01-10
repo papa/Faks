@@ -25,13 +25,13 @@ void testLista()
 	for (l.naPrvi(); l.imaTek(); l.naSledeci())
 		cout << l.getTek() << " ";
 
-	//cout << l.getTek() << endl;
+	//cout << l.getTek() << endl; //za izuzetak
 }
 
 void testKorisnik()
 {
 	Korisnik k1("Ime1", "Email1");
-	//Korisnik k2 = k1;
+	//Korisnik k2 = k1; // ne moze kopiranje
 	cout << k1.getIme() << endl;
 	cout << k1.getMail() << endl;
 	cout << k1 << endl; 
@@ -52,16 +52,11 @@ void testPoruka()
 	poruka.postaviTekst("Tekst poruke");
 	poruka.posaljiPoruku();
 	cout << poruka << endl;
-	ElektronskaPorukaSaTekstom poruka2 = poruka;
-	cout << poruka2 << endl;
-	poruka.postaviTekst("Tekst poruke 2");
+	poruka.postaviTekst("Tekst poruke 2"); // za izuzetak
 }
 
 void staticTest()
 {
-	//testLista();
-	//testKorisnik();
-	//testVreme();
 	testPoruka();
 }
 
