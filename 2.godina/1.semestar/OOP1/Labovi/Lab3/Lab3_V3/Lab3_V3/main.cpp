@@ -48,10 +48,10 @@ void testTacka()
 void testPut()
 {
 	Put put;
-	Tacka* t1p = new Tacka(1, 2);
-	Tacka* t2p = new Tacka(5, 2);
-	Tacka* t3p = new Tacka(5, 5);
-	Tacka* t4p = new Tacka(5, 2);
+	Tacka t1p = Tacka(1, 2);
+	Tacka t2p = Tacka(5, 2);
+	Tacka t3p = Tacka(5, 5);
+	Tacka t4p = Tacka(5, 2);
 
 	put += t1p;
 	put += t2p;

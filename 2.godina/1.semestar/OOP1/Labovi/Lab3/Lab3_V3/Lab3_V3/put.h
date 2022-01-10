@@ -8,13 +8,13 @@
 
 class Put
 {
-	Lista<const Tacka*> tacke;
+	Lista<Tacka> tacke;
 	
 	void pisi(ostream& os) const;
 public:
 	Put() = default;
 
-	Put& operator += (const Tacka* t);
+	Put& operator += (const Tacka& t);
 
 	double duzinaPuta() const;
 

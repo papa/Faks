@@ -1,7 +1,3 @@
 ﻿  main.cpp
-  put.cpp
-  vozilo.cpp
-  Generating Code...
-C:\Users\pavle.DESKTOP-95D95E9\source\repos\Lab3_V3\Lab3_V3\put.cpp(25): warning C4715: 'Put::operator+=': not all control paths return a value
-C:\Users\pavle.DESKTOP-95D95E9\source\repos\Lab3_V3\Lab3_V3\lista.h(57): warning C4715: 'Lista<Tacka const *>::operator[]': not all control paths return a value
-  Lab3_V3.vcxproj -> C:\Users\pavle.DESKTOP-95D95E9\source\repos\Lab3_V3\Debug\Lab3_V3.exe
+  D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V3\Lab3_V3\lista.h(57) : warning C4715: 'Lista<int>::operator[]': not all control paths return a value
+  Lab3_V3.vcxproj -> D:\Faks\2.godina\1.semestar\OOP1\Labovi\Lab3\Lab3_V3\Debug\Lab3_V3.exe

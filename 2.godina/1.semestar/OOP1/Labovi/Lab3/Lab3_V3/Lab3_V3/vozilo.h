@@ -22,6 +22,8 @@ public:
 	double cenaPuta(const Put& p) const;
 
 	friend ostream& operator << (ostream& os, const Vozilo& v);
+
+	virtual ~Vozilo();
 };
 
 #endif

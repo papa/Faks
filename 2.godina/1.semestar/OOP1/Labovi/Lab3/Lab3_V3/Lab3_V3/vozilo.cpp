@@ -16,6 +16,10 @@ double Vozilo::cenaPuta(const Put& p) const
 	return p.duzinaPuta() * cenaJed + startnaCena();
 }
 
+Vozilo::~Vozilo()
+{
+}
+
 ostream& operator<<(ostream& os, const Vozilo& v)
 {
 	v.pisi(os);

@@ -2,6 +2,7 @@
 #define _tacka_h_
 
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -12,9 +13,6 @@ class Tacka
 	void pisi(ostream& os) const;
 public:
 	Tacka(int xx, int yy);
-
-	Tacka(const Tacka& t) = default;
-	Tacka& operator = (const Tacka& t) = default;
 
 	friend double dist(const Tacka& t1, const Tacka& t2);
 

@@ -59,7 +59,7 @@ inline const T& Lista<T>::operator[](int pos) const
 template<typename T>
 inline Lista<T>::~Lista()
 {
-
+	brisi();
 }
 
 template<typename T>
@@ -150,18 +150,7 @@ inline Lista<T>& Lista<T>::operator+=(const T& data)
 template<typename T>
 inline T& Lista<T>::operator[](int pos)
 {
-	
 	return const_cast<T&>((const_cast<const Lista&>(*this))[pos]);
-	/*if (pos >= numElem || pos < 0) throw GLosaPozicija();
-	int p = 0;
-	Elem* curr = first;
-	while (curr)
-	{
-		if (p == pos)
-			return curr->data;
-		p++;
-		curr = curr->next;
-	}*/
 }
 
 template<typename T>
