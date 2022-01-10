@@ -25,33 +25,33 @@ void testArtikal()
 
 void testPosiljka()
 {
-	Artikal a1("naziv", 123, 2);
-	Artikal a2("naziv2", 234, 2);
+	Artikal a1("naziv artikla 1", 123, 2);
+	Artikal a2("naziv artikla 2", 234, 2);
 
-	Posiljka p(a1);
+	Posiljka posiljka(a1);
 
 	Prodavac* p1 = new Prodavac("Naziv prodavca");
-	p1->dodajUKatalog(a1, 200, 10);
-	p1->dodajUKatalog(a2,200,15);
+	p1->dodajUKatalog(a2, 200, 10);
+	p1->dodajUKatalog(a1, 200,15);
 
-	p += p1;
+	posiljka += p1;
 
 	Prodavac* p2 = new Prodavac("Naziv prodavca2");
 	p2->dodajUKatalog(a1,50,10);
-	p2->dodajUKatalog(a1,50,15);
 
-	p += p2;
+	posiljka += p2;
 
-	p.izracunajDetaljePosiljke();
+	//Posiljka::Detalji det = posiljka.getDetalji(); // za izuzetak
 
-	cout << p << endl;
+	posiljka.izracunajDetaljePosiljke();
+
+	cout << posiljka << endl;
 	
-	//p += p1;
+	//posiljka += p1; // za izuzetak
 }
 
 void staticTest()
 {
-	testArtikal();
 	testPosiljka();
 }
 

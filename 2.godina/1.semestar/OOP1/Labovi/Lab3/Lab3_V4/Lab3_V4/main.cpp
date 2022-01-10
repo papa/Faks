@@ -27,32 +27,6 @@ void testIgrac()
 	cout << i1.getVrednost() << endl; 
 }
 
-void testTim()
-{
-	Tim tim("Partizan", 5);
-	Igrac i2("Kevin Punter", 99);
-	Igrac i1("Yam Madar", 96);
-	tim.prikljuciIgraca(i1, 1);
-	tim.prikljuciIgraca(i2, 2);
-
-	Tim tim2("Partizan", 5);
-	Igrac i3("Yam Madar", 96);
-	Igrac i4("Kevin Punter", 99);
-	tim2.prikljuciIgraca(i3, 1);
-	tim2.prikljuciIgraca(i4, 2);
-
-	cout << tim << endl;
-	cout << tim2 << endl;
-
-	if (tim == tim2)
-		cout << "Jednaki su" << endl;
-	else
-		cout << "Nisu jednaki" << endl;
-	cout << tim.getTrenutniBrojIgraca() << endl;
-	cout << tim.getSrednjaVrednostTima() << endl;
-	cout << tim[3] << endl;
-}
-
 void testMec()
 {
 	Igrac i1 = Igrac("Kevin Punter", 99);
@@ -87,13 +61,6 @@ void testMec()
 
 	cout << (derbi.daLiJeOdigran() ? "Odigran" : "Nije odigran") << endl;
 
-	//Par<int> bodovi = derbi.getPoeni();
-
-	Par<Tim> timovi = derbi.getPar();
-	Par<Tim> timovi2(tim1, tim2);
-	if (timovi == timovi2)
-		cout << "Jednaki" << endl;
-
 	derbi.odigrajMec();
 
 	Par<int> bodovi = derbi.getPoeni();
@@ -101,14 +68,27 @@ void testMec()
 
 	cout << derbi << endl;
 
+	Tim* tim3 = new Tim("Partizan 2", 5);
+	tim3->prikljuciIgraca(i1, 0);
+	tim3->prikljuciIgraca(i2, 1);
+	tim3->prikljuciIgraca(i3, 2);
+	tim3->prikljuciIgraca(i4, 3);
+	tim3->prikljuciIgraca(i5, 4);
+
+	Mec mec(tim3, tim1);
+
+	//bodovi = mec.getPoeni(); // za izuzetak
+
+	mec.odigrajMec();
+
+	cout << mec << endl;
+
 	delete tim1;
 	delete tim2;
 }
 
 void staticTest()
 {
-	//testIgrac();
-	//testTim();
 	testMec();
 }
 
