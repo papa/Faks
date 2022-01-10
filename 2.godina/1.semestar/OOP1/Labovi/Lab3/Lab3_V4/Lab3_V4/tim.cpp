@@ -14,6 +14,11 @@ void Tim::pisi(ostream& os) const
 
 void Tim::brisi()
 {
+	for (int i = 0; i < maksBrIgraca;i++)
+	{
+		delete igraci[i];
+		igraci[i] = nullptr;
+	}
 	delete[] igraci;
 }
 
@@ -75,7 +80,7 @@ Tim& Tim::operator=(Tim&& t)
 
 Igrac* Tim::operator[](int pos)
 {
-	return igraci[pos];
+	return const_cast<Igrac*>((const_cast<const Tim&>(*this))[pos]);
 }
 
 const Igrac* Tim::operator[](int pos) const
@@ -85,15 +90,18 @@ const Igrac* Tim::operator[](int pos) const
 
 void Tim::prikljuciIgraca(Igrac& igrac, int pos)
 {
-	igraci[pos] = new Igrac(igrac);
+	delete igraci[pos];
+	igraci[pos] = new Igrac(igrac);	
 }
 
 int Tim::getTrenutniBrojIgraca() const
 {
 	int br = 0;
 	for (int i = 0; i < maksBrIgraca;i++)
+	{
 		if (igraci[i])
 			br++;
+	}
 	return br;
 }
 
@@ -121,12 +129,7 @@ int Tim::getKap() const
 
 Tim::~Tim()
 {
-	for (int i = 0; i < maksBrIgraca;i++)
-	{
-		delete igraci[i];
-		igraci[i] = nullptr;
-	}
-	delete[] igraci;
+	brisi();
 }
 
 bool operator==(const Tim& t1, const Tim& t2)

@@ -60,14 +60,14 @@ void testMec()
 	Igrac i3 =  Igrac("Rade Zagorac", 90);
 	Igrac i4 = Igrac("Zach Leday", 97);
 	Igrac i5 = Igrac("Balsa Koprivica", 93);
-	Tim* tim1 = new PrivilegovaniTim("Partizan", 5, 80);
-
-	tim1->prikljuciIgraca(i1, 1);
-	tim1->prikljuciIgraca(i2, 2);
-	tim1->prikljuciIgraca(i3, 3);
-	tim1->prikljuciIgraca(i4, 4);
-	tim1->prikljuciIgraca(i5, 5);
-
+	Tim* tim1 = new Tim("Partizan", 5);
+	
+	tim1->prikljuciIgraca(i1, 0);
+	tim1->prikljuciIgraca(i2, 1);
+	tim1->prikljuciIgraca(i3, 2);
+	tim1->prikljuciIgraca(i4, 3);
+	tim1->prikljuciIgraca(i5, 4);
+	
 	Igrac i1_2 =  Igrac("Nate Wolters", 98);
 	Igrac i2_2 =  Igrac("Austin Hollins", 95);
 	Igrac i3_2 =  Igrac("Aaron White", 90);
@@ -75,12 +75,12 @@ void testMec()
 	Igrac i5_2 =  Igrac("Nikola Kalinic", 93);
 	Tim* tim2 = new Tim("CZ", 5);
 
-	tim2->prikljuciIgraca(i1_2, 1);
-	tim2->prikljuciIgraca(i2_2, 2);
-	tim2->prikljuciIgraca(i3_2, 3);
-	tim2->prikljuciIgraca(i4_2, 4);
-	tim2->prikljuciIgraca(i5_2, 5);
-
+	tim2->prikljuciIgraca(i1_2, 0);
+	tim2->prikljuciIgraca(i2_2, 1);
+	tim2->prikljuciIgraca(i3_2, 2);
+	tim2->prikljuciIgraca(i4_2, 3);
+	tim2->prikljuciIgraca(i5_2, 4);
+	
 	Mec derbi(tim1, tim2);
 
 	cout << derbi << endl;
@@ -100,6 +100,9 @@ void testMec()
 	cout << bodovi << endl;
 
 	cout << derbi << endl;
+
+	delete tim1;
+	delete tim2;
 }
 
 void staticTest()

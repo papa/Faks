@@ -26,15 +26,21 @@ PrivilegovaniTim::PrivilegovaniTim(PrivilegovaniTim&& t)
 
 PrivilegovaniTim& PrivilegovaniTim::operator=(const PrivilegovaniTim& pt)
 {
-	Tim::operator=(pt);
-	minVrednost = pt.minVrednost;
+	if (this != &pt) 
+	{
+		Tim::operator=(pt);
+		minVrednost = pt.minVrednost;
+	}
 	return *this;
 }
 
 PrivilegovaniTim& PrivilegovaniTim::operator=(PrivilegovaniTim&& pt)
 {
-	Tim::operator=(pt);
-	minVrednost = pt.minVrednost;
+	if (this != &pt) 
+	{
+		Tim::operator=(pt);
+		minVrednost = pt.minVrednost;
+	}
 	return *this;
 }
 

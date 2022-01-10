@@ -16,8 +16,8 @@ public:
 	T* getPrvi() const;
 	T* getDrugi() const;
 
-	void setPrvi(const T* prvi);
-	void setDrugi(const T* drugi);
+	void setPrvi(T* prvi);
+	void setDrugi(T* drugi);
 
 	friend ostream& operator << (ostream& os, const Par<T>& par)
 	{
@@ -75,13 +75,13 @@ inline T* Par<T>::getDrugi() const
 }
 
 template<typename T>
-inline void Par<T>::setPrvi(const T* prvi)
+inline void Par<T>::setPrvi(T* prvi)
 {
 	first = prvi;
 }
 
 template<typename T>
-inline void Par<T>::setDrugi(const T* drugi)
+inline void Par<T>::setDrugi(T* drugi)
 {
 	second = drugi;
 }
