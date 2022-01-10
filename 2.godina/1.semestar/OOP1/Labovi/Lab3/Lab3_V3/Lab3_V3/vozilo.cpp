@@ -1,6 +1,5 @@
 #include "vozilo.h"
 
-double Vozilo::startnaCena = 120;
 double Vozilo::cenaJed = 0.1;
 void Vozilo::pisi(ostream& os) const
 {
@@ -14,7 +13,7 @@ Vozilo::Vozilo(const string& naz)
 
 double Vozilo::cenaPuta(const Put& p) const
 {
-	return p.duzinaPuta() * cenaJed + startnaCena;
+	return p.duzinaPuta() * cenaJed + startnaCena();
 }
 
 ostream& operator<<(ostream& os, const Vozilo& v)

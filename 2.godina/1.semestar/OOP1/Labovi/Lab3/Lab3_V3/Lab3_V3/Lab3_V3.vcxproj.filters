@@ -27,6 +27,9 @@
     <ClCompile Include="vozilo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="obicno_vozilo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lista.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vozilo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="obicno_vozilo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

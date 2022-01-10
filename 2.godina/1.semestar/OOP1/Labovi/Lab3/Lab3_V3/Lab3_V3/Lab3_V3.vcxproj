@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="obicno_vozilo.cpp" />
     <ClCompile Include="put.cpp" />
     <ClCompile Include="tacka.cpp" />
     <ClCompile Include="vozilo.cpp" />
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="greske.h" />
     <ClInclude Include="lista.h" />
+    <ClInclude Include="obicno_vozilo.h" />
     <ClInclude Include="put.h" />
     <ClInclude Include="tacka.h" />
     <ClInclude Include="vozilo.h" />

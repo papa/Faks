@@ -11,10 +11,11 @@ class Vozilo
 {
 protected:
 	string naziv;
-	static double startnaCena;
 	static double cenaJed;
 
-	void pisi(ostream& os) const;
+	virtual void pisi(ostream& os) const;
+
+	virtual double startnaCena() const = 0;
 public:
 	Vozilo(const string& naz);
 
