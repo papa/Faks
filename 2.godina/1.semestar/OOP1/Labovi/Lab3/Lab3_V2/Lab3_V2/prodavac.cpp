@@ -20,12 +20,11 @@ void Prodavac::obradiPosiljku(Posiljka& p)
 		Trojka tr = katalog[i];
 		if (tr.art == p.getArtikal())
 		{
-			sDani += tr.dani;
-			sCena += tr.art.getCena() * tr.marza;
+			p.detalji.dani += tr.dani;
+			p.detalji.cena += tr.art.getCena() * tr.marza;
 			break;
 		}
 	}
-	Rukovalac::rukujPosiljkom(p, sDani, sCena);
 }
 
 string Prodavac::getNaziv() const

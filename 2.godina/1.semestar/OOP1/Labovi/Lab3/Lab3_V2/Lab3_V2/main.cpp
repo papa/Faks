@@ -4,7 +4,6 @@
 #include "rukovalac.h"
 #include "prodavac.h"
 
-
 using namespace std;
 
 void testArtikal()
@@ -46,7 +45,7 @@ void testPosiljka()
 	p.izracunajDetaljePosiljke();
 
 	cout << p << endl;
-
+	
 	//p += p1;
 }
 

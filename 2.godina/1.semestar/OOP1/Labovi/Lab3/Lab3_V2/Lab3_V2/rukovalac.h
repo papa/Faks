@@ -9,8 +9,6 @@ public:
 	Rukovalac() = default;
 
 	virtual void obradiPosiljku(Posiljka& p) = 0;
-
-	static void rukujPosiljkom(Posiljka& p, int dani, double cena);
 };
 
 #endif

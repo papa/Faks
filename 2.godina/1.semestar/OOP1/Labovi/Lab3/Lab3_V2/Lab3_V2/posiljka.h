@@ -3,12 +3,11 @@
 
 #include "artikal.h"
 #include "lista.h"
+#include "rukovalac.h"
 #include "greske.h"
 #include <iostream>
 
 using namespace std;
-
-class Rukovalac;
 
 class Posiljka
 {
@@ -49,6 +48,7 @@ public:
 	friend ostream& operator << (ostream& os, const Posiljka& p);
 
 	friend Rukovalac;
+	friend class Prodavac;
 };
 
 

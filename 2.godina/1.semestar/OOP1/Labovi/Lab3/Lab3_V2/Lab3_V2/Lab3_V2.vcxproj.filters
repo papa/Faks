@@ -47,8 +47,5 @@
     <ClCompile Include="prodavac.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rukovalac.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

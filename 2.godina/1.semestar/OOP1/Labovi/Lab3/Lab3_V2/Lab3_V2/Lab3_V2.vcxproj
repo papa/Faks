@@ -151,7 +151,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="posiljka.cpp" />
     <ClCompile Include="prodavac.cpp" />
-    <ClCompile Include="rukovalac.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
