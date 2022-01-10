@@ -15,13 +15,11 @@ void Tim::pisi(ostream& os) const
 void Tim::brisi()
 {
 	delete[] igraci;
-	brIgraca = 0;
 }
 
 void Tim::kopiraj(const Tim& t)
 {
 	maksBrIgraca = t.maksBrIgraca;
-	brIgraca = t.brIgraca;
 	naziv = t.naziv;
 	igraci = new Igrac * [maksBrIgraca];
 	for (int i = 0; i < maksBrIgraca; i++)
@@ -31,7 +29,6 @@ void Tim::kopiraj(const Tim& t)
 void Tim::premesti(Tim& t)
 {
 	igraci = t.igraci;
-	brIgraca = t.brIgraca;
 	naziv = t.naziv;
 	maksBrIgraca = t.maksBrIgraca;
 
@@ -76,31 +73,31 @@ Tim& Tim::operator=(Tim&& t)
 	return *this;
 }
 
-Igrac& Tim::operator[](int pos)
+Igrac* Tim::operator[](int pos)
 {
 	pos--;
-	//if (igraci[pos] == nullptr) throw GIgracNijePrikljucen();
-	return *(igraci[pos]);
+	return igraci[pos];
 }
 
-const Igrac& Tim::operator[](int pos) const
+const Igrac* Tim::operator[](int pos) const
 {
 	pos--;
-	//if (igraci[pos] == nullptr) throw GIgracNijePrikljucen();
-	return *(igraci[pos]);
+	return igraci[pos];
 }
 
 void Tim::prikljuciIgraca(Igrac* igrac, int pos)
 {
 	pos--;
-	//if (igraci[pos]) throw GIgracVecPrikljucen();
 	igraci[pos] = igrac;
-	brIgraca++;
 }
 
 int Tim::getTrenutniBrojIgraca() const
 {
-	return brIgraca;
+	int br = 0;
+	for (int i = 0; i < maksBrIgraca;i++)
+		if (igraci[i])
+			br++;
+	return br;
 }
 
 double Tim::getSrednjaVrednostTima() const
@@ -120,22 +117,9 @@ double Tim::getSrednjaVrednostTima() const
 	return sum / cnt;
 }
 
-void Tim::uvecajVrednost(double procenat)
+int Tim::getKap() const
 {
-	for (int i = 0; i < maksBrIgraca; i++)
-	{
-		if (igraci[i])
-			igraci[i]->povecajVrednost(procenat);
-	}
-}
-
-void Tim::smanjiVrednost(double procenat)
-{
-	for (int i = 0; i < maksBrIgraca; i++)
-	{
-		if (igraci[i])
-			igraci[i]->smanjiVrednost(procenat);
-	}
+	return maksBrIgraca;
 }
 
 Tim::~Tim()

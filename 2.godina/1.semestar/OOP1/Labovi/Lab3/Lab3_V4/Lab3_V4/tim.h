@@ -11,8 +11,6 @@ protected:
 	int maksBrIgraca;
 	Igrac** igraci;
 
-	int brIgraca = 0;
-
 	virtual void pisi(ostream& os) const;
 
 	void brisi();
@@ -27,8 +25,8 @@ public:
 	Tim& operator = (const Tim& t);
 	Tim& operator = (Tim&& t);
 
-	Igrac& operator [] (int pos);
-	const Igrac& operator [] (int pos) const;
+	Igrac* operator [] (int pos);
+	const Igrac* operator [] (int pos) const;
 
 	virtual void prikljuciIgraca(Igrac* igrac, int pos);
 
@@ -41,9 +39,7 @@ public:
 
 	friend ostream& operator << (ostream& os, const Tim& t);
 
-	void uvecajVrednost(double procenat);
-
-	void smanjiVrednost(double procenat);
+	int getKap() const;
 
 	virtual ~Tim();
 };

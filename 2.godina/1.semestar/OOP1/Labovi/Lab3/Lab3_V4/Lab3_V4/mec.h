@@ -14,6 +14,9 @@ class Mec
 
 	void pisi(ostream& os) const;
 
+	void uvecajVrednost(Tim& t);
+	void smanjiVrednost(Tim& t);
+
 public:
 	Mec(Tim* tim1, Tim* tim2);
 

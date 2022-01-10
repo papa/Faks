@@ -21,6 +21,24 @@ Par<Tim> Mec::getPar() const
 	return timovi;
 }
 
+void Mec::uvecajVrednost(Tim& t)
+{
+	for (int i = 0; i < t.getKap();i++)
+	{
+		if (t[i])
+			t[i]->povecajVrednost(10);
+	}
+}
+
+void Mec::smanjiVrednost(Tim& t)
+{
+	for (int i = 0; i < t.getKap();i++)
+	{
+		if (t[i])
+			t[i]->smanjiVrednost(10);
+	}
+}
+
 void Mec::odigrajMec()
 {
 	double v1 = timovi.getPrvi()->getSrednjaVrednostTima();
@@ -29,8 +47,9 @@ void Mec::odigrajMec()
 	{
 		ishod = POBEDA_DOMACIN;
 		pobednik = 1;
-		timovi.getPrvi()->uvecajVrednost(10);
-		timovi.getDrugi()->smanjiVrednost(10);
+
+		uvecajVrednost(*timovi.getPrvi());
+		smanjiVrednost(*timovi.getDrugi());
 	}
 	else if (v1 == v2)
 	{
@@ -41,8 +60,8 @@ void Mec::odigrajMec()
 	{
 		ishod = POBEDA_GOST;
 		pobednik = 2;
-		timovi.getDrugi()->uvecajVrednost(10);
-		timovi.getPrvi()->smanjiVrednost(10);
+		uvecajVrednost(*timovi.getDrugi());
+		smanjiVrednost(*timovi.getPrvi());
 	}
 	odigranMec = true;
 }
