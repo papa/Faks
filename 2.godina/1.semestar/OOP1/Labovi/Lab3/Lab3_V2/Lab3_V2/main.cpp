@@ -51,8 +51,6 @@ void testPosiljka()
 
 	cout << p << endl;
 
-	cout << p.getCena() << " " << p.getBrDana() << endl;
-
 	//p += p1;
 }
 

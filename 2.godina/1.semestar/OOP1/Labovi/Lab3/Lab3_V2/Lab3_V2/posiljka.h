@@ -12,13 +12,14 @@ class Rukovalac;
 
 class Posiljka
 {
+public:
 	struct Detalji
 	{
 		int dani;
 		double cena;
 		Detalji(int d, double c) : dani(d), cena(c) {}
 	};
-
+private:
 	static int ID;
 
 	int idPos = ++ID;
@@ -32,6 +33,7 @@ class Posiljka
 
 	void pisi(ostream& os) const;
 public:
+
 	Posiljka(const Artikal& a);
 	
 	Posiljka& operator += (Rukovalac* r);
@@ -42,9 +44,7 @@ public:
 
 	const Artikal& getArtikal() const;
 
-	int getBrDana() const;
-
-	double getCena() const;
+	Detalji getDetalji() const;
 
 	friend ostream& operator << (ostream& os, const Posiljka& p);
 

@@ -43,16 +43,10 @@ const Artikal& Posiljka::getArtikal() const
 	return artikal;
 }
 
-int Posiljka::getBrDana() const
+Posiljka::Detalji Posiljka::getDetalji() const
 {
 	if (!izracunaoDetalje) throw GNeizracunatiDetalji();
-	return detalji.dani;
-}
-
-double Posiljka::getCena() const
-{
-	if (!izracunaoDetalje) throw GNeizracunatiDetalji();
-	return detalji.cena;
+	return detalji;
 }
 
 ostream& operator<<(ostream& os, const Posiljka& p)
