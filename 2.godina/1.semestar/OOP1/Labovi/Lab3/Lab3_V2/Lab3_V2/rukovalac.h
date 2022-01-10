@@ -9,6 +9,8 @@ public:
 	Rukovalac() = default;
 
 	virtual void obradiPosiljku(Posiljka& p) = 0;
+
+	virtual ~Rukovalac();
 };
 
 #endif

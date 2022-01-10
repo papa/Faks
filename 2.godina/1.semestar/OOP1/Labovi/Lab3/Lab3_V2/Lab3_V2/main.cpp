@@ -8,10 +8,10 @@ using namespace std;
 
 void testArtikal()
 {
-	Artikal a1(123, 100, "naziv");
+	Artikal a1("naziv", 123, 100);
 	cout << a1.getBarkod() << " " << a1.getCena() << " " << a1.getNaziv() << endl;
-	Artikal a2(123, 200, "naziv 2");
-	Artikal a3(234, 100, "naziv");
+	Artikal a2("naziv 2", 123, 200);
+	Artikal a3("naziv", 234, 100);
 	if (a1 == a2)
 		cout << "Jednakost a1 i a2" << endl;
 	else
@@ -25,8 +25,8 @@ void testArtikal()
 
 void testPosiljka()
 {
-	Artikal a1(123, 2, "naziv");
-	Artikal a2(234, 2, "naziv2");
+	Artikal a1("naziv", 123, 2);
+	Artikal a2("naziv2", 234, 2);
 
 	Posiljka p(a1);
 

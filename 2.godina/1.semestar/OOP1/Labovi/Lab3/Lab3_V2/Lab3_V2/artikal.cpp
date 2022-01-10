@@ -1,6 +1,6 @@
 #include "artikal.h"
 
-Artikal::Artikal(int b, double c, const string& naz)
+Artikal::Artikal(const string& naz,int b, double c)
 	:barkod(b), cena(c), naziv(naz)
 {
 }

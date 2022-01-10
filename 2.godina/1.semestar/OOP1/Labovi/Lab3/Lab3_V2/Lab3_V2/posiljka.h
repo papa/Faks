@@ -23,7 +23,7 @@ private:
 
 	int idPos = ++ID;
 	
-	const Artikal& artikal;
+	Artikal artikal;
 
 	Lista<Rukovalac* > rukovaoci;
 	
@@ -33,7 +33,7 @@ private:
 	void pisi(ostream& os) const;
 public:
 
-	Posiljka(const Artikal& a);
+	Posiljka(Artikal& a);
 	
 	Posiljka& operator += (Rukovalac* r);
 
@@ -41,7 +41,7 @@ public:
 
 	int getID() const;
 
-	const Artikal& getArtikal() const;
+	Artikal getArtikal() const;
 
 	Detalji getDetalji() const;
 

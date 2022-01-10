@@ -11,7 +11,7 @@ class Artikal
 	int barkod;
 	double cena;
 public:
-	Artikal(int b, double c, const string& naz);
+	Artikal(const string& naz, int b, double c);
 
 	int getBarkod() const;
 	double getCena() const;

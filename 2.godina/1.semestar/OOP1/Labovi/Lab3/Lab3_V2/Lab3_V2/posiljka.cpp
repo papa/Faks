@@ -9,7 +9,7 @@ void Posiljka::pisi(ostream& os) const
 }
 
 
-Posiljka::Posiljka(const Artikal& a)
+Posiljka::Posiljka(Artikal& a)
 	: artikal(a), detalji(0, 0)
 {
 }
@@ -38,7 +38,7 @@ int Posiljka::getID() const
 	return idPos;
 }
 
-const Artikal& Posiljka::getArtikal() const
+Artikal Posiljka::getArtikal() const
 {
 	return artikal;
 }

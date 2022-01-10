@@ -12,12 +12,10 @@ void Prodavac::dodajUKatalog(const Artikal& a, double m, int d)
 
 void Prodavac::obradiPosiljku(Posiljka& p)
 {
-	double sCena = 0;
-	int sDani = 0;
 	int len = katalog.getBrElem();
 	for (int i = 0; i < len; i++)
 	{	
-		Trojka tr = katalog[i];
+		Trojka& tr = katalog[i];
 		if (tr.art == p.getArtikal())
 		{
 			p.detalji.dani += tr.dani;
