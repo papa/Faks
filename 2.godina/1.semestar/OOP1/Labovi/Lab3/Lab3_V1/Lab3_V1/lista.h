@@ -156,9 +156,10 @@ inline Lista<T>& Lista<T>::dodajElem(const T& data)
 template<typename T>
 inline Lista<T>& Lista<T>::naPrvi()
 {
-	curr = first;
-	prev = nullptr;
-	return *this;
+	return const_cast<Lista<T>&>((const_cast<const Lista<T>&>(*this)).naPrvi());
+	//curr = first;
+	//prev = nullptr;
+	//return *this;
 }
 
 template<typename T>
@@ -172,9 +173,10 @@ inline const Lista<T>& Lista<T>::naPrvi() const
 template<typename T>
 inline Lista<T>& Lista<T>::naSledeci()
 {
-	prev = curr;
-	if (curr) curr = curr->next;
-	return *this;
+	return const_cast<Lista<T>&>((const_cast<const Lista<T>&>(*this)).naSledeci());
+	//prev = curr;
+	//if (curr) curr = curr->next;
+	//return *this;
 }
 
 template<typename T>
@@ -188,8 +190,9 @@ inline const Lista<T>& Lista<T>::naSledeci() const
 template<typename T>
 inline T& Lista<T>::getTek()
 {
-	if (!imaTek()) throw GNemaTekuci();
-	return curr->data;
+	return const_cast<T&>((const_cast<const Lista<T>&>(*this)).getTek());
+	//if (!imaTek()) throw GNemaTekuci();
+	//return curr->data;
 }
 
 template<typename T>

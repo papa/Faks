@@ -10,8 +10,8 @@ using namespace std;
 class ElektronskaPoruka
 {
 protected:
-	Korisnik& posiljalac;
-	Korisnik& primalac;
+	Korisnik* posiljalac;
+	Korisnik* primalac;
 	string naslov;
 
 	static enum stanje {U_PRIPREMI, POSLATA, PRIMLJENA};
@@ -22,9 +22,6 @@ protected:
 public:
 	ElektronskaPoruka(Korisnik& pos, Korisnik& prim, const string& nasl);
 
-	ElektronskaPoruka(const ElektronskaPoruka& ep) = default;
-	ElektronskaPoruka& operator = (const ElektronskaPoruka& ep) = default;
-
 	virtual ElektronskaPoruka* kopiraj() const = 0;
 
 	virtual void posaljiPoruku() = 0;
@@ -32,8 +29,8 @@ public:
 	friend ostream& operator << (ostream& os, const ElektronskaPoruka& ep);
 
 	string getNaslov() const;
-	Korisnik& getPrimalac() const;
-	Korisnik& getPosiljalac() const;
+	Korisnik* getPrimalac() const;
+	Korisnik* getPosiljalac() const;
 
 	virtual ~ElektronskaPoruka();
 };

@@ -1,6 +1,7 @@
 #include "korisnik.h"
 
-Korisnik::Korisnik(const string& i, const string& e) : ime(i), email(e)
+Korisnik::Korisnik(const string& i, const string& e) 
+	: ime(i), email(e)
 {
 
 }
