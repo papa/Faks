@@ -1,0 +1,89 @@
+LD 2000
+ST r0
+LD 2010
+ST r1
+ST r3
+LD r1
+ADD r0
+ADD r0
+SUB #0002
+ST r4
+======left!=right
+LD r3
+SUB r4
+BEQL EXIT_LOOP
+=====OUTER_LOOP=====
+LD r3
+ST r5   i = left;
+=====LEFT_ITERATION
+LD (r5) acc= arr[i];
+ST r7  
+=====
+LD r5   
+ADD #0002
+ST r5    i ++;
+LD (r5)  acc = arr[i];
+=====
+SUB r7
+BLSS SWAP_LABELA_LEFT
+=====
+LD r5;
+SUB #0002; 
+ST r5;   i--;
+=====
+SWP (r5) swap(arr[i], arr[i+1])
+LD #0001
+ST r6 
+=====
+LD r5
+ADD #0002
+ST r5       i++;
+====SWAP_LABELA_LEFT=====
+LD r4
+SUB r5
+BGRT LEFT_ITERATION   if(i<right) loop LEFT_ITERATION;
+LD r6
+BLEQ EXIT_LOOP 
+LD r4
+SUB #0002 right--;
+ST r4
+ST r5      i = right;
+========left!=right
+SUB r3
+BEQL EXIT_LOOP
+=====UDESNO======
+LD (r5) acc=arr[i];
+ST r7
+=======
+LD r5
+SUB #0002
+ST r5 	i--;
+LD (r5)   acc=arr[i]
+=======
+SUB r7
+BGRT SWAP_LABELA_RIGHT
+=======
+SWP (r5) swap(arr[i],arr[i+1])
+LD #0001
+ST r6
+=====SWAP_LABELA_RIGHT=====
+LD r3
+SUB r5
+BLSS UDESNO
+=====
+LD r6
+BLEQ EXIT_LOOP 
+LD r3
+ADD #0002
+ST r3   left++;
+LD r4
+SUB r3
+BGRT OUTERLOOP
+=====EXIT_LOOP===
+ 
+
+
+
+
+
+
