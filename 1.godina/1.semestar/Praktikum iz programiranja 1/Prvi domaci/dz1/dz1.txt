@@ -1,0 +1,78 @@
+                  n = 1
+                  m = 2
+                  a = 3
+                  b = 4
+                  starta = 100
+                  maxn = 10000
+                  maxm = 10000
+                  i = 5
+                  j = 6
+                  r = 7
+                  loop = 8
+                  loop2 = 31
+                  loop2_end = 36
+                  skip = 38
+                  loop_end = 48
+                  end = 50
+                  pp = 51
+                  loop_a = 55
+                  loop_a_end = 61
+                  return_pp = 63
+                  check = 64
+                  loop_b = 68
+                  positive = 70
+                  negative = 74
+                  continue = 77
+                  loop_b_end = 81
+                  return_check = 85
+                  add_to_r = 86
+    8: 7101       loop: IN n
+    9: 5018 0032  BEQ 0, n, end
+   11: 6018 0032  BGT 0, n, end
+   13: 0508 2710  MOV i, #maxn
+   15: 6158 0032  BGT n, i, end
+   17: 7201       IN m
+   18: 5028 0032  BEQ 0, m, end
+   20: 6028 0032  BGT 0, m, end
+   22: 0608 2710  MOV j, #maxm
+   24: 6268 0032  BGT m, j, end
+   26: 0308 0064  MOV a, #starta
+   28: 7B81       IN (a), n
+   29: 1431       ADD b, a, n
+   30: 1742       ADD r, b, m
+   31: 7C01       loop2: IN (b)
+   32: 60C8 001F  BGT 0, (b), loop2
+   34: 9440 0001  ADD b, b, 1
+   36: 6748 001F  loop2_end: BGT r, b, loop2
+   38: 1431       skip: ADD b, a, n
+   39: D000 0033  JSR pp
+   41: 0308 0064  MOV a, #starta
+   43: 1431       ADD b, a, n
+   44: 2574       SUB i, r, b
+   45: 2552       SUB i, i, m
+   46: 1742       ADD r, b, m
+   47: 8F85       OUT (r), i
+   48: 5118 0008  loop_end: BEQ n, n, loop
+   50: F000       end: STOP 
+   51: 0508 0000  pp: MOV i, 0
+   53: 0308 0064  MOV a, #starta
+   55: D000 0040  loop_a: JSR check
+   57: 9330 0001  ADD a, a, 1
+   59: 9550 0001  ADD i, i, 1
+   61: 6158 0037  loop_a_end: BGT n, i, loop_a
+   63: E000       return_pp: RTS 
+   64: 0608 0000  check: MOV j, 0
+   66: 9401 0064  ADD b, #starta, n
+   68: 60B8 004A  loop_b: BGT 0, (a), negative
+   70: 5BC8 0055  positive: BEQ (a), (b), return_check
+   72: 5BB8 004D  BEQ (a), (a), continue
+   74: 1FBC       negative: ADD (r), (a), (b)
+   75: 5F08 0055  BEQ (r), 0, return_check
+   77: 9660 0001  continue: ADD j, j, 1
+   79: 9440 0001  ADD b, b, 1
+   81: 6268 0044  loop_b_end: BGT m, j, loop_b
+   83: D000 0056  JSR add_to_r
+   85: E000       return_check: RTS 
+   86: 0FB0       add_to_r: MOV (r), (a)
+   87: 9770 0001  ADD r, r, 1
+   89: E000       RTS 

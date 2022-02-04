@@ -1,0 +1,94 @@
+﻿n = 1
+m = 2
+a = 3 
+b = 4
+startA = 100
+maxn = 10000
+maxm = 10000
+i = 5
+j = 6
+r = 7
+
+org 8
+
+;gornje ogranicenje 
+;za duzinu niza je maxn,maxm
+
+;za validnu duzina niza se smatraju pozitivni brojevi
+
+loop:in n
+	 ;proveravamo da li je duzina prvog niza korektna 
+	 beq 0,n,end
+	 bgt 0,n,end
+	 mov i,#maxn
+	 bgt n,i,end
+	   
+	 in m
+	 ;proveravamo da li je duzina drugog niza korektna 
+	 beq 0,m,end
+	 bgt 0,m,end
+	 mov j,#maxm
+	 bgt m,j,end
+	 
+	 mov a,#startA 
+	 in(a),n
+	 
+	 add b,a,n
+	 add r,b,m
+	 
+	 ;ucitavanje niza b (svaki element se ucitava dok se ne unese nenegativan broj)
+	 loop2:    in (b)
+	   	       bgt 0,(b),loop2 ;vracamo se na ucitavanje ako je broj negativan
+	   		   add b,b,1
+	 loop2_end:bgt r,b,loop2
+	 
+	 skip: add b,a,n
+	 
+	 jsr pp   
+	   
+	 mov a,#startA
+	 add b,a,n
+	 sub i,r,b
+	 sub i,i,m
+	 add r,b,m
+	 out (r),i
+	   
+loop_end:beq n,n,loop
+	    
+end: stop
+
+; potprogram koji obradjuje nizove a i b na trazeni nacin
+pp: mov i,0
+	mov a,#startA
+	loop_a: 	jsr check ;za svaki element iz niza a se poziva check
+ 	 			add a,a,1
+	 			add i,i,1
+	loop_a_end:	bgt n,i,loop_a
+			  
+return_pp: rts 
+
+;potprogram koji za svaki element iz niza a odredjuje da li treba da se izbaci 
+check: mov j,0
+	   add b,#startA,n
+	   loop_b: bgt 0,(a),negative
+	   			
+	   		   ;provera za pozitivan broj 
+	   		   positive: beq (a),(b),return_check 
+	   					 beq (a),(a),continue
+	   		   ;provera za negativan broj
+	   		   negative: add (r),(a),(b)
+	   			  		 beq (r),0,return_check
+	   			           
+	   		   continue: add j,j,1
+	   		  			 add b,b,1
+	   			 
+	   	loop_b_end:bgt m,j,loop_b
+	   				     
+jsr add_to_r  
+
+return_check: rts
+
+;dodaje element iz a u niz r
+add_to_r: mov (r),(a)
+		  add r,r,1
+		  rts 
