@@ -1,0 +1,4 @@
+﻿  dz1p1.c
+D:\Faks\1.godina\2.semestar\ASP1\Domaci zadaci\1.domaci\DZ1P1\DZ1P1\dz1p1.c(20,33): warning C4013:  'malloc' undefined; assuming extern returning int
+D:\Faks\1.godina\2.semestar\ASP1\Domaci zadaci\1.domaci\DZ1P1\DZ1P1\dz1p1.c(59,6): warning C4013:  'free' undefined; assuming extern returning int
+  DZ1P1.vcxproj -> D:\Faks\1.godina\2.semestar\ASP1\Domaci zadaci\1.domaci\DZ1P1\Debug\DZ1P1.exe

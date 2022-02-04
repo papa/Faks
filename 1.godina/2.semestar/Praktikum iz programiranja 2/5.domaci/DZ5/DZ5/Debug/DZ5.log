@@ -1,0 +1,6 @@
+﻿  code.c
+  main.c
+  Generating Code...
+D:\Faks\1.godina\2.semestar\PP2\5.domaci\DZ5\DZ5\main.c(48,30): warning C4090:  'function': different 'const' qualifiers
+D:\Faks\1.godina\2.semestar\PP2\5.domaci\DZ5\DZ5\main.c(48,30): warning C4090: D:\Faks\1.godina\2.semestar\PP2\5.domaci\DZ5\DZ5\code.c(10) : warning C4715: 'new_node': not all control paths return a value
+  DZ5.vcxproj -> D:\Faks\1.godina\2.semestar\PP2\5.domaci\DZ5\Debug\DZ5.exe
