@@ -50,10 +50,13 @@ public class Plac extends Panel {
 			public void mouseClicked(MouseEvent e)
 			{
 				if(selektovana != null)
-					selektovana.uvecajFont(-20);
-				selektovana = (Parcela)e.getSource();
-				selektovana.uvecajFont(20);
-				repaint();
+					selektovana.setFont(new Font(Font.SANS_SERIF, Font.BOLD,14));
+				if(e.getSource() instanceof Parcela)
+				{
+					selektovana = (Parcela)e.getSource();
+					selektovana.setFont(new Font(Font.SANS_SERIF, Font.BOLD,50));
+					repaint();
+				}
 			}
 		});
 	}

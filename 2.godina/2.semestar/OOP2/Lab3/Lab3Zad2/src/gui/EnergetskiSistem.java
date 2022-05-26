@@ -62,6 +62,6 @@ public class EnergetskiSistem extends Frame
 	}
 	
 	public static void main(String[] args) {
-		new EnergetskiSistem(5, 5, 5);
+		new EnergetskiSistem(3, 3, 5);
 	}
 }

@@ -13,7 +13,7 @@ public class Baterija
 	
 	public synchronized void dodajEnergiju(int e)
 	{
-		kolicinaEnergije = Math.max(kolicinaEnergije + e, maksKapacitet);
+		kolicinaEnergije = Math.min(kolicinaEnergije + e, maksKapacitet);
 	}
 	
 	public synchronized void isprazniBateriju()
