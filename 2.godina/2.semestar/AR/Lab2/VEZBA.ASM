@@ -30,27 +30,27 @@ reg sp, x.9000
 ! kraj inicijalizacije
 org x.4000
 
-ldimm x.0100, r1
-mvrir r1, ivtp
+ldimm x.0100, r0
+mvrir r0, ivtp
 
 !ulaz 0
-ldimm x.3000, r1
-stmem x.0100, r1
+ldimm x.3000, r0
+stmem x.0100, r0
 !ulaz 1
-ldimm x.2500, r1
-stmem x.0101, r1
+ldimm x.2500, r0
+stmem x.0101, r0
 !ulaz 2
-ldimm x.1500, r1
-stmem x.0102, r1
+ldimm x.1500, r0
+stmem x.0102, r0
 !ulaz 3
-ldimm x.2000, r1
-stmem x.0103, r1
+ldimm x.2000, r0
+stmem x.0103, r0
 !ulaz 4
-ldimm x.1000, r1
-stmem x.0104, r1
+ldimm x.1000, r0
+stmem x.0104, r0
 !ulaz 5
-ldimm x.0500, r1
-stmem x.0105, r1
+ldimm x.0500, r0
+stmem x.0105, r0
 
 !---------------------------
 
@@ -96,7 +96,6 @@ beql loopKP11
 !zaustavljanje KP1.1
 ldimm x.00, r0
 stmem x.F100, r0
-
 !---------------------------------------
 !poziv funkcije xorAll
 ldimm x.08, r0
@@ -109,7 +108,6 @@ jsr xorAll
 pop r0
 pop r0
 pop r0
-
 
 ldmem x.5000, r0
 stmem x.9999, r0
@@ -138,15 +136,29 @@ ldimm x.00, r0
 stmem x.F0C0, r0
 
 !-------------------------------------
-!podaci za niz
+!Poslednja tacka
+!podaci za prenos niza
 ldimm x.08, r2 !broj elemenata
 ldimm x.5000, r3 !pocetna adresa
-!slanje periferiji KP1.2
+!startovanje periferija KP1.2
 ldimm x.04, r0
 stmem x.F142, r0
 ldimm x.04,r0
 stmem x.F140, r0
 
+!startovanje DMA12
+ldimm x.0, r4 ! semafor
+ldimm x.9999, r0
+stmem x.F045, r0
+ldimm x.01, r0
+stmem x.F044, r0
+ldimm x.01,r0
+stmem x.F042, r0
+ldimm x.08E, r0
+stmem x.F040, r0
+
+
+!cekanje da se prenesu svi podaci na KP12
 loopKP12:
 ldmem x.F141,r0
 ldimm x.01,r1
@@ -157,25 +169,14 @@ stmem x.F143, r0
 inc r3
 dec r2
 bgrt loopKP12
-!zaustavljanje KP2.1
+!zaustavljanje KP12
 ldimm x.00, r0
 stmem x.F140, r0
 
-!--------------------------------------------
-
-!DMA12 poslednja tacka
-ldimm x.0, r2 ! semafor
-ldimm x.01, r0
-stmem x.F044, r0
-ldimm x.01,r0
-stmem x.F042, r0
-ldimm x.08E, r0
-stmem x.F040, r0
-!-------------------------------
-
+!cekanje da DMA zavrsi
 loopDMA12:
 ldimm x.01, r0
-tst r2,r0
+tst r4,r0
 beql loopDMA12
 !kraj rada DMA1.2
 
@@ -240,7 +241,7 @@ rti
 org x.2500
 push r0
 push r1
-ldimm x.01, r2
+ldimm x.01, r4
 ldimm x.00, r0
 stmem x.F040, r0
 pop r1
