@@ -40,12 +40,13 @@ public class podsistem1Endpoints {
     @Resource(lookup="topicServer")
     private Topic myTopic;
     
-    private static int KREIRAJ_GRAD = 1;
-    private static int KREIRAJ_KORISNIKA = 2;
-    private static int DODAJ_NOVAC = 3;
-    private static int PROMENA_ADRESA_GRAD = 4;
-    private static int SVI_GRADOVI = 12;
-    private static int SVI_KORISNICI = 13;
+    private static final int KREIRAJ_GRAD = 1;
+    private static final int KREIRAJ_KORISNIKA = 2;
+    private static final int DODAJ_NOVAC = 3;
+    private static final int PROMENA_ADRESA_GRAD = 4;
+    private static final int SVI_GRADOVI = 12;
+    private static final int SVI_KORISNICI = 13;
+    private static final int PODSISTEM_ID = 1;
     
     private Response posaljiZahtev(Zahtev zahtev)
     {
@@ -57,7 +58,7 @@ public class podsistem1Endpoints {
             System.out.println("Server zahtev " + Integer.toString(zahtev.getBrZahteva()) + " pokrenut");
             
             ObjectMessage objMsg = context.createObjectMessage(zahtev);
-            objMsg.setIntProperty("id", 1);
+            objMsg.setIntProperty("id", PODSISTEM_ID);
             
             producer.send(myTopic, objMsg);
             

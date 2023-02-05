@@ -20,28 +20,13 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-//@Entity
-//@Table(name = "grad")
-//@XmlRootElement
-//@NamedQueries({
-//    @NamedQuery(name = "Grad.findAll", query = "SELECT g FROM Grad g"),
-//    @NamedQuery(name = "Grad.findByIDGrad", query = "SELECT g FROM Grad g WHERE g.iDGrad = :iDGrad"),
-//    @NamedQuery(name = "Grad.findByNaziv", query = "SELECT g FROM Grad g WHERE g.naziv = :naziv")})
+
 public class Grad implements Serializable {
 
-//    @Basic(optional = false)
-//    @NotNull
-//    @Size(min = 1, max = 15)
-//    @Column(name = "Naziv")
     private String naziv;
 
     private static final long serialVersionUID = 1L;
-//    @Id
-//    @Basic(optional = false)
-//    @NotNull
-//    @Column(name = "IDGrad")
     private Integer iDGrad;
-//    @OneToMany(mappedBy = "iDGrad")
     private List<Korisnik> korisnikList;
 
     public Grad() {

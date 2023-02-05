@@ -1,11 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.klijent;
 
 import entiteti.Grad;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.util.Scanner;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,27 +12,67 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Klijent {
+    private static String menu = "1. Kreiranje grada\n" +"2. Kreiranje korisnika\n" +"3. Dodavanje novca korisniku\n" +
+            "4. Promena adrese i grada za korisnika\n" +"5. Kreiranje kategorije\n" +"6. Kreiranje artikla\n" +"7. Menjanje cene artikla\n" +
+            "8. Postavljanje popusta za artikal\n" +"9. Dodavanje artikala u određenoj količini u korpu\n" +"10. Brisanje artikla u određenoj količini iz korpe\n" +
+            "11. Plaćanje, koje obuhvata kreiranje transakcije, kreiranje narudžbine sa njenim stavkama, i brisanje sadržaja iz korpe\n" +"12. Dohvatanje svih gradova\n" +
+            "13. Dohvatanje svih korisnika\n" +"14. Dohvatanje svih kategorija\n" +"15. Dohvatanje svih artikala koje prodaje korisnik koji je poslao zahtev\n" +
+            "16. Dohvatanje sadržaja korpe korisnika koji je poslao zahtev\n" +"17. Dohvatanje svih narudžbina korisnika koji je poslao zahtev\n" +"18. Dohvatanje svih narudžbina\n" +
+            "19. Dohvatanje svih transakcija\n";
+    
+    private static final int KREIRAJ_GRAD = 1;
+    private static final int KREIRAJ_KORISNIKA = 2;
+    private static final int DODAJ_NOVAC = 3;
+    private static final int PROMENA_ADRESA_GRAD = 4;
+    private static final int KREIRAJ_KATEGORIJU = 5;
+    private static final int KREIRAJ_ARTIKL = 6;
+    private static final int MENJAJ_CENU = 7;
+    private static final int POSTAVI_POPUST = 8;
+    private static final int DODAJ_ARTIKL_KORPA = 9;
+    private static final int BRISI_ARTIKL_KORPA = 10;
+    private static final int SVI_GRADOVI = 12;
+    private static final int SVI_KORISNICI = 13;
+    private static final int SVE_KATEGORIJE = 14;
+    private static final int SVI_ARTIKLI_KORISNIK = 15;
+    private static final int KORISNIK_KORPA = 16;
+    
     public static void main(String[] args) {
-        Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl("https://jsonplaceholder.typicode.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build();
-
-        InterP1 apiEndpoint = retrofit.create(InterP1.class);
-
-        Call<Grad> call = apiEndpoint.getGrad();
-        call.enqueue(new Callback<Grad>() {
-            @Override
-            public void onResponse(Call<Grad> call, Response<Grad> response) {
-              Grad grad = response.body();
-              System.out.println(grad.getNaziv());
+        System.out.println("Krenuo");
+        while(true)
+        {
+            System.out.println(menu);
+            System.out.println("Izaberite jedan od zahteva: ");
+            int izbor = -1;
+            Scanner in = new Scanner(System.in);
+            izbor = in.nextInt();
+            
+            switch(izbor)
+            {
+                case KREIRAJ_GRAD:
+                    Podsistem1Handler.zahtev1Handler();
+                    break;
+                case KREIRAJ_KORISNIKA:
+                    Podsistem1Handler.zahtev2Handler();
+                    break;
+                case DODAJ_NOVAC:
+                    
+                    break;
+                case PROMENA_ADRESA_GRAD:
+                    
+                    break;
+                case KREIRAJ_KATEGORIJU:
+                    
+                    break;   
+                case KREIRAJ_ARTIKL:
+                    
+                    break;
+                case MENJAJ_CENU:
+                    
+                    break;
+                
             }
-
-            @Override
-            public void onFailure(Call<Grad> call, Throwable t) {
-               System.out.println(t.getMessage());
-             }
-        });
-        
+            
+            
+        }
     }
 }

@@ -19,50 +19,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-//@Entity
-//@Table(name = "korisnik")
-//@XmlRootElement
-//@NamedQueries({
-//    @NamedQuery(name = "Korisnik.findAll", query = "SELECT k FROM Korisnik k"),
-//    @NamedQuery(name = "Korisnik.findByIDKor", query = "SELECT k FROM Korisnik k WHERE k.iDKor = :iDKor"),
-//    @NamedQuery(name = "Korisnik.findByIme", query = "SELECT k FROM Korisnik k WHERE k.ime = :ime"),
-//    @NamedQuery(name = "Korisnik.findByPrezime", query = "SELECT k FROM Korisnik k WHERE k.prezime = :prezime"),
-//    @NamedQuery(name = "Korisnik.findByUsername", query = "SELECT k FROM Korisnik k WHERE k.username = :username"),
-//    @NamedQuery(name = "Korisnik.findBySifra", query = "SELECT k FROM Korisnik k WHERE k.sifra = :sifra"),
-//    @NamedQuery(name = "Korisnik.findByAdresa", query = "SELECT k FROM Korisnik k WHERE k.adresa = :adresa"),
-//    @NamedQuery(name = "Korisnik.findByNovac", query = "SELECT k FROM Korisnik k WHERE k.novac = :novac")})
 public class Korisnik implements Serializable {
 
-//    @Size(max = 20)
-//    @Column(name = "Ime")
+
     private String ime;
-//    @Size(max = 20)
-//    @Column(name = "Prezime")
+
     private String prezime;
-//    @Basic(optional = false)
-//    @NotNull
-//    @Size(min = 1, max = 20)
-//    @Column(name = "Username")
+
     private String username;
-//    @Size(max = 20)
-//    @Column(name = "Sifra")
+
     private String sifra;
-//    @Size(max = 60)
-//    @Column(name = "Adresa")
+
     private String adresa;
-//    @Basic(optional = false)
-//    @NotNull
-//    @Column(name = "Novac")
+
     private int novac;
 
     private static final long serialVersionUID = 1L;
-//    @Id
-//    @Basic(optional = false)
-//    @NotNull
-//    @Column(name = "IDKor")
+
     private Integer iDKor;
-//    @JoinColumn(name = "IDGrad", referencedColumnName = "IDGrad")
-//    @ManyToOne
+
     private Grad iDGrad;
 
     public Korisnik() {
