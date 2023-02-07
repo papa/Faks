@@ -30,11 +30,15 @@ public class Klijent {
     private static final int POSTAVI_POPUST = 8;
     private static final int DODAJ_ARTIKL_KORPA = 9;
     private static final int BRISI_ARTIKL_KORPA = 10;
+    private static final int PLACANJE = 11;
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
     private static final int SVE_KATEGORIJE = 14;
     private static final int SVI_ARTIKLI_KORISNIK = 15;
     private static final int KORISNIK_KORPA = 16;
+    private static final int KORISNIK_NARUDZBINE = 17;
+    private static final int SVE_NARUDZBINE = 18;
+    private static final int SVE_TRANSKACIJE = 19;
     
     public static void main(String[] args) {
         System.out.println("Krenuo");
@@ -78,6 +82,8 @@ public class Klijent {
                 case BRISI_ARTIKL_KORPA:
                     Podsistem2Handler.zahtev10Handler();
                     break;
+                case PLACANJE:
+                    Podsistem3Handler.zahtev11Handler();
                 case SVI_GRADOVI:
                     Podsistem1Handler.zahtev12Handler();
                     break;
@@ -92,6 +98,15 @@ public class Klijent {
                     break;
                 case KORISNIK_KORPA:
                     Podsistem2Handler.zahtev16Handler();
+                    break;
+                case KORISNIK_NARUDZBINE:
+                    Podsistem3Handler.zahtev17Handler();
+                    break;
+                case SVE_NARUDZBINE:
+                    Podsistem3Handler.zahtev18Handler();
+                    break;
+                case SVE_TRANSKACIJE:
+                    Podsistem3Handler.zahtev19Handler();
                     break;
             }
             
