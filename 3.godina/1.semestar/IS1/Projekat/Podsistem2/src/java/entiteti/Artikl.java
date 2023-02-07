@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package entiteti;
 
 import java.io.Serializable;
@@ -6,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +26,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *
+ * @author Jelena
+ */
 @Entity
 @Table(name = "artikl")
 @XmlRootElement
@@ -30,9 +40,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Artikl.findByOpis", query = "SELECT a FROM Artikl a WHERE a.opis = :opis"),
     @NamedQuery(name = "Artikl.findByCena", query = "SELECT a FROM Artikl a WHERE a.cena = :cena"),
     @NamedQuery(name = "Artikl.findByPopust", query = "SELECT a FROM Artikl a WHERE a.popust = :popust"),
+    @NamedQuery(name = "Artikl.findByIDKorNaziv", query = "SELECT a FROM Artikl a WHERE a.naziv = :naziv and a.iDKor = :iDKor"),
     @NamedQuery(name = "Artikl.findByIDKor", query = "SELECT a FROM Artikl a WHERE a.iDKor = :iDKor")})
 public class Artikl implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "IDArt")
+    private Integer iDArt;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
@@ -44,26 +61,20 @@ public class Artikl implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "Cena")
-    private int cena;
+    private double cena;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "Popust")
+    private Double popust;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IDKor")
     private int iDKor;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "IDArt")
-    private Integer iDArt;
-    @Column(name = "Popust")
-    private Integer popust;
     @JoinColumn(name = "IDKat", referencedColumnName = "IDKat")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Kategorija iDKat;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDArt")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDArt", fetch = FetchType.EAGER)
     private List<Recenzija> recenzijaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "artikl")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "artikl", fetch = FetchType.EAGER)
     private List<Sadrzi> sadrziList;
 
     public Artikl() {
@@ -73,7 +84,7 @@ public class Artikl implements Serializable {
         this.iDArt = iDArt;
     }
 
-    public Artikl(Integer iDArt, String naziv, int cena, int iDKor) {
+    public Artikl(Integer iDArt, String naziv, double cena, int iDKor) {
         this.iDArt = iDArt;
         this.naziv = naziv;
         this.cena = cena;
@@ -88,15 +99,45 @@ public class Artikl implements Serializable {
         this.iDArt = iDArt;
     }
 
+    public String getNaziv() {
+        return naziv;
+    }
 
-    public Integer getPopust() {
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public double getCena() {
+        return cena;
+    }
+
+    public void setCena(double cena) {
+        this.cena = cena;
+    }
+
+    public Double getPopust() {
         return popust;
     }
 
-    public void setPopust(Integer popust) {
+    public void setPopust(Double popust) {
         this.popust = popust;
     }
 
+    public int getIDKor() {
+        return iDKor;
+    }
+
+    public void setIDKor(int iDKor) {
+        this.iDKor = iDKor;
+    }
 
     public Kategorija getIDKat() {
         return iDKat;
@@ -147,38 +188,6 @@ public class Artikl implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Artikl[ iDArt=" + iDArt + " ]";
-    }
-
-    public String getNaziv() {
-        return naziv;
-    }
-
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
-    }
-
-    public String getOpis() {
-        return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
-    }
-
-    public int getCena() {
-        return cena;
-    }
-
-    public void setCena(int cena) {
-        this.cena = cena;
-    }
-
-    public int getIDKor() {
-        return iDKor;
-    }
-
-    public void setIDKor(int iDKor) {
-        this.iDKor = iDKor;
     }
     
 }

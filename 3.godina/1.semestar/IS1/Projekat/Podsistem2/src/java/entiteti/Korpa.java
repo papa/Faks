@@ -11,8 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -32,26 +31,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Korpa.findAll", query = "SELECT k FROM Korpa k"),
     @NamedQuery(name = "Korpa.findByIDKorpa", query = "SELECT k FROM Korpa k WHERE k.iDKorpa = :iDKorpa"),
-    @NamedQuery(name = "Korpa.findByUkupnaCena", query = "SELECT k FROM Korpa k WHERE k.ukupnaCena = :ukupnaCena"),
-    @NamedQuery(name = "Korpa.findByIDKor", query = "SELECT k FROM Korpa k WHERE k.iDKor = :iDKor")})
+    @NamedQuery(name = "Korpa.findByUkupnaCena", query = "SELECT k FROM Korpa k WHERE k.ukupnaCena = :ukupnaCena")})
 public class Korpa implements Serializable {
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UkupnaCena")
-    private int ukupnaCena;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDKor")
-    private int iDKor;
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "IDKorpa")
     private Integer iDKorpa;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "korpa")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "UkupnaCena")
+    private double ukupnaCena;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "korpa", fetch = FetchType.EAGER)
     private List<Sadrzi> sadrziList;
 
     public Korpa() {
@@ -61,10 +54,9 @@ public class Korpa implements Serializable {
         this.iDKorpa = iDKorpa;
     }
 
-    public Korpa(Integer iDKorpa, int ukupnaCena, int iDKor) {
+    public Korpa(Integer iDKorpa, double ukupnaCena) {
         this.iDKorpa = iDKorpa;
         this.ukupnaCena = ukupnaCena;
-        this.iDKor = iDKor;
     }
 
     public Integer getIDKorpa() {
@@ -75,6 +67,13 @@ public class Korpa implements Serializable {
         this.iDKorpa = iDKorpa;
     }
 
+    public double getUkupnaCena() {
+        return ukupnaCena;
+    }
+
+    public void setUkupnaCena(double ukupnaCena) {
+        this.ukupnaCena = ukupnaCena;
+    }
 
     @XmlTransient
     public List<Sadrzi> getSadrziList() {
@@ -108,22 +107,6 @@ public class Korpa implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Korpa[ iDKorpa=" + iDKorpa + " ]";
-    }
-
-    public int getUkupnaCena() {
-        return ukupnaCena;
-    }
-
-    public void setUkupnaCena(int ukupnaCena) {
-        this.ukupnaCena = ukupnaCena;
-    }
-
-    public int getIDKor() {
-        return iDKor;
-    }
-
-    public void setIDKor(int iDKor) {
-        this.iDKor = iDKor;
     }
     
 }

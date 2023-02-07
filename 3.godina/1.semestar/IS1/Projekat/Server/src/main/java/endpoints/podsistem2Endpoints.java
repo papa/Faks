@@ -51,6 +51,7 @@ public class podsistem2Endpoints {
     private static final int KORISNIK_KORPA = 16;
     private static final int PODSISTEM_ID = 2;
     
+    
     private Response posaljiZahtev(Zahtev zahtev)
     {
         try {
@@ -98,6 +99,75 @@ public class podsistem2Endpoints {
     }
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @POST
+    @Path("/zahtev6")
+    public Response kreirajArtikl(@QueryParam("idKor") int idKor, @QueryParam("nazivArt") String nazivArt, 
+            @QueryParam("opis") String opis, @QueryParam("cena") double cena, @QueryParam("popust") double popust,
+            @QueryParam("nazivKat") String nazivKat){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(KREIRAJ_ARTIKL);
+        zahtev.dodajParam(idKor);
+        zahtev.dodajParam(nazivArt);
+        zahtev.dodajParam(opis);
+        zahtev.dodajParam(cena);
+        zahtev.dodajParam(popust);
+        zahtev.dodajParam(nazivKat);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @POST
+    @Path("/zahtev7")
+    public Response promemeniCenu(@QueryParam("idKor") int idKor, @QueryParam("nazivArt") String nazivArt, 
+           @QueryParam("novaCena") double novaCena){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(MENJAJ_CENU);
+        zahtev.dodajParam(idKor);
+        zahtev.dodajParam(nazivArt);
+        zahtev.dodajParam(novaCena);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @POST
+    @Path("/zahtev8")
+    public Response postaviPopust(@QueryParam("idKor") int idKor, @QueryParam("nazivArt") String nazivArt, 
+           @QueryParam("popust") double popust){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(POSTAVI_POPUST);
+        zahtev.dodajParam(idKor);
+        zahtev.dodajParam(nazivArt);
+        zahtev.dodajParam(popust);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @POST
+    @Path("/zahtev9")
+    public Response dodajArtikleKorpa(@QueryParam("idKor") int idKor, @QueryParam("idArt") int idArt, 
+           @QueryParam("brArt") int brArt){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(DODAJ_ARTIKL_KORPA);
+        zahtev.dodajParam(idKor);
+        zahtev.dodajParam(idArt);
+        zahtev.dodajParam(brArt);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @POST
+    @Path("/zahtev10")
+    public Response izbaciArtikleKorpa(@QueryParam("idKor") int idKor, @QueryParam("idArt") int idArt, 
+           @QueryParam("brArt") int brArt){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(BRISI_ARTIKL_KORPA);
+        zahtev.dodajParam(idKor);
+        zahtev.dodajParam(idArt);
+        zahtev.dodajParam(brArt);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @GET
     @Path("/zahtev14")
     public Response getSveKategorije(){
@@ -105,4 +175,25 @@ public class podsistem2Endpoints {
         zahtev.postaviBrZahteva(SVE_KATEGORIJE);
         return posaljiZahtev(zahtev);
     }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    @Path("/zahtev15")
+    public Response getSviArtikliKorisnik(@QueryParam("idKor") int idKor){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(SVI_ARTIKLI_KORISNIK);
+        zahtev.dodajParam(idKor);
+        return posaljiZahtev(zahtev);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    @Path("/zahtev16")
+    public Response getKorisnikKorpa(@QueryParam("idKor") int idKor){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(KORISNIK_KORPA);
+        zahtev.dodajParam(idKor);
+        return posaljiZahtev(zahtev);
+    }
+    
 }

@@ -5,7 +5,10 @@
  */
 package podsistem2;
 
+import entiteti.Artikl;
 import entiteti.Kategorija;
+import entiteti.Korpa;
+import entiteti.Sadrzi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -80,6 +83,220 @@ public class Main extends Thread{
         return new Odgovor(0, "KATEGORIJA USPESNO KREIRANA");
     }
     
+    private Odgovor kreirajArtikl(int idKor, String nazivArt, String opis, double cena, double popust, String nazivKategorije)
+    {
+        if(popust < 0 || popust > 100)
+            return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
+        List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findByNaziv").setParameter("naziv", nazivKategorije).getResultList();        
+        if(kategorije.isEmpty())
+            return new Odgovor(-1, "NE POSTOJI KATEGORIJA SA DATIM NAZIVOM");
+        
+        Kategorija k = kategorije.get(0);
+        
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
+        if(!artikli.isEmpty())
+            return new Odgovor(-1, "KORISNIK VEC IMA ARTIKL DATOG NAZIVA");
+        
+        Artikl a = new Artikl();
+        a.setIDArt(0);
+        a.setCena(cena);
+        a.setPopust(popust);
+        a.setIDKat(k);
+        a.setNaziv(nazivArt);
+        a.setIDKor(idKor);
+        a.setOpis(opis);
+        em.joinTransaction();
+        em.persist(a);
+        em.flush();
+        return new Odgovor(0, "USPESNO KREIRAN ARTIKL");
+    }
+    
+    private Odgovor menjajCenu(int idKor, String nazivArt, double cena)
+    {
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
+        if(artikli.isEmpty())
+            return new Odgovor(-1, "KORISNIK NEMA ARTIKL DATOG NAZIVA");
+        
+        Artikl a = artikli.get(0);
+        a.setCena(cena);
+        em.joinTransaction();
+        em.persist(a);
+        em.flush();
+        return new Odgovor(0, "USPESNO POSTAVLJENA CENA");
+    }
+    
+    private Odgovor postaviPopust(int idKor, String nazivArt, double popust)
+    {
+        if(popust < 0 || popust > 100)
+            return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
+        if(artikli.isEmpty())
+            return new Odgovor(-1, "KORISNIK NEMA ARTIKL DATOG NAZIVA");
+        
+        Artikl a = artikli.get(0);
+        a.setPopust(popust);
+        em.joinTransaction();
+        em.persist(a);
+        em.flush();
+        return new Odgovor(0, "USPESNO POSTAVLJEN POPUST");
+    }
+    
+    private Odgovor getArtikliKorisnik(int idKor)
+    {
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKor").setParameter("iDKor", idKor).getResultList();
+        for(Artikl a : artikli)
+        {
+            a.setRecenzijaList(null);
+            a.setSadrziList(null);
+            a.getIDKat().setArtiklList(null);
+            a.getIDKat().setKategorijaList(null);
+        }
+        return new Odgovor(0, "SVE OK", artikli);
+    }
+    
+    private Odgovor getKorpa(int idKor)
+    {
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        if(korpe.isEmpty())
+        {
+            Korpa k = new Korpa();
+            k.setIDKorpa(idKor);
+            k.setUkupnaCena(0);
+            k.setSadrziList(null); // todo da li treba 
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+            return new Odgovor(0, "SVE OK", k);
+        }
+        else
+        {
+            List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
+            Korpa k = korpe.get(0);
+            k.setSadrziList(null);
+            for(Sadrzi s : sadrziList)
+            {
+                Artikl a = s.getArtikl();
+                a.setRecenzijaList(null);
+                a.setSadrziList(null);
+                a.getIDKat().setArtiklList(null);
+                a.getIDKat().setKategorijaList(null);
+            }
+            return new Odgovor(0, "SVE OK", sadrziList);
+        }
+    }
+    
+    private Odgovor dodajArtikle(int idKor, int idArt,int koliko)
+    {
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
+        if(artikli.isEmpty())
+            return new Odgovor(-1, "NE POSTOJI ARTIKL SA DATIM ID");
+        Artikl a = artikli.get(0);
+        if(a.getIDKor() == idKor)
+            return new Odgovor(-1, "NE MOZETE KUPITI SVOJ ARTIKL");
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        Korpa k = null;
+        if(korpe.isEmpty())
+        {
+            k = new Korpa();
+            k.setIDKorpa(idKor);
+            k.setUkupnaCena(0);
+            k.setSadrziList(null); // todo da li treba 
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+        }
+        else 
+            k = korpe.get(0);
+        
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDArtIDKorpa").setParameter("iDArt", idArt).setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        Sadrzi s = null;
+        if(sadrziList.isEmpty())
+        {
+            s = new Sadrzi(idArt, idKor);
+            s.setKolicina(koliko);
+            s.setCena(a.getCena() - a.getCena()*a.getPopust() / 100);
+            em.joinTransaction();
+            em.persist(s);
+            em.flush();
+            
+            k.setUkupnaCena(k.getUkupnaCena() + koliko*s.getCena());
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+        }
+        else
+        {
+            s = sadrziList.get(0);
+            s.setKolicina(s.getKolicina() + koliko);
+            //s.setCena(a.getCena() - a.getCena()*a.getPopust() / 100);
+            em.joinTransaction();
+            em.persist(s);
+            em.flush();
+            
+            k.setUkupnaCena(k.getUkupnaCena() + koliko*s.getCena());
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+        }
+        
+        return new Odgovor(0, "SVE OK");
+    }
+    
+    private Odgovor izbaciArtikle(int idKor, int idArt,int koliko)
+    {
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
+        if(artikli.isEmpty())
+            return new Odgovor(-1, "NE POSTOJI ARTIKL SA DATIM ID");
+        Artikl a = artikli.get(0);
+        if(a.getIDKor() == idKor)
+            return new Odgovor(-1, "NE MOZETE IZBACITI SVOJ ARTIKL");
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        Korpa k = null;
+        if(korpe.isEmpty())
+        {
+            k = new Korpa();
+            k.setIDKorpa(idKor);
+            k.setUkupnaCena(0);
+            k.setSadrziList(null); // todo da li treba 
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+        }
+        else 
+            k = korpe.get(0);
+        
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDArtIDKorpa").setParameter("iDArt", idArt).setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        Sadrzi s = null;
+        if(sadrziList.isEmpty())
+        {
+            return new Odgovor(-1, "NISTA NI UBACILI OVAJ PROIZVOD U KORPU");
+        }
+        else
+        {
+            s = sadrziList.get(0);
+            if(s.getKolicina() < koliko)
+                return new Odgovor(-1, "IMATE MANJE ARTIKALA OD ONOGA STO ZELITE DA IZBACITE");
+            s.setKolicina(s.getKolicina() - koliko);
+            em.joinTransaction();
+            em.persist(s);
+            em.flush();
+            
+            k.setUkupnaCena(k.getUkupnaCena() - koliko*s.getCena());
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+            
+            if(s.getKolicina() == 0)
+            {
+                em.joinTransaction();
+                em.remove(s);
+                em.flush();
+            }
+        }
+        
+        return new Odgovor(0, "SVE OK");
+    }
+    
     @Override
     public void run() {
         
@@ -90,7 +307,12 @@ public class Main extends Thread{
         ObjectMessage objMsgSend = context.createObjectMessage();
         Odgovor odgovor = null;
         ArrayList<Object> params = null;
-        
+        String nazivKategorije = null;
+        int idKor = 0;
+        String nazivArt = null;
+        String opis = null;
+        double cena = 0; double popust = 0;
+        int idArt = 0; int koliko = 0;
         while(true)
         {
             System.out.println("Cekam na zahtev od servera...");
@@ -103,25 +325,53 @@ public class Main extends Thread{
                 {
                     case Main.KREIRAJ_KATEGORIJU:
                         params = zahtev.getParametri();
-                        String nazivKategorije = (String)params.get(0);
+                        nazivKategorije = (String)params.get(0);
                         String nazivNadKat = (String)params.get(1);
                         odgovor = kreirajKategoriju(nazivKategorije, nazivNadKat);
                         objMsgSend.setObject(odgovor);
                         break;
                     case Main.KREIRAJ_ARTIKL: 
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        nazivArt = (String)params.get(1);
+                        opis = (String)params.get(2);
+                        cena = (double)params.get(3);
+                        popust = (double)params.get(4);
+                        nazivKategorije = (String)params.get(5);
+                        odgovor = kreirajArtikl(idKor, nazivArt, opis, cena, popust, nazivKategorije);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.MENJAJ_CENU:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        nazivArt = (String)params.get(1);
+                        cena = (double)params.get(2);
+                        odgovor = menjajCenu(idKor, nazivArt, cena);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.POSTAVI_POPUST:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        nazivArt = (String)params.get(1);
+                        popust = (double)params.get(2);
+                        odgovor = postaviPopust(idKor, nazivArt, popust);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.DODAJ_ARTIKL_KORPA:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        idArt = (int)params.get(1);
+                        koliko = (int)params.get(2);
+                        odgovor = dodajArtikle(idKor, idArt, koliko);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.BRISI_ARTIKL_KORPA:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        idArt = (int)params.get(1);
+                        koliko = (int)params.get(2);
+                        odgovor = izbaciArtikle(idKor, idArt, koliko);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.SVE_KATEGORIJE:
                         List<Kategorija> kategorije = getSveKategorije();
@@ -129,10 +379,16 @@ public class Main extends Thread{
                         objMsgSend.setObject(odgovor);
                         break;
                     case Main.SVI_ARTIKLI_KORISNIK:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        odgovor = getArtikliKorisnik(idKor);
+                        objMsgSend.setObject(odgovor);
                         break;
                     case Main.KORISNIK_KORPA:
-                        
+                        params = zahtev.getParametri();
+                        idKor = (int)params.get(0);
+                        odgovor = getKorpa(idKor);
+                        objMsgSend.setObject(odgovor);
                         break;
                 }
 

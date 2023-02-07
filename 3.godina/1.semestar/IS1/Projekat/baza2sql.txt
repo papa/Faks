@@ -38,8 +38,8 @@ CREATE TABLE `artikl` (
   `IDArt` int NOT NULL auto_increment,
   `Naziv` varchar(60) NOT NULL,
   `Opis` varchar(60) DEFAULT NULL,
-  `Cena` int NOT NULL,
-  `Popust` int DEFAULT NULL,
+  `Cena` double NOT NULL,
+  `Popust` double DEFAULT NULL,
   `IDKor` int NOT NULL,
   `IDKat` int not null,
   PRIMARY KEY (`IDArt`),
@@ -67,11 +67,10 @@ DROP TABLE IF EXISTS `korpa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `korpa` (
-  `IDKorpa` int NOT NULL auto_increment,
-  `UkupnaCena` int NOT NULL,
-  `IDKor` int not NULL,
+  `IDKorpa` int NOT NULL,
+  `UkupnaCena` double NOT NULL,
   PRIMARY KEY (`IDKorpa`),
-  FOREIGN KEY (`IDKor`) REFERENCES podsistem1.korisnik (`IDKor`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`IDKorpa`) REFERENCES podsistem1.korisnik (`IDKor`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -81,7 +80,7 @@ DROP TABLE IF EXISTS `sadrzi`;
 CREATE TABLE `sadrzi` (
   `IDArt` int NOT NULL,
   `IDKorpa` int not NULL,
-  `Cena` int not NULL,
+  `Cena` double not NULL,
   `Kolicina` int NOT NULL,
   PRIMARY KEY (`IDArt`, `IDKorpa`),
   FOREIGN KEY (`IDArt`) REFERENCES artikl (`IDArt`) ON DELETE CASCADE ON UPDATE NO ACTION,

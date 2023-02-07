@@ -11,8 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -24,11 +23,12 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class Korpa implements Serializable {
 
-    private int ukupnaCena;
-    private int iDKor;
-
     private static final long serialVersionUID = 1L;
+   
     private Integer iDKorpa;
+   
+    private double ukupnaCena;
+   
     private List<Sadrzi> sadrziList;
 
     public Korpa() {
@@ -38,10 +38,9 @@ public class Korpa implements Serializable {
         this.iDKorpa = iDKorpa;
     }
 
-    public Korpa(Integer iDKorpa, int ukupnaCena, int iDKor) {
+    public Korpa(Integer iDKorpa, double ukupnaCena) {
         this.iDKorpa = iDKorpa;
         this.ukupnaCena = ukupnaCena;
-        this.iDKor = iDKor;
     }
 
     public Integer getIDKorpa() {
@@ -52,6 +51,13 @@ public class Korpa implements Serializable {
         this.iDKorpa = iDKorpa;
     }
 
+    public double getUkupnaCena() {
+        return ukupnaCena;
+    }
+
+    public void setUkupnaCena(double ukupnaCena) {
+        this.ukupnaCena = ukupnaCena;
+    }
 
     @XmlTransient
     public List<Sadrzi> getSadrziList() {
@@ -85,22 +91,6 @@ public class Korpa implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Korpa[ iDKorpa=" + iDKorpa + " ]";
-    }
-
-    public int getUkupnaCena() {
-        return ukupnaCena;
-    }
-
-    public void setUkupnaCena(int ukupnaCena) {
-        this.ukupnaCena = ukupnaCena;
-    }
-
-    public int getIDKor() {
-        return iDKor;
-    }
-
-    public void setIDKor(int iDKor) {
-        this.iDKor = iDKor;
     }
     
 }

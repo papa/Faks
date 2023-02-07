@@ -10,6 +10,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -19,19 +20,19 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
+
 public class Sadrzi implements Serializable {
 
-
-    private int cena;
-
-    private int kolicina;
-
     private static final long serialVersionUID = 1L;
-  
+ 
     protected SadrziPK sadrziPK;
    
-    private Artikl artikl;
+    private double cena;
     
+    private int kolicina;
+   
+    private Artikl artikl;
+ 
     private Korpa korpa;
 
     public Sadrzi() {
@@ -41,7 +42,7 @@ public class Sadrzi implements Serializable {
         this.sadrziPK = sadrziPK;
     }
 
-    public Sadrzi(SadrziPK sadrziPK, int cena, int kolicina) {
+    public Sadrzi(SadrziPK sadrziPK, double cena, int kolicina) {
         this.sadrziPK = sadrziPK;
         this.cena = cena;
         this.kolicina = kolicina;
@@ -59,6 +60,21 @@ public class Sadrzi implements Serializable {
         this.sadrziPK = sadrziPK;
     }
 
+    public double getCena() {
+        return cena;
+    }
+
+    public void setCena(double cena) {
+        this.cena = cena;
+    }
+
+    public int getKolicina() {
+        return kolicina;
+    }
+
+    public void setKolicina(int kolicina) {
+        this.kolicina = kolicina;
+    }
 
     public Artikl getArtikl() {
         return artikl;
@@ -99,22 +115,6 @@ public class Sadrzi implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Sadrzi[ sadrziPK=" + sadrziPK + " ]";
-    }
-
-    public int getCena() {
-        return cena;
-    }
-
-    public void setCena(int cena) {
-        this.cena = cena;
-    }
-
-    public int getKolicina() {
-        return kolicina;
-    }
-
-    public void setKolicina(int kolicina) {
-        this.kolicina = kolicina;
     }
     
 }

@@ -22,15 +22,26 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class Artikl implements Serializable {
 
+   
     private String naziv;
+   
     private String opis;
-    private int cena;
+    
+    private double cena;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+   
+    private Double popust;
+    
     private int iDKor;
+
     private static final long serialVersionUID = 1L;
+    
     private Integer iDArt;
-    private Integer popust;
+    
     private Kategorija iDKat;
+    
     private List<Recenzija> recenzijaList;
+   
     private List<Sadrzi> sadrziList;
 
     public Artikl() {
@@ -54,17 +65,7 @@ public class Artikl implements Serializable {
     public void setIDArt(Integer iDArt) {
         this.iDArt = iDArt;
     }
-
-
-    public Integer getPopust() {
-        return popust;
-    }
-
-    public void setPopust(Integer popust) {
-        this.popust = popust;
-    }
-
-
+    
     public Kategorija getIDKat() {
         return iDKat;
     }
@@ -132,12 +133,20 @@ public class Artikl implements Serializable {
         this.opis = opis;
     }
 
-    public int getCena() {
+    public double getCena() {
         return cena;
     }
 
-    public void setCena(int cena) {
+    public void setCena(double cena) {
         this.cena = cena;
+    }
+
+    public Double getPopust() {
+        return popust;
+    }
+
+    public void setPopust(Double popust) {
+        this.popust = popust;
     }
 
     public int getIDKor() {

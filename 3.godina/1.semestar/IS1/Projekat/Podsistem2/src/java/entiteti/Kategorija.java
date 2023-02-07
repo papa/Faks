@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,24 +39,23 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Kategorija.findByNaziv", query = "SELECT k FROM Kategorija k WHERE k.naziv = :naziv")})
 public class Kategorija implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 60)
-    @Column(name = "Naziv")
-    private String naziv;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "IDKat")
     private Integer iDKat;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDKat")
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
+    @Column(name = "Naziv")
+    private String naziv;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDKat", fetch = FetchType.EAGER)
     private List<Artikl> artiklList;
-    @OneToMany(mappedBy = "nadKat")
+    @OneToMany(mappedBy = "nadKat", fetch = FetchType.EAGER)
     private List<Kategorija> kategorijaList;
     @JoinColumn(name = "NadKat", referencedColumnName = "IDKat")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Kategorija nadKat;
 
     public Kategorija() {
@@ -78,6 +78,13 @@ public class Kategorija implements Serializable {
         this.iDKat = iDKat;
     }
 
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
 
     @XmlTransient
     public List<Artikl> getArtiklList() {
@@ -128,14 +135,6 @@ public class Kategorija implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Kategorija[ iDKat=" + iDKat + " ]";
-    }
-
-    public String getNaziv() {
-        return naziv;
-    }
-
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
     }
     
 }

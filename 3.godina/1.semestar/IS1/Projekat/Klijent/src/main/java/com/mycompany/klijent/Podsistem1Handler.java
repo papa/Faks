@@ -63,22 +63,87 @@ public class Podsistem1Handler
         }
     }
     
-    public static void zahtev1Handler()
+    private static void unesiParam(String imeParam, String paramRest)
     {
-        URL = URL_CON;
-        System.out.println("Unesite ime grada: ");
+        System.out.println("Unesite " + imeParam + ": ");
         String s = null;
         Scanner in = new Scanner(System.in);
         s = in.nextLine();
+        dodajNaLink(paramRest, s);
+    }
+    
+     public static void zahtev1Handler()
+    {
+        URL = URL_CON;
         URL = URL + "/zahtev1";
         URL = URL + "?";
         count = 0;
-        dodajNaLink("nazivGrada", s);
+        
+        unesiParam("naziv grada", "nazivGrada");
+        
         komunikacija(URL, "POST");
     }
     
     public static void zahtev2Handler()
     {
+        URL = URL_CON;
+        URL = URL + "/zahtev2";
+        URL = URL + "?";
+        count = 0;
         
+        unesiParam("username", "username");
+        unesiParam("ime","ime");
+        unesiParam("prezime", "prezime");
+        unesiParam("sifru", "sifra");   
+        unesiParam("adresu", "adresa");   
+        unesiParam("grad", "nazivGrada");   
+        unesiParam("novac", "novac");
+        
+        komunikacija(URL, "POST");
+    }
+    
+    public static void zahtev3Handler()
+    {
+        URL = URL_CON;
+        URL = URL + "/zahtev3";
+        URL = URL + "?";
+        count = 0;
+        
+        unesiParam("username", "username");   
+        unesiParam("novac", "novac");
+        
+        komunikacija(URL, "POST");
+    }
+    
+    public static void zahtev4Handler()
+    {
+        URL = URL_CON;
+        URL = URL + "/zahtev4";
+        URL = URL + "?";
+        count = 0;
+        
+        unesiParam("username", "username");   
+        unesiParam("novu adresu", "adresa");
+        unesiParam("naziv grada", "nazivGrada");
+        
+        komunikacija(URL, "POST");
+    }
+    
+    public static void zahtev12Handler()
+    {
+        URL = URL_CON;
+        URL = URL + "/zahtev12";
+        URL = URL + "?";
+        count = 0;
+        komunikacija(URL, "GET");
+    }
+    
+    public static void zahtev13Handler()
+    {
+        URL = URL_CON;
+        URL = URL + "/zahtev13";
+        URL = URL + "?";
+        count = 0;
+        komunikacija(URL, "GET");
     }
 }

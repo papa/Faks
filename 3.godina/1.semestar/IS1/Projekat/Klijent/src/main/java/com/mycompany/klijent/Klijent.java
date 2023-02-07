@@ -55,21 +55,44 @@ public class Klijent {
                     Podsistem1Handler.zahtev2Handler();
                     break;
                 case DODAJ_NOVAC:
-                    
+                    Podsistem1Handler.zahtev3Handler();
                     break;
                 case PROMENA_ADRESA_GRAD:
-                    
+                    Podsistem1Handler.zahtev4Handler();
                     break;
                 case KREIRAJ_KATEGORIJU:
-                    
+                    Podsistem2Handler.zahtev5Handler();
                     break;   
                 case KREIRAJ_ARTIKL:
-                    
+                    Podsistem2Handler.zahtev6Handler();
                     break;
                 case MENJAJ_CENU:
-                    
+                    Podsistem2Handler.zahtev7Handler();
                     break;
-                
+                case POSTAVI_POPUST:
+                    Podsistem2Handler.zahtev8Handler();
+                    break;
+                case DODAJ_ARTIKL_KORPA:
+                    Podsistem2Handler.zahtev9Handler();
+                    break;
+                case BRISI_ARTIKL_KORPA:
+                    Podsistem2Handler.zahtev10Handler();
+                    break;
+                case SVI_GRADOVI:
+                    Podsistem1Handler.zahtev12Handler();
+                    break;
+                case SVI_KORISNICI:
+                    Podsistem1Handler.zahtev13Handler();
+                    break;
+                case SVE_KATEGORIJE:
+                    Podsistem2Handler.zahtev14Handler();
+                    break;
+                case SVI_ARTIKLI_KORISNIK:
+                    Podsistem2Handler.zahtev15Handler();
+                    break;
+                case KORISNIK_KORPA:
+                    Podsistem2Handler.zahtev16Handler();
+                    break;
             }
             
             

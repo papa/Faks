@@ -10,6 +10,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -30,26 +31,26 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Sadrzi.findByIDArt", query = "SELECT s FROM Sadrzi s WHERE s.sadrziPK.iDArt = :iDArt"),
     @NamedQuery(name = "Sadrzi.findByIDKorpa", query = "SELECT s FROM Sadrzi s WHERE s.sadrziPK.iDKorpa = :iDKorpa"),
     @NamedQuery(name = "Sadrzi.findByCena", query = "SELECT s FROM Sadrzi s WHERE s.cena = :cena"),
+    @NamedQuery(name = "Sadrzi.findByIDArtIDKorpa", query = "SELECT s FROM Sadrzi s WHERE s.sadrziPK.iDArt = :iDArt and s.sadrziPK.iDKorpa = :iDKorpa"),
     @NamedQuery(name = "Sadrzi.findByKolicina", query = "SELECT s FROM Sadrzi s WHERE s.kolicina = :kolicina")})
 public class Sadrzi implements Serializable {
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Cena")
-    private int cena;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Kolicina")
-    private int kolicina;
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected SadrziPK sadrziPK;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Cena")
+    private double cena;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Kolicina")
+    private int kolicina;
     @JoinColumn(name = "IDArt", referencedColumnName = "IDArt", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Artikl artikl;
     @JoinColumn(name = "IDKorpa", referencedColumnName = "IDKorpa", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Korpa korpa;
 
     public Sadrzi() {
@@ -59,7 +60,7 @@ public class Sadrzi implements Serializable {
         this.sadrziPK = sadrziPK;
     }
 
-    public Sadrzi(SadrziPK sadrziPK, int cena, int kolicina) {
+    public Sadrzi(SadrziPK sadrziPK, double cena, int kolicina) {
         this.sadrziPK = sadrziPK;
         this.cena = cena;
         this.kolicina = kolicina;
@@ -77,6 +78,21 @@ public class Sadrzi implements Serializable {
         this.sadrziPK = sadrziPK;
     }
 
+    public double getCena() {
+        return cena;
+    }
+
+    public void setCena(double cena) {
+        this.cena = cena;
+    }
+
+    public int getKolicina() {
+        return kolicina;
+    }
+
+    public void setKolicina(int kolicina) {
+        this.kolicina = kolicina;
+    }
 
     public Artikl getArtikl() {
         return artikl;
@@ -117,22 +133,6 @@ public class Sadrzi implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Sadrzi[ sadrziPK=" + sadrziPK + " ]";
-    }
-
-    public int getCena() {
-        return cena;
-    }
-
-    public void setCena(int cena) {
-        this.cena = cena;
-    }
-
-    public int getKolicina() {
-        return kolicina;
-    }
-
-    public void setKolicina(int kolicina) {
-        this.kolicina = kolicina;
     }
     
 }
