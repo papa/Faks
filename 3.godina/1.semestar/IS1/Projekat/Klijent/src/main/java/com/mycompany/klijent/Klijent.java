@@ -84,6 +84,7 @@ public class Klijent {
                     break;
                 case PLACANJE:
                     Podsistem3Handler.zahtev11Handler();
+                    break;
                 case SVI_GRADOVI:
                     Podsistem1Handler.zahtev12Handler();
                     break;

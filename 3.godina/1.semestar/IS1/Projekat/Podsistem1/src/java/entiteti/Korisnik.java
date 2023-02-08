@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,37 +40,35 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Korisnik.findByNovac", query = "SELECT k FROM Korisnik k WHERE k.novac = :novac")})
 public class Korisnik implements Serializable {
 
-    @Size(max = 20)
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "IDKor")
+    private Integer iDKor;
+    @Size(max = 100)
     @Column(name = "Ime")
     private String ime;
-    @Size(max = 20)
+    @Size(max = 100)
     @Column(name = "Prezime")
     private String prezime;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max = 100)
     @Column(name = "Username")
     private String username;
-    @Size(max = 20)
+    @Size(max = 100)
     @Column(name = "Sifra")
     private String sifra;
-    @Size(max = 60)
+    @Size(max = 100)
     @Column(name = "Adresa")
     private String adresa;
     @Basic(optional = false)
     @NotNull
     @Column(name = "Novac")
-    private int novac;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDKor")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer iDKor;
+    private double novac;
     @JoinColumn(name = "IDGrad", referencedColumnName = "IDGrad")
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Grad iDGrad;
 
     public Korisnik() {
@@ -79,7 +78,7 @@ public class Korisnik implements Serializable {
         this.iDKor = iDKor;
     }
 
-    public Korisnik(Integer iDKor, String username, int novac) {
+    public Korisnik(Integer iDKor, String username, double novac) {
         this.iDKor = iDKor;
         this.username = username;
         this.novac = novac;
@@ -91,40 +90,6 @@ public class Korisnik implements Serializable {
 
     public void setIDKor(Integer iDKor) {
         this.iDKor = iDKor;
-    }
-
-
-    public Grad getIDGrad() {
-        return iDGrad;
-    }
-
-    public void setIDGrad(Grad iDGrad) {
-        this.iDGrad = iDGrad;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (iDKor != null ? iDKor.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Korisnik)) {
-            return false;
-        }
-        Korisnik other = (Korisnik) object;
-        if ((this.iDKor == null && other.iDKor != null) || (this.iDKor != null && !this.iDKor.equals(other.iDKor))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entiteti.Korisnik[ iDKor=" + iDKor + " ]";
     }
 
     public String getIme() {
@@ -167,12 +132,45 @@ public class Korisnik implements Serializable {
         this.adresa = adresa;
     }
 
-    public int getNovac() {
+    public double getNovac() {
         return novac;
     }
 
-    public void setNovac(int novac) {
+    public void setNovac(double novac) {
         this.novac = novac;
+    }
+
+    public Grad getIDGrad() {
+        return iDGrad;
+    }
+
+    public void setIDGrad(Grad iDGrad) {
+        this.iDGrad = iDGrad;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (iDKor != null ? iDKor.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Korisnik)) {
+            return false;
+        }
+        Korisnik other = (Korisnik) object;
+        if ((this.iDKor == null && other.iDKor != null) || (this.iDKor != null && !this.iDKor.equals(other.iDKor))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entiteti.Korisnik[ iDKor=" + iDKor + " ]";
     }
     
 }

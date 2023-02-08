@@ -82,7 +82,13 @@ public class podsistem3Endpoints {
         zahtev.dodajParam(idKor);
         return posaljiZahtev(zahtev);
     }
-    
+    //tesiraj bez ove anotacije
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    public Response getget()
+    {
+       return Response.status(Response.Status.OK).entity("OK").build();
+    }
     //tesiraj bez ove anotacije
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @GET

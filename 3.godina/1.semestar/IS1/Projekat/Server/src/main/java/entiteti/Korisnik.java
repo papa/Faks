@@ -9,6 +9,9 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,25 +22,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 public class Korisnik implements Serializable {
 
-
-    private String ime;
-
-    private String prezime;
-
-    private String username;
-
-    private String sifra;
-
-    private String adresa;
-
-    private int novac;
-
     private static final long serialVersionUID = 1L;
-
+    
     private Integer iDKor;
-
+   
+    private String ime;
+    
+    private String prezime;
+    
+    private String username;
+   
+    private String sifra;
+    
+    private String adresa;
+   
+    private double novac;
+    
     private Grad iDGrad;
 
     public Korisnik() {
@@ -47,7 +50,7 @@ public class Korisnik implements Serializable {
         this.iDKor = iDKor;
     }
 
-    public Korisnik(Integer iDKor, String username, int novac) {
+    public Korisnik(Integer iDKor, String username, double novac) {
         this.iDKor = iDKor;
         this.username = username;
         this.novac = novac;
@@ -59,40 +62,6 @@ public class Korisnik implements Serializable {
 
     public void setIDKor(Integer iDKor) {
         this.iDKor = iDKor;
-    }
-
-
-    public Grad getIDGrad() {
-        return iDGrad;
-    }
-
-    public void setIDGrad(Grad iDGrad) {
-        this.iDGrad = iDGrad;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (iDKor != null ? iDKor.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Korisnik)) {
-            return false;
-        }
-        Korisnik other = (Korisnik) object;
-        if ((this.iDKor == null && other.iDKor != null) || (this.iDKor != null && !this.iDKor.equals(other.iDKor))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entiteti.Korisnik[ iDKor=" + iDKor + " ]";
     }
 
     public String getIme() {
@@ -135,12 +104,45 @@ public class Korisnik implements Serializable {
         this.adresa = adresa;
     }
 
-    public int getNovac() {
+    public double getNovac() {
         return novac;
     }
 
-    public void setNovac(int novac) {
+    public void setNovac(double novac) {
         this.novac = novac;
+    }
+
+    public Grad getIDGrad() {
+        return iDGrad;
+    }
+
+    public void setIDGrad(Grad iDGrad) {
+        this.iDGrad = iDGrad;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (iDKor != null ? iDKor.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Korisnik)) {
+            return false;
+        }
+        Korisnik other = (Korisnik) object;
+        if ((this.iDKor == null && other.iDKor != null) || (this.iDKor != null && !this.iDKor.equals(other.iDKor))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entiteti.Korisnik[ iDKor=" + iDKor + " ]";
     }
     
 }

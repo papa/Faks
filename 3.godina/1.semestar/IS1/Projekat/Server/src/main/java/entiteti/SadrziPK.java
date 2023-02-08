@@ -14,7 +14,9 @@ import javax.validation.constraints.NotNull;
 
 public class SadrziPK implements Serializable {
 
+    
     private int iDArt;
+    
     private int iDKorpa;
 
     public SadrziPK() {

@@ -47,7 +47,7 @@ public class Kategorija implements Serializable {
     private Integer iDKat;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 60)
+    @Size(min = 1, max = 100)
     @Column(name = "Naziv")
     private String naziv;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDKat", fetch = FetchType.EAGER)

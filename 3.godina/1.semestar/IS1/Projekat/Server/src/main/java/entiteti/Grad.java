@@ -8,8 +8,12 @@ package entiteti;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -23,10 +27,12 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class Grad implements Serializable {
 
-    private String naziv;
-
     private static final long serialVersionUID = 1L;
+    
     private Integer iDGrad;
+    
+    private String naziv;
+    
     private List<Korisnik> korisnikList;
 
     public Grad() {
@@ -49,6 +55,13 @@ public class Grad implements Serializable {
         this.iDGrad = iDGrad;
     }
 
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
 
     @XmlTransient
     public List<Korisnik> getKorisnikList() {
@@ -82,14 +95,6 @@ public class Grad implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Grad[ iDGrad=" + iDGrad + " ]";
-    }
-
-    public String getNaziv() {
-        return naziv;
-    }
-
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
     }
     
 }

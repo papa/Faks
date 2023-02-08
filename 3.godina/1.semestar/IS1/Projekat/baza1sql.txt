@@ -23,14 +23,14 @@ DROP TABLE IF EXISTS `korisnik`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `korisnik` (
-  `IDKor` int(11) NOT NULL auto_increment,
-  `Ime` char(20) DEFAULT NULL,
-  `Prezime` char(20) DEFAULT NULL,
-  `Username` char(20) NOT NULL,
-  `Sifra` char(20) DEFAULT NULL,
-  `Adresa` varchar(60) DEFAULT NULL,
-  `Novac` int(11) NOT NULL,
-  `IDGrad` int(11),
+  `IDKor` int NOT NULL auto_increment,
+  `Ime` varchar(100) DEFAULT NULL,
+  `Prezime` varchar(100) DEFAULT NULL,
+  `Username` varchar(100) NOT NULL,
+  `Sifra` varchar(100) DEFAULT NULL,
+  `Adresa` varchar(100) DEFAULT NULL,
+  `Novac` double NOT NULL,
+  `IDGrad` int not null,
   PRIMARY KEY (`IDKor`),
   UNIQUE KEY `Username` (`Username`),
   FOREIGN KEY (`IDGrad`) REFERENCES `grad` (`IDGrad`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -42,8 +42,8 @@ DROP TABLE IF EXISTS `grad`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `grad` (
-  `IDGrad` int(11) NOT NULL auto_increment,
-  `Naziv` char(15) NOT NULL,
+  `IDGrad` int NOT NULL auto_increment,
+  `Naziv` varchar(100) NOT NULL,
   PRIMARY KEY (`IDGrad`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

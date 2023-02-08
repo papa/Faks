@@ -8,9 +8,11 @@ package entiteti;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -20,51 +22,48 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-public class Sadrzi implements Serializable {
+public class Stavka implements Serializable {
 
     private static final long serialVersionUID = 1L;
-   
-    protected SadrziPK sadrziPK;
-   
-    private double cena;
+    
+    private Integer iDStavka;
+    
+    private int iDArt;
    
     private int kolicina;
     
-    private Artikl artikl;
+    private double cena;
    
-    private Korpa korpa;
+    private Narudzbina iDNar;
 
-    public Sadrzi() {
+    public Stavka() {
     }
 
-    public Sadrzi(SadrziPK sadrziPK) {
-        this.sadrziPK = sadrziPK;
+    public Stavka(Integer iDStavka) {
+        this.iDStavka = iDStavka;
     }
 
-    public Sadrzi(SadrziPK sadrziPK, double cena, int kolicina) {
-        this.sadrziPK = sadrziPK;
-        this.cena = cena;
+    public Stavka(Integer iDStavka, int iDArt, int kolicina, double cena) {
+        this.iDStavka = iDStavka;
+        this.iDArt = iDArt;
         this.kolicina = kolicina;
-    }
-
-    public Sadrzi(int iDArt, int iDKorpa) {
-        this.sadrziPK = new SadrziPK(iDArt, iDKorpa);
-    }
-
-    public SadrziPK getSadrziPK() {
-        return sadrziPK;
-    }
-
-    public void setSadrziPK(SadrziPK sadrziPK) {
-        this.sadrziPK = sadrziPK;
-    }
-
-    public double getCena() {
-        return cena;
-    }
-
-    public void setCena(double cena) {
         this.cena = cena;
+    }
+
+    public Integer getIDStavka() {
+        return iDStavka;
+    }
+
+    public void setIDStavka(Integer iDStavka) {
+        this.iDStavka = iDStavka;
+    }
+
+    public int getIDArt() {
+        return iDArt;
+    }
+
+    public void setIDArt(int iDArt) {
+        this.iDArt = iDArt;
     }
 
     public int getKolicina() {
@@ -75,37 +74,37 @@ public class Sadrzi implements Serializable {
         this.kolicina = kolicina;
     }
 
-    public Artikl getArtikl() {
-        return artikl;
+    public double getCena() {
+        return cena;
     }
 
-    public void setArtikl(Artikl artikl) {
-        this.artikl = artikl;
+    public void setCena(double cena) {
+        this.cena = cena;
     }
 
-    public Korpa getKorpa() {
-        return korpa;
+    public Narudzbina getIDNar() {
+        return iDNar;
     }
 
-    public void setKorpa(Korpa korpa) {
-        this.korpa = korpa;
+    public void setIDNar(Narudzbina iDNar) {
+        this.iDNar = iDNar;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (sadrziPK != null ? sadrziPK.hashCode() : 0);
+        hash += (iDStavka != null ? iDStavka.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Sadrzi)) {
+        if (!(object instanceof Stavka)) {
             return false;
         }
-        Sadrzi other = (Sadrzi) object;
-        if ((this.sadrziPK == null && other.sadrziPK != null) || (this.sadrziPK != null && !this.sadrziPK.equals(other.sadrziPK))) {
+        Stavka other = (Stavka) object;
+        if ((this.iDStavka == null && other.iDStavka != null) || (this.iDStavka != null && !this.iDStavka.equals(other.iDStavka))) {
             return false;
         }
         return true;
@@ -113,7 +112,7 @@ public class Sadrzi implements Serializable {
 
     @Override
     public String toString() {
-        return "entiteti.Sadrzi[ sadrziPK=" + sadrziPK + " ]";
+        return "entiteti.Stavka[ iDStavka=" + iDStavka + " ]";
     }
     
 }

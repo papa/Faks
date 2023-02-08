@@ -34,7 +34,7 @@ public class Main extends Thread{
     //@PersistenceContext(unitName = "Podsistem1PU")
     //EntityManager em;
     
-    private Odgovor kreirajKorisnika(String username, String ime, String prezime, String sifra, String adresa,int novac, String nazivGrada)
+    private Odgovor kreirajKorisnika(String username, String ime, String prezime, String sifra, String adresa,double novac, String nazivGrada)
     {
         List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", nazivGrada).getResultList();
         if(gradovi.isEmpty())
@@ -111,7 +111,7 @@ public class Main extends Thread{
         return new Odgovor(0, "USPESNO PROMENJENI ADRESA I GRAD");
     }
     
-    private Odgovor dodajNovac(String username, int novac)
+    private Odgovor dodajNovac(String username, double novac)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
         if(korisnici.isEmpty())
@@ -136,7 +136,7 @@ public class Main extends Thread{
         ArrayList<Object> params = null;
         String username = null;
         String adresa = null;
-        int novac = 0;
+        double novac = 0;
         String nazivGrada = null;
         
         while(true)
@@ -161,7 +161,7 @@ public class Main extends Thread{
                         String prezime = (String)params.get(2);
                         String sifra = (String)params.get(3);
                         adresa = (String)params.get(4);
-                        novac = (int)params.get(5);
+                        novac = (double)params.get(5);
                         nazivGrada = (String)params.get(6);
                         odgovor = kreirajKorisnika(username, ime, prezime, sifra, adresa, novac, nazivGrada);
                         objMsgSend.setObject(odgovor);
@@ -169,7 +169,7 @@ public class Main extends Thread{
                     case 3:
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
-                        novac = (int)params.get(1);
+                        novac = (double)params.get(1);
                         odgovor = dodajNovac(username, novac);
                         objMsgSend.setObject(odgovor);
                         break;
@@ -204,6 +204,7 @@ public class Main extends Thread{
     
     public static void main(String[] args) {
         new Main().start();
+        new Komunikacija13(connectionFactory, myTopic).start();
         while(true){}
     }
 }

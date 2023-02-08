@@ -52,19 +52,20 @@ public class Artikl implements Serializable {
     private Integer iDArt;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 60)
+    @Size(min = 1, max = 100)
     @Column(name = "Naziv")
     private String naziv;
-    @Size(max = 60)
+    @Size(max = 100)
     @Column(name = "Opis")
     private String opis;
     @Basic(optional = false)
     @NotNull
     @Column(name = "Cena")
     private double cena;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "Popust")
-    private Double popust;
+    private double popust;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IDKor")
@@ -84,10 +85,11 @@ public class Artikl implements Serializable {
         this.iDArt = iDArt;
     }
 
-    public Artikl(Integer iDArt, String naziv, double cena, int iDKor) {
+    public Artikl(Integer iDArt, String naziv, double cena, double popust, int iDKor) {
         this.iDArt = iDArt;
         this.naziv = naziv;
         this.cena = cena;
+        this.popust = popust;
         this.iDKor = iDKor;
     }
 
@@ -123,11 +125,11 @@ public class Artikl implements Serializable {
         this.cena = cena;
     }
 
-    public Double getPopust() {
+    public double getPopust() {
         return popust;
     }
 
-    public void setPopust(Double popust) {
+    public void setPopust(double popust) {
         this.popust = popust;
     }
 

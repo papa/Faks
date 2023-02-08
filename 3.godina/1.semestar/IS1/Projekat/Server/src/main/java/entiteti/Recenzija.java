@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,18 +22,40 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ * @author Jelena
+ */
+@Entity
+@Table(name = "recenzija")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Recenzija.findAll", query = "SELECT r FROM Recenzija r"),
+    @NamedQuery(name = "Recenzija.findByIDRec", query = "SELECT r FROM Recenzija r WHERE r.iDRec = :iDRec"),
+    @NamedQuery(name = "Recenzija.findByIDKor", query = "SELECT r FROM Recenzija r WHERE r.iDKor = :iDKor"),
+    @NamedQuery(name = "Recenzija.findByOcena", query = "SELECT r FROM Recenzija r WHERE r.ocena = :ocena"),
+    @NamedQuery(name = "Recenzija.findByOpis", query = "SELECT r FROM Recenzija r WHERE r.opis = :opis")})
 public class Recenzija implements Serializable {
 
-    private int iDKor;
-   
-    private int ocena;
-  
-    private String opis;
-
     private static final long serialVersionUID = 1L;
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "IDRec")
     private Integer iDRec;
-   
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IDKor")
+    private int iDKor;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Ocena")
+    private int ocena;
+    @Size(max = 200)
+    @Column(name = "Opis")
+    private String opis;
+    @JoinColumn(name = "IDArt", referencedColumnName = "IDArt")
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Artikl iDArt;
 
     public Recenzija() {
@@ -56,6 +79,29 @@ public class Recenzija implements Serializable {
         this.iDRec = iDRec;
     }
 
+    public int getIDKor() {
+        return iDKor;
+    }
+
+    public void setIDKor(int iDKor) {
+        this.iDKor = iDKor;
+    }
+
+    public int getOcena() {
+        return ocena;
+    }
+
+    public void setOcena(int ocena) {
+        this.ocena = ocena;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
 
     public Artikl getIDArt() {
         return iDArt;
@@ -88,30 +134,6 @@ public class Recenzija implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Recenzija[ iDRec=" + iDRec + " ]";
-    }
-
-    public int getIDKor() {
-        return iDKor;
-    }
-
-    public void setIDKor(int iDKor) {
-        this.iDKor = iDKor;
-    }
-
-    public int getOcena() {
-        return ocena;
-    }
-
-    public void setOcena(int ocena) {
-        this.ocena = ocena;
-    }
-
-    public String getOpis() {
-        return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
     }
     
 }

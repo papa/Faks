@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package entiteti;
 
 import java.io.Serializable;
@@ -6,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,28 +26,27 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+
 public class Artikl implements Serializable {
 
+    private static final long serialVersionUID = 1L;
    
+    private Integer iDArt;
+    
     private String naziv;
-   
+    
     private String opis;
     
     private double cena;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
    
-    private Double popust;
+    private double popust;
     
     private int iDKor;
-
-    private static final long serialVersionUID = 1L;
-    
-    private Integer iDArt;
     
     private Kategorija iDKat;
-    
-    private List<Recenzija> recenzijaList;
    
+    private List<Recenzija> recenzijaList;
+    
     private List<Sadrzi> sadrziList;
 
     public Artikl() {
@@ -51,10 +56,11 @@ public class Artikl implements Serializable {
         this.iDArt = iDArt;
     }
 
-    public Artikl(Integer iDArt, String naziv, int cena, int iDKor) {
+    public Artikl(Integer iDArt, String naziv, double cena, double popust, int iDKor) {
         this.iDArt = iDArt;
         this.naziv = naziv;
         this.cena = cena;
+        this.popust = popust;
         this.iDKor = iDKor;
     }
 
@@ -65,7 +71,47 @@ public class Artikl implements Serializable {
     public void setIDArt(Integer iDArt) {
         this.iDArt = iDArt;
     }
-    
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public double getCena() {
+        return cena;
+    }
+
+    public void setCena(double cena) {
+        this.cena = cena;
+    }
+
+    public double getPopust() {
+        return popust;
+    }
+
+    public void setPopust(double popust) {
+        this.popust = popust;
+    }
+
+    public int getIDKor() {
+        return iDKor;
+    }
+
+    public void setIDKor(int iDKor) {
+        this.iDKor = iDKor;
+    }
+
     public Kategorija getIDKat() {
         return iDKat;
     }
@@ -115,46 +161,6 @@ public class Artikl implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Artikl[ iDArt=" + iDArt + " ]";
-    }
-
-    public String getNaziv() {
-        return naziv;
-    }
-
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
-    }
-
-    public String getOpis() {
-        return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
-    }
-
-    public double getCena() {
-        return cena;
-    }
-
-    public void setCena(double cena) {
-        this.cena = cena;
-    }
-
-    public Double getPopust() {
-        return popust;
-    }
-
-    public void setPopust(Double popust) {
-        this.popust = popust;
-    }
-
-    public int getIDKor() {
-        return iDKor;
-    }
-
-    public void setIDKor(int iDKor) {
-        this.iDKor = iDKor;
     }
     
 }

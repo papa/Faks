@@ -116,7 +116,7 @@ public class podsistem1Endpoints {
     @Path("/zahtev2")
     public Response kreirajKorisnika(@QueryParam("username") String username, @QueryParam("ime") String ime,
             @QueryParam("prezime") String prezime, @QueryParam("sifra") String sifra, @QueryParam("adresa") String adresa,
-            @QueryParam("novac") int novac, @QueryParam("nazivGrada") String nazivGrada)
+            @QueryParam("novac") double novac, @QueryParam("nazivGrada") String nazivGrada)
     {
         Zahtev zahtev = new Zahtev();
         zahtev.postaviBrZahteva(KREIRAJ_KORISNIKA);
@@ -133,7 +133,7 @@ public class podsistem1Endpoints {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @POST
     @Path("/zahtev3")
-    public Response dodajNovacKorisniku(@QueryParam("username") String username, @QueryParam("novac") int novac)
+    public Response dodajNovacKorisniku(@QueryParam("username") String username, @QueryParam("novac") double novac)
     {
         Zahtev zahtev = new Zahtev();
         zahtev.postaviBrZahteva(DODAJ_NOVAC);

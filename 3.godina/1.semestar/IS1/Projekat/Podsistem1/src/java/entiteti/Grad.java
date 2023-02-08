@@ -8,8 +8,10 @@ package entiteti;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,20 +37,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Grad.findByNaziv", query = "SELECT g FROM Grad g WHERE g.naziv = :naziv")})
 public class Grad implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 15)
-    @Column(name = "Naziv")
-    private String naziv;
-
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "IDGrad")
+    private Integer iDGrad;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDGrad")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer iDGrad;
-    @OneToMany(mappedBy = "iDGrad")
+    @Size(min = 1, max = 100)
+    @Column(name = "Naziv")
+    private String naziv;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDGrad", fetch = FetchType.EAGER)
     private List<Korisnik> korisnikList;
 
     public Grad() {
@@ -71,6 +71,13 @@ public class Grad implements Serializable {
         this.iDGrad = iDGrad;
     }
 
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
 
     @XmlTransient
     public List<Korisnik> getKorisnikList() {
@@ -104,14 +111,6 @@ public class Grad implements Serializable {
     @Override
     public String toString() {
         return "entiteti.Grad[ iDGrad=" + iDGrad + " ]";
-    }
-
-    public String getNaziv() {
-        return naziv;
-    }
-
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
     }
     
 }
