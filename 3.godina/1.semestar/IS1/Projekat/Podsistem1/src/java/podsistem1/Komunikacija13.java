@@ -51,7 +51,7 @@ public class Komunikacija13 extends Thread{
         return z;
     }
     
-    private Zahtev smanjiNovac(int idKor, int novac)
+    private Zahtev smanjiNovac(int idKor, double novac)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
         Korisnik k = korisnici.get(0);
@@ -72,7 +72,7 @@ public class Komunikacija13 extends Thread{
         JMSProducer producer = context.createProducer();
         ObjectMessage objMsgSend = context.createObjectMessage();
         int idKor = 0;
-        int novac = 0;
+        double novac = 0;
         Zahtev zahtevOdg = null;
         
         while(true)
@@ -92,7 +92,7 @@ public class Komunikacija13 extends Thread{
                         break;
                     case SMANJI_NOVAC:
                         idKor = (int)zahtev.getParametri().get(0);
-                        novac = (int)zahtev.getParametri().get(1);
+                        novac = (double)zahtev.getParametri().get(1);
                         zahtevOdg = smanjiNovac(idKor, novac);
                         objMsgSend.setObject(zahtevOdg);
                         break;

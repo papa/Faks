@@ -76,7 +76,11 @@ public class Main extends Thread{
     //zahtev 13
     private List<Korisnik> getSviKorisnici()
     {
-        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();        
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();  
+        for(Korisnik k : korisnici)
+        {
+            
+        }
         return korisnici;
     }
     

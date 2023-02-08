@@ -46,8 +46,9 @@ public class Main extends Thread{
     private static final int SMANJI_NOVAC = 111; 
     
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
+    private static final int ISPRAZNI_KORPU = 122;
     
-    private int izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
+    private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
     {
         System.out.println(idKor);
         System.out.println(novacKorisnik);
@@ -96,7 +97,7 @@ public class Main extends Thread{
             em.flush();
         }
         
-        return 0;
+        return totCena;
     }
     
     //id 13 da tu prima poruke na topicu
@@ -140,11 +141,38 @@ public class Main extends Thread{
             if(z2.getBrZahteva() == -1)
                 return new Odgovor(-1, "KORISNIKU JE PRAZNA KORPA");
             
-            int ok = izvrsiPlacanje(idKor, novac, adresa, idGrad, z2.getParametri());
+            double ok = izvrsiPlacanje(idKor, novac, adresa, idGrad, z2.getParametri());
             if(ok == -1)
             {
                 return new Odgovor(-1, "KORISNIK NEMA DOVOLJNO NOVCA");
             }
+            
+            objMsgSend = context.createObjectMessage();
+            objMsgSend.setIntProperty("id", 11);
+            zahtev = new Zahtev();
+            zahtev.postaviBrZahteva(SMANJI_NOVAC);
+            zahtev.dodajParam(idKor);
+            zahtev.dodajParam(ok);
+            objMsgSend.setObject(zahtev);
+            
+            producer.send(myTopic, objMsgSend);
+            System.out.println("Poslao zahtev podsistemu 1");
+            consumer.receive();
+            System.out.println("Primio zahtev od podsistema 1");
+             
+            objMsgSend2 = context.createObjectMessage();
+            objMsgSend2.setIntProperty("id", 12);
+            zahtev2 = new Zahtev();
+            zahtev2.postaviBrZahteva(ISPRAZNI_KORPU);
+            zahtev2.dodajParam(idKor);
+            objMsgSend2.setObject(zahtev2);
+            
+            producer.send(myTopic, objMsgSend2);
+            
+            consumer.receive();
+            System.out.println("Primi zahtev od podsistema 2");
+            
+            
         } catch (JMSException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

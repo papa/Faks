@@ -38,6 +38,7 @@ public class Komunikacija23 extends Thread{
     //@PersistenceContext(unitName = "Podsistem1PU")
     //EntityManager em;
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
+    private static final int ISPRAZNI_KORPU = 122;
     
     private Zahtev formirajZahtev(Korpa k)
     {
@@ -56,6 +57,26 @@ public class Komunikacija23 extends Thread{
 //            em.flush();
 //        }
         
+        return z;
+    }
+    
+    private Zahtev isprazniKorpu(int idKor)
+    {
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        Korpa k = korpe.get(0);
+        Zahtev z = new Zahtev();
+        z.postaviBrZahteva(0);
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        for(Sadrzi s : sadrziList)
+        {
+            em.joinTransaction();
+            em.remove(s);
+            em.flush();
+        }
+        k.setUkupnaCena(0);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
         return z;
     }
     
@@ -94,6 +115,11 @@ public class Komunikacija23 extends Thread{
                     case CISTI_KORPA_GET_ARTIKLI:
                         idKor = (int)zahtev.getParametri().get(0);
                         zahtevOdg = getArtikliKorpa(idKor);
+                        objMsgSend.setObject(zahtevOdg);
+                        break;
+                    case ISPRAZNI_KORPU:
+                        idKor = (int)zahtev.getParametri().get(0);
+                        zahtevOdg = isprazniKorpu(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         break;
                 }
