@@ -40,6 +40,13 @@ public class Main extends Thread{
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
     
+    private void persistObject(Object o)
+    {
+        em.joinTransaction();
+        em.persist(o);
+        em.flush();
+    }
+    
      //zahtev 1
     private Odgovor kreirajGrad(String naziv)
     {
@@ -47,12 +54,8 @@ public class Main extends Thread{
         if(!gradovi.isEmpty())
             return new Odgovor(-1, "VEC POSTOJI GRAD SA ZADATIM NAZIVOM");
         
-        Grad g = new Grad();
-        g.setNaziv(naziv);
-        g.setIDGrad(0);
-        em.joinTransaction();
-        em.persist(g);
-        em.flush();
+        Grad g = new Grad(0, naziv);
+        persistObject(g);
         return new Odgovor(0, "USPESNO KREIRAN GRAD");
     }
     
@@ -69,14 +72,8 @@ public class Main extends Thread{
             return new Odgovor(-1, "VEC POSTOJI KORISNIK SA ZADATIM USERNAME");
         
         Korisnik k = new Korisnik(0, username, novac);
-        k.setIme(ime);
-        k.setPrezime(prezime);
-        k.setSifra(sifra);
-        k.setAdresa(adresa);
-        k.setIDGrad(g);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
+        k.setIme(ime); k.setPrezime(prezime); k.setSifra(sifra); k.setAdresa(adresa); k.setIDGrad(g);
+        persistObject(k);
         return new Odgovor(0, "USPESNO KREIRAN KORISNIK");
     }
     
@@ -89,9 +86,7 @@ public class Main extends Thread{
         
         Korisnik k = korisnici.get(0);
         k.setNovac(k.getNovac() + novac);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
+        persistObject(k);
         return new Odgovor(0, "USPESNO DODAT NOVAC KORISNIKU");
     }
     
@@ -110,9 +105,7 @@ public class Main extends Thread{
         
         k.setAdresa(adresa);
         k.setIDGrad(g);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
+        persistObject(k);
         return new Odgovor(0, "USPESNO PROMENJENI ADRESA I GRAD");
     }
     

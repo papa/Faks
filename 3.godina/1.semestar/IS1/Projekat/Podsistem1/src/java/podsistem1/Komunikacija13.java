@@ -34,6 +34,7 @@ public class Komunikacija13 extends Thread{
     
     private static final int GET_GRAD_ADRESA = 101;
     private static final int SMANJI_NOVAC = 111; 
+    
     private Zahtev getAdresaGradNovac(int idKor)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
