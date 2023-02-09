@@ -3,7 +3,6 @@ package podsistem3;
 import entiteti.Narudzbina;
 import entiteti.Stavka;
 import entiteti.Transakcija;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,10 +49,6 @@ public class Main extends Thread{
     
     private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
     {
-        System.out.println(idKor);
-        System.out.println(novacKorisnik);
-        System.out.println(adresa);
-        System.out.println(idGrad);
         double totCena = 0;
         for(Object o : artikliPaketi)
         {
@@ -101,6 +96,7 @@ public class Main extends Thread{
     }
     
     //id 13 da tu prima poruke na topicu
+    //zahtev 11
     private Odgovor placanje(int idKor)
     {
         try {
@@ -180,6 +176,7 @@ public class Main extends Thread{
         return new Odgovor(0, "USPESNO IZVRSENO PLACANJE");
     }
     
+    //zahtev 17
     private Odgovor getKorisnikNarudzbine(int idKor)
     {
         List<Narudzbina> narudzbine = em.createNamedQuery("Narudzbina.findByIDKor").setParameter("iDKor", idKor).getResultList();
@@ -191,16 +188,29 @@ public class Main extends Thread{
         return new Odgovor(0, "SVE OK", narudzbine);
     }
     
-    private Odgovor getSveTranskacije()
-    {
-        List<Transakcija> transakcije = em.createNamedQuery("Transakcija.findAll").getResultList();
-        return new Odgovor(0, "SVE OK", transakcije);
-    }
-    
+    //zahtev 18
     private Odgovor getSveNarudzbine()
     {
         List<Narudzbina> narudzbine = em.createNamedQuery("Narudzbina.findAll").getResultList();
+        for(Narudzbina n : narudzbine)
+        {
+            n.setStavkaList(null);
+            n.setTransakcijaList(null);
+        }
         return new Odgovor(0, "SVE OK", narudzbine);
+    }
+    
+    //zahtev 19
+    private Odgovor getSveTranskacije()
+    {
+        List<Transakcija> transakcije = em.createNamedQuery("Transakcija.findAll").getResultList();
+        for(Transakcija t : transakcije)
+        {
+            Narudzbina n = t.getIDNar();
+            n.setStavkaList(null);
+            n.setTransakcijaList(null);
+        }
+        return new Odgovor(0, "SVE OK", transakcije);
     }
     
     @Override

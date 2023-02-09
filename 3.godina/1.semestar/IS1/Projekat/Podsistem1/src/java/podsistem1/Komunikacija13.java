@@ -1,13 +1,9 @@
 package podsistem1;
 
-import entiteti.Grad;
 import entiteti.Korisnik;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -18,7 +14,6 @@ import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import utility.Odgovor;
 import utility.Zahtev;
 
 public class Komunikacija13 extends Thread{

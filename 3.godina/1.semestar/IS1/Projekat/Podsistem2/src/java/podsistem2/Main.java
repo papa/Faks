@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package podsistem2;
 
 import entiteti.Artikl;
@@ -48,6 +43,7 @@ public class Main extends Thread {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
     EntityManager em = emf.createEntityManager();
 
+    //zahtev 14
     private List<Kategorija> getSveKategorije() {
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findAll").getResultList();
         for (Kategorija k : kategorije) {
@@ -58,6 +54,7 @@ public class Main extends Thread {
     }
 
     //TODO da li je ok da postoji kategorija istog naziva sa istom nadkategorijom
+    //zahtev 5
     private Odgovor kreirajKategoriju(String naziv, String nazivNad) {
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findByNaziv").setParameter("naziv", nazivNad).getResultList();
         if (kategorije.isEmpty() && nazivNad != null) {
@@ -83,6 +80,7 @@ public class Main extends Thread {
         return new Odgovor(0, "KATEGORIJA USPESNO KREIRANA");
     }
 
+    //zahtev 6
     private Odgovor kreirajArtikl(int idKor, String nazivArt, String opis, double cena, double popust, String nazivKategorije) {
         if (popust < 0 || popust > 100) {
             return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
@@ -113,6 +111,7 @@ public class Main extends Thread {
         return new Odgovor(0, "USPESNO KREIRAN ARTIKL");
     }
 
+    //zahtev 7
     private Odgovor menjajCenu(int idKor, String nazivArt, double cena) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
         if (artikli.isEmpty()) {
@@ -127,6 +126,7 @@ public class Main extends Thread {
         return new Odgovor(0, "USPESNO POSTAVLJENA CENA");
     }
 
+    //zahtev 8
     private Odgovor postaviPopust(int idKor, String nazivArt, double popust) {
         if (popust < 0 || popust > 100) {
             return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
@@ -144,43 +144,7 @@ public class Main extends Thread {
         return new Odgovor(0, "USPESNO POSTAVLJEN POPUST");
     }
 
-    private Odgovor getArtikliKorisnik(int idKor) {
-        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKor").setParameter("iDKor", idKor).getResultList();
-        for (Artikl a : artikli) {
-            a.setRecenzijaList(null);
-            a.setSadrziList(null);
-            a.getIDKat().setArtiklList(null);
-            a.getIDKat().setKategorijaList(null);
-        }
-        return new Odgovor(0, "SVE OK", artikli);
-    }
-
-    private Odgovor getKorpa(int idKor) {
-        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
-        if (korpe.isEmpty()) {
-            Korpa k = new Korpa();
-            k.setIDKorpa(idKor);
-            k.setUkupnaCena(0);
-            k.setSadrziList(null); // todo da li treba 
-            em.joinTransaction();
-            em.persist(k);
-            em.flush();
-            return new Odgovor(0, "SVE OK", k);
-        } else {
-            List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
-            Korpa k = korpe.get(0);
-            k.setSadrziList(null);
-            for (Sadrzi s : sadrziList) {
-                Artikl a = s.getArtikl();
-                a.setRecenzijaList(null);
-                a.setSadrziList(null);
-                a.getIDKat().setArtiklList(null);
-                a.getIDKat().setKategorijaList(null);
-            }
-            return new Odgovor(0, "SVE OK", sadrziList);
-        }
-    }
-
+    //zahtev 9
     private Odgovor dodajArtikle(int idKor, int idArt, int koliko) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
         if (artikli.isEmpty()) {
@@ -210,6 +174,8 @@ public class Main extends Thread {
             s = new Sadrzi(idArt, idKor);
             s.setKolicina(koliko);
             s.setCena(a.getCena() - a.getCena() * a.getPopust() / 100);
+            s.setArtikl(a);
+            s.setKorpa(k);
             em.joinTransaction();
             em.persist(s);
             em.flush();
@@ -235,6 +201,7 @@ public class Main extends Thread {
         return new Odgovor(0, "SVE OK");
     }
 
+    //zahtev
     private Odgovor izbaciArtikle(int idKor, int idArt, int koliko) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
         if (artikli.isEmpty()) {
@@ -285,6 +252,46 @@ public class Main extends Thread {
         }
 
         return new Odgovor(0, "SVE OK");
+    }
+    
+     //zahtev 15
+    private Odgovor getArtikliKorisnik(int idKor) {
+        List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKor").setParameter("iDKor", idKor).getResultList();
+        for (Artikl a : artikli) {
+            a.setRecenzijaList(null);
+            a.setSadrziList(null);
+            a.getIDKat().setArtiklList(null);
+            a.getIDKat().setKategorijaList(null);
+        }
+        return new Odgovor(0, "SVE OK", artikli);
+    }
+
+    //zahtev 16
+    private Odgovor getKorpa(int idKor) {
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        if (korpe.isEmpty()) {
+            Korpa k = new Korpa();
+            k.setIDKorpa(idKor);
+            k.setUkupnaCena(0);
+            k.setSadrziList(null); // todo da li treba 
+            em.joinTransaction();
+            em.persist(k);
+            em.flush();
+            return new Odgovor(0, "SVE OK", k);
+        } else {
+            List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
+            //Korpa k = korpe.get(0);
+            //k.setSadrziList(null);
+            for (Sadrzi s : sadrziList) 
+            {
+                Artikl a = s.getArtikl();
+                a.setRecenzijaList(null);
+                a.setSadrziList(null);
+                a.getIDKat().setArtiklList(null);
+                a.getIDKat().setKategorijaList(null);
+            }
+            return new Odgovor(0, "SVE OK", sadrziList);
+        }
     }
 
     @Override

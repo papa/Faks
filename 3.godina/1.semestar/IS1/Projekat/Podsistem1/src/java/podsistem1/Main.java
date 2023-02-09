@@ -2,7 +2,6 @@ package podsistem1;
 
 import entiteti.Grad;
 import entiteti.Korisnik;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -34,6 +33,30 @@ public class Main extends Thread{
     //@PersistenceContext(unitName = "Podsistem1PU")
     //EntityManager em;
     
+    private static final int KREIRAJ_GRAD = 1;
+    private static final int KREIRAJ_KORISNIKA = 2;
+    private static final int DODAJ_NOVAC = 3;
+    private static final int PROMENA_ADRESA_GRAD = 4;
+    private static final int SVI_GRADOVI = 12;
+    private static final int SVI_KORISNICI = 13;
+    
+     //zahtev 1
+    private Odgovor kreirajGrad(String naziv)
+    {
+        List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", naziv).getResultList();
+        if(!gradovi.isEmpty())
+            return new Odgovor(-1, "VEC POSTOJI GRAD SA ZADATIM NAZIVOM");
+        
+        Grad g = new Grad();
+        g.setNaziv(naziv);
+        g.setIDGrad(0);
+        em.joinTransaction();
+        em.persist(g);
+        em.flush();
+        return new Odgovor(0, "USPESNO KREIRAN GRAD");
+    }
+    
+    //zahtev2
     private Odgovor kreirajKorisnika(String username, String ime, String prezime, String sifra, String adresa,double novac, String nazivGrada)
     {
         List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", nazivGrada).getResultList();
@@ -57,44 +80,22 @@ public class Main extends Thread{
         return new Odgovor(0, "USPESNO KREIRAN KORISNIK");
     }
     
-    //zahtev 1
-    private Odgovor kreirajGrad(String naziv)
+    //zahtev3
+    private Odgovor dodajNovac(String username, double novac)
     {
-        List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", naziv).getResultList();
-        if(!gradovi.isEmpty())
-            return new Odgovor(-1, "VEC POSTOJI GRAD SA ZADATIM NAZIVOM");
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
+        if(korisnici.isEmpty())
+            return new Odgovor(-1, "NE POSTOJI KORISNIK " + username);
         
-        Grad g = new Grad();
-        g.setNaziv(naziv);
-        g.setIDGrad(0);
+        Korisnik k = korisnici.get(0);
+        k.setNovac(k.getNovac() + novac);
         em.joinTransaction();
-        em.persist(g);
+        em.persist(k);
         em.flush();
-        return new Odgovor(0, "USPESNO KREIRAN GRAD");
+        return new Odgovor(0, "USPESNO DODAT NOVAC KORISNIKU");
     }
     
-    //zahtev 13
-    private List<Korisnik> getSviKorisnici()
-    {
-        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();  
-        for(Korisnik k : korisnici)
-        {
-            
-        }
-        return korisnici;
-    }
-    
-    //zahtev 12
-    private List<Grad> getSviGradovi()
-    {
-        List<Grad> gradovi =  em.createNamedQuery("Grad.findAll").getResultList();
-        for(Grad g : gradovi)
-            g.setKorisnikList(null);
-        //todo
-        //ovo je hack, kako da se promeni, ako uopste mora
-        return gradovi;
-    }
-    
+    //zahtev4
     private Odgovor promeniAdresuGrad(String username, String adresa, String nazivGrada)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
@@ -115,18 +116,20 @@ public class Main extends Thread{
         return new Odgovor(0, "USPESNO PROMENJENI ADRESA I GRAD");
     }
     
-    private Odgovor dodajNovac(String username, double novac)
+    //zahtev 12
+    private List<Grad> getSviGradovi()
     {
-        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
-        if(korisnici.isEmpty())
-            return new Odgovor(-1, "NE POSTOJI KORISNIK " + username);
-        
-        Korisnik k = korisnici.get(0);
-        k.setNovac(k.getNovac() + novac);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
-        return new Odgovor(0, "USPESNO DODAT NOVAC KORISNIKU");
+        List<Grad> gradovi =  em.createNamedQuery("Grad.findAll").getResultList();
+        for(Grad g : gradovi)
+            g.setKorisnikList(null);
+        return gradovi;
+    }
+    
+    //zahtev 13
+    private List<Korisnik> getSviKorisnici()
+    {
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();
+        return korisnici;
     }
     
     @Override
@@ -153,12 +156,12 @@ public class Main extends Thread{
                 System.out.println("Primio zahtev od servera");
                 switch(zahtev.getBrZahteva())
                 {
-                    case 1:
+                    case KREIRAJ_GRAD:
                         nazivGrada = (String)zahtev.getParametri().get(0);
                         odgovor = kreirajGrad(nazivGrada);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case 2: 
+                    case KREIRAJ_KORISNIKA: 
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         String ime = (String)params.get(1);
@@ -170,14 +173,14 @@ public class Main extends Thread{
                         odgovor = kreirajKorisnika(username, ime, prezime, sifra, adresa, novac, nazivGrada);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case 3:
+                    case DODAJ_NOVAC:
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         novac = (double)params.get(1);
                         odgovor = dodajNovac(username, novac);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case 4:
+                    case PROMENA_ADRESA_GRAD:
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         adresa = (String)params.get(1);
@@ -185,12 +188,12 @@ public class Main extends Thread{
                         odgovor = promeniAdresuGrad(username, adresa, nazivGrada);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case 12:
+                    case SVI_GRADOVI:
                         List<Grad> gradovi = getSviGradovi();
                         odgovor = new Odgovor(0, "SVE OK", gradovi);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case 13:
+                    case SVI_KORISNICI:
                         List<Korisnik> sviKorisnici = getSviKorisnici();
                         odgovor = new Odgovor(0, "SVE OK", sviKorisnici);
                         objMsgSend.setObject(odgovor);

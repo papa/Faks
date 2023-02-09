@@ -2,12 +2,9 @@ package podsistem2;
 
 import entiteti.Korpa;
 import entiteti.Sadrzi;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -18,7 +15,6 @@ import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import utility.Odgovor;
 import utility.PaketArtikl;
 import utility.Zahtev;
 
@@ -50,13 +46,6 @@ public class Komunikacija23 extends Thread{
             PaketArtikl pArt = new PaketArtikl(s.getArtikl().getIDArt(), s.getKolicina(), s.getCena()*s.getKolicina());
             z.dodajParam(pArt);
         }
-//        for(Sadrzi s : sadrziList)
-//        {
-//            em.joinTransaction();
-//            em.remove(s);
-//            em.flush();
-//        }
-        
         return z;
     }
     
@@ -67,16 +56,18 @@ public class Komunikacija23 extends Thread{
         Zahtev z = new Zahtev();
         z.postaviBrZahteva(0);
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        k.setUkupnaCena(0);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
+        
         for(Sadrzi s : sadrziList)
         {
             em.joinTransaction();
             em.remove(s);
             em.flush();
         }
-        k.setUkupnaCena(0);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
+        
         return z;
     }
     
