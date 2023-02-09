@@ -15,10 +15,6 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Jelena
- */
 public class Podsistem2Handler {
     private static String URL = "http://localhost:8080/Server/resources/podsistem2";
     private static String URL_CON = URL;

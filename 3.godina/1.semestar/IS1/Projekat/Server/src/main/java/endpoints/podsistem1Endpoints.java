@@ -1,13 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package endpoints;
 
-import entiteti.Grad;
-import entiteti.Korisnik;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -18,14 +10,11 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
-import javax.jms.Message;
 import javax.jms.ObjectMessage;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import utility.Odgovor;
@@ -77,27 +66,6 @@ public class podsistem1Endpoints {
         }
         
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("EXCEPTION").build();
-    }
-    
-    //tesiraj bez ove anotacije
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    @GET
-    @Path("/zahtev12")
-    public Response dohvatiSveGradove(){
-        Zahtev zahtev = new Zahtev();
-        zahtev.postaviBrZahteva(SVI_GRADOVI);
-        return posaljiZahtev(zahtev);
-    }
-    
-    //tesiraj bez ove anotacije
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    @GET
-    @Path("/zahtev13")
-    public Response getSviKorisnici()
-    {
-        Zahtev zahtev = new Zahtev();
-        zahtev.postaviBrZahteva(SVI_KORISNICI);
-        return posaljiZahtev(zahtev);
     }
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -153,6 +121,27 @@ public class podsistem1Endpoints {
         zahtev.dodajParam(username);
         zahtev.dodajParam(adresa);
         zahtev.dodajParam(nazivGrada);
+        return posaljiZahtev(zahtev);
+    }
+    
+    //tesiraj bez ove anotacije
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    @Path("/zahtev12")
+    public Response dohvatiSveGradove(){
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(SVI_GRADOVI);
+        return posaljiZahtev(zahtev);
+    }
+    
+    //tesiraj bez ove anotacije
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    @Path("/zahtev13")
+    public Response getSviKorisnici()
+    {
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(SVI_KORISNICI);
         return posaljiZahtev(zahtev);
     }
 }

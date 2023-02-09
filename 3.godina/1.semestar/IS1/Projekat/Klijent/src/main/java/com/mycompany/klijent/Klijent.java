@@ -1,15 +1,6 @@
 package com.mycompany.klijent;
 
-import entiteti.Grad;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.*;
 import java.util.Scanner;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Klijent {
     private static String menu = "1. Kreiranje grada\n" +"2. Kreiranje korisnika\n" +"3. Dodavanje novca korisniku\n" +

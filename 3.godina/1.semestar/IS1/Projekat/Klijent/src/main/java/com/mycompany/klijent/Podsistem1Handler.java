@@ -133,7 +133,7 @@ public class Podsistem1Handler
     {
         URL = URL_CON;
         URL = URL + "/zahtev12";
-        URL = URL + "?";
+        //URL = URL + "?";
         count = 0;
         komunikacija(URL, "GET");
     }
@@ -142,7 +142,7 @@ public class Podsistem1Handler
     {
         URL = URL_CON;
         URL = URL + "/zahtev13";
-        URL = URL + "?";
+        //URL = URL + "?";
         count = 0;
         komunikacija(URL, "GET");
     }
