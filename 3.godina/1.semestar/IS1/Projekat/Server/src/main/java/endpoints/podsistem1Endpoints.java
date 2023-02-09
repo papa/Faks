@@ -35,6 +35,7 @@ public class podsistem1Endpoints {
     private static final int PROMENA_ADRESA_GRAD = 4;
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
+    private static final int LOGIN = 50;
     private static final int PODSISTEM_ID = 1;
     
     private Response posaljiZahtev(Zahtev zahtev)
@@ -142,6 +143,19 @@ public class podsistem1Endpoints {
     {
         Zahtev zahtev = new Zahtev();
         zahtev.postaviBrZahteva(SVI_KORISNICI);
+        return posaljiZahtev(zahtev);
+    }
+    
+    //tesiraj bez ove anotacije
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @GET
+    @Path("/zahtevLogin")
+    public Response login(@QueryParam("username")String username, @QueryParam("sifra") String sifra)
+    {
+        Zahtev zahtev = new Zahtev();
+        zahtev.postaviBrZahteva(LOGIN);
+        zahtev.dodajParam(username);
+        zahtev.dodajParam(sifra);
         return posaljiZahtev(zahtev);
     }
 }

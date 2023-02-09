@@ -39,6 +39,7 @@ public class Main extends Thread{
     private static final int PROMENA_ADRESA_GRAD = 4;
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
+    private static final int LOGIN = 50;
     
     private void persistObject(Object o)
     {
@@ -125,6 +126,19 @@ public class Main extends Thread{
         return korisnici;
     }
     
+    private Odgovor login(String username, String sifra)
+    {
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
+        if(korisnici.isEmpty())
+            return new Odgovor(-1, "-1");
+        Korisnik k = korisnici.get(0);
+        
+        if(!k.getSifra().equals(sifra))
+            return new Odgovor(-1, "-1");
+        
+        return new Odgovor(0, Integer.toString(k.getIDKor()));
+    }
+    
     @Override
     public void run() {
         System.out.println("Started podsistem1...");
@@ -191,6 +205,14 @@ public class Main extends Thread{
                         odgovor = new Odgovor(0, "SVE OK", sviKorisnici);
                         objMsgSend.setObject(odgovor);
                         break;
+                    case LOGIN:
+                        params = zahtev.getParametri();
+                        username = (String)params.get(0);
+                        sifra = (String)params.get(1);
+                        odgovor = login(username,sifra);
+                        objMsgSend.setObject(odgovor);
+                        break;
+                        
                 }
 
                 objMsgSend.setIntProperty("id", 0);

@@ -9,7 +9,7 @@ public class Klijent {
             "11. Plaćanje, koje obuhvata kreiranje transakcije, kreiranje narudžbine sa njenim stavkama, i brisanje sadržaja iz korpe\n" +"12. Dohvatanje svih gradova\n" +
             "13. Dohvatanje svih korisnika\n" +"14. Dohvatanje svih kategorija\n" +"15. Dohvatanje svih artikala koje prodaje korisnik koji je poslao zahtev\n" +
             "16. Dohvatanje sadržaja korpe korisnika koji je poslao zahtev\n" +"17. Dohvatanje svih narudžbina korisnika koji je poslao zahtev\n" +"18. Dohvatanje svih narudžbina\n" +
-            "19. Dohvatanje svih transakcija\n";
+            "19. Dohvatanje svih transakcija\n" + "20. Izlogujte se\n";
     
     private static final int KREIRAJ_GRAD = 1;
     private static final int KREIRAJ_KORISNIKA = 2;
@@ -30,11 +30,19 @@ public class Klijent {
     private static final int KORISNIK_NARUDZBINE = 17;
     private static final int SVE_NARUDZBINE = 18;
     private static final int SVE_TRANSKACIJE = 19;
+    private static final int LOGOUT = 20;
+    
+    private static int korisnikId = -1;
     
     public static void main(String[] args) {
         System.out.println("Krenuo");
         while(true)
         {
+            while(korisnikId == -1)
+            {
+                korisnikId = Podsistem1Handler.zahtevLogin();
+                if(korisnikId == -1) System.out.println("NEUSPESNO LOGOVANJE");
+            }
             System.out.println(menu);
             System.out.println("Izaberite jedan od zahteva: ");
             int izbor = -1;
@@ -99,6 +107,10 @@ public class Klijent {
                     break;
                 case SVE_TRANSKACIJE:
                     Podsistem3Handler.zahtev19Handler();
+                    break;
+                case LOGOUT:
+                    System.out.println("Logging out...");
+                    korisnikId = -1;
                     break;
             }
             
