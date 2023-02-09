@@ -6,56 +6,14 @@
 package entiteti;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Jelena
- */
-@Entity
-@Table(name = "recenzija")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Recenzija.findAll", query = "SELECT r FROM Recenzija r"),
-    @NamedQuery(name = "Recenzija.findByIDRec", query = "SELECT r FROM Recenzija r WHERE r.iDRec = :iDRec"),
-    @NamedQuery(name = "Recenzija.findByIDKor", query = "SELECT r FROM Recenzija r WHERE r.iDKor = :iDKor"),
-    @NamedQuery(name = "Recenzija.findByOcena", query = "SELECT r FROM Recenzija r WHERE r.ocena = :ocena"),
-    @NamedQuery(name = "Recenzija.findByOpis", query = "SELECT r FROM Recenzija r WHERE r.opis = :opis")})
 public class Recenzija implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "IDRec")
     private Integer iDRec;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDKor")
     private int iDKor;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Ocena")
     private int ocena;
-    @Size(max = 200)
-    @Column(name = "Opis")
     private String opis;
-    @JoinColumn(name = "IDArt", referencedColumnName = "IDArt")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Artikl iDArt;
 
     public Recenzija() {

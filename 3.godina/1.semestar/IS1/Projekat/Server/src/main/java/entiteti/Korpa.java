@@ -7,44 +7,13 @@ package entiteti;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Jelena
- */
-@Entity
-@Table(name = "korpa")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Korpa.findAll", query = "SELECT k FROM Korpa k"),
-    @NamedQuery(name = "Korpa.findByIDKorpa", query = "SELECT k FROM Korpa k WHERE k.iDKorpa = :iDKorpa"),
-    @NamedQuery(name = "Korpa.findByUkupnaCena", query = "SELECT k FROM Korpa k WHERE k.ukupnaCena = :ukupnaCena")})
 public class Korpa implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDKorpa")
     private Integer iDKorpa;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UkupnaCena")
     private double ukupnaCena;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "korpa", fetch = FetchType.EAGER)
     private List<Sadrzi> sadrziList;
 
     public Korpa() {

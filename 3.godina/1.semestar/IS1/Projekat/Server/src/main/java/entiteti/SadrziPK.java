@@ -6,17 +6,10 @@
 package entiteti;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-
 
 public class SadrziPK implements Serializable {
 
-    
     private int iDArt;
-    
     private int iDKorpa;
 
     public SadrziPK() {
