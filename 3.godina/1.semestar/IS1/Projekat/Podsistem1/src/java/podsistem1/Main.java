@@ -28,10 +28,6 @@ public class Main extends Thread{
     @Resource(lookup="topicServer")
     private static Topic myTopic;
     
-    JMSConsumer consumer = null;
-    JMSProducer producer = null;
-    JMSContext context = null;
-    
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
     EntityManager em = emf.createEntityManager();
     //@PersistenceContext(unitName = "Podsistem1PU")
@@ -43,14 +39,6 @@ public class Main extends Thread{
     private static final int PROMENA_ADRESA_GRAD = 4;
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
-    private static final int LOGIN = 50;
-    
-    private void persistObject(Object o)
-    {
-        em.joinTransaction();
-        em.persist(o);
-        em.flush();
-    }
     
      //zahtev 1
     private Odgovor kreirajGrad(String naziv)
@@ -59,8 +47,12 @@ public class Main extends Thread{
         if(!gradovi.isEmpty())
             return new Odgovor(-1, "VEC POSTOJI GRAD SA ZADATIM NAZIVOM");
         
-        Grad g = new Grad(0, naziv);
-        persistObject(g);
+        Grad g = new Grad();
+        g.setNaziv(naziv);
+        g.setIDGrad(0);
+        em.joinTransaction();
+        em.persist(g);
+        em.flush();
         return new Odgovor(0, "USPESNO KREIRAN GRAD");
     }
     
@@ -77,8 +69,14 @@ public class Main extends Thread{
             return new Odgovor(-1, "VEC POSTOJI KORISNIK SA ZADATIM USERNAME");
         
         Korisnik k = new Korisnik(0, username, novac);
-        k.setIme(ime); k.setPrezime(prezime); k.setSifra(sifra); k.setAdresa(adresa); k.setIDGrad(g);
-        persistObject(k);
+        k.setIme(ime);
+        k.setPrezime(prezime);
+        k.setSifra(sifra);
+        k.setAdresa(adresa);
+        k.setIDGrad(g);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
         return new Odgovor(0, "USPESNO KREIRAN KORISNIK");
     }
     
@@ -91,7 +89,9 @@ public class Main extends Thread{
         
         Korisnik k = korisnici.get(0);
         k.setNovac(k.getNovac() + novac);
-        persistObject(k);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
         return new Odgovor(0, "USPESNO DODAT NOVAC KORISNIKU");
     }
     
@@ -110,7 +110,9 @@ public class Main extends Thread{
         
         k.setAdresa(adresa);
         k.setIDGrad(g);
-        persistObject(k);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
         return new Odgovor(0, "USPESNO PROMENJENI ADRESA I GRAD");
     }
     
@@ -130,28 +132,12 @@ public class Main extends Thread{
         return korisnici;
     }
     
-    private Odgovor login(String username, String sifra)
-    {
-        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
-        if(korisnici.isEmpty())
-            return new Odgovor(-1, "-1");
-        Korisnik k = korisnici.get(0);
-        
-        if(!k.getSifra().equals(sifra))
-            return new Odgovor(-1, "-1");
-        
-        return new Odgovor(0, Integer.toString(k.getIDKor()));
-    }
-    
     @Override
     public void run() {
         System.out.println("Started podsistem1...");
-        if(context == null)
-        {
-            context=connectionFactory.createContext();
-            consumer=context.createConsumer(myTopic, "id=1");
-            producer = context.createProducer();
-        }
+        JMSContext context=connectionFactory.createContext();
+        JMSConsumer consumer=context.createConsumer(myTopic, "id=1");
+        JMSProducer producer = context.createProducer();
         ObjectMessage objMsgSend = context.createObjectMessage();
         Odgovor odgovor = null;
         ArrayList<Object> params = null;
@@ -212,14 +198,6 @@ public class Main extends Thread{
                         odgovor = new Odgovor(0, "SVE OK", sviKorisnici);
                         objMsgSend.setObject(odgovor);
                         break;
-                    case LOGIN:
-                        params = zahtev.getParametri();
-                        username = (String)params.get(0);
-                        sifra = (String)params.get(1);
-                        odgovor = login(username,sifra);
-                        objMsgSend.setObject(odgovor);
-                        break;
-                        
                 }
 
                 objMsgSend.setIntProperty("id", 0);

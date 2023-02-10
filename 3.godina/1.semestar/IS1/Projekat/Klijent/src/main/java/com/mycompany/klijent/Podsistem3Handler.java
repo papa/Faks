@@ -72,26 +72,26 @@ public class Podsistem3Handler
         dodajNaLink(paramRest, s);
     }
     
-    public static void zahtev11Handler(int idKor)
+    public static void zahtev11Handler()
     {
         URL = URL_CON;
         URL = URL + "/zahtev11";
         URL = URL + "?";
         count = 0;
         
-        dodajNaLink("idKor", Integer.toString(idKor));
+        unesiParam("id korisnika", "idKor");
         
         komunikacija(URL, "POST");
     }
     
-    public static void zahtev17Handler(int idKor)
+    public static void zahtev17Handler()
     {
         URL = URL_CON;
         URL = URL + "/zahtev17";
         URL = URL + "?";
         count = 0;
         
-        dodajNaLink("idKor", Integer.toString(idKor));
+        unesiParam("id korisnika", "idKor");
         
         komunikacija(URL, "GET");
     }

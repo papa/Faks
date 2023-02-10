@@ -23,10 +23,6 @@ public class Komunikacija23 extends Thread{
     private static ConnectionFactory connectionFactory;
     private Topic myTopic;
     
-    JMSContext context = null;
-    JMSConsumer consumer=null;
-    JMSProducer producer = null;
-    
     public Komunikacija23(ConnectionFactory cf, Topic t)
     {
         connectionFactory = cf;
@@ -60,6 +56,11 @@ public class Komunikacija23 extends Thread{
         Zahtev z = new Zahtev();
         z.postaviBrZahteva(0);
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        k.setUkupnaCena(0);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
+        
         for(Sadrzi s : sadrziList)
         {
             em.joinTransaction();
@@ -67,44 +68,27 @@ public class Komunikacija23 extends Thread{
             em.flush();
         }
         
-        k.setUkupnaCena(0);
-        k.setSadrziList(null);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
-        
         return z;
     }
     
     private Zahtev getArtikliKorpa(int idKor)
     {
-        System.out.println(idKor);
-        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
-        if(sadrziList.isEmpty())
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        if(korpe.isEmpty() || korpe.get(0).getUkupnaCena() == 0)
         {
             Zahtev z = new Zahtev();
             z.postaviBrZahteva(-1);
             return z;
         }
-        Zahtev z = new Zahtev();
-        z.postaviBrZahteva(0);
-        for(Sadrzi s : sadrziList)
-        {
-            PaketArtikl pArt = new PaketArtikl(s.getArtikl().getIDArt(), s.getKolicina(), s.getCena()*s.getKolicina());
-            z.dodajParam(pArt);
-        }
-        return z;
+        return formirajZahtev(korpe.get(0));
     }
     
     @Override
     public void run() {
         System.out.println("Started podsistem1 komunikacija 23...");
-        if(context == null)
-        {
-            context=connectionFactory.createContext();
-            consumer=context.createConsumer(myTopic, "id=12");
-            producer = context.createProducer();
-        }
+        JMSContext context=connectionFactory.createContext();
+        JMSConsumer consumer=context.createConsumer(myTopic, "id=12");
+        JMSProducer producer = context.createProducer();
         ObjectMessage objMsgSend = context.createObjectMessage();
         int idKor = 0;
         Zahtev zahtevOdg = null;

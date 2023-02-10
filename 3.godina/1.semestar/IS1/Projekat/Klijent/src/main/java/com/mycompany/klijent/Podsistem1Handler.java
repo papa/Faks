@@ -17,7 +17,7 @@ public class Podsistem1Handler
     private static int count = 0;
     private static int OK = 200;
     
-    private static String komunikacija(String link, String method)
+    private static void komunikacija(String link, String method)
     {
         System.out.println("Komunikacija started...");
         System.out.println(link);
@@ -42,15 +42,12 @@ public class Podsistem1Handler
                 String response = content.toString();
                 
                 System.out.println(response);
-                return response;
             } else {
                 System.out.println("Failed to get response, status code: " + status);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
-        return "-1";
     }
     
     private static void dodajNaLink(String var, String val)
@@ -148,19 +145,5 @@ public class Podsistem1Handler
         //URL = URL + "?";
         count = 0;
         komunikacija(URL, "GET");
-    }
-    
-    public static int zahtevLogin()
-    {
-        URL = URL_CON;
-        URL = URL + "/zahtevLogin";
-        URL = URL + "?";
-        count = 0;
-        
-        unesiParam("username", "username");   
-        unesiParam("sifru", "sifra");
-        
-        String resp = komunikacija(URL, "GET");
-        return Integer.parseInt(resp);
     }
 }

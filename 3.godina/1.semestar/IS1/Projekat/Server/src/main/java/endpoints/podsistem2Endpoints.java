@@ -29,10 +29,6 @@ public class podsistem2Endpoints {
     @Resource(lookup="topicServer")
     private Topic myTopic;
     
-    JMSContext context = null;
-    JMSConsumer consumer=null;
-    JMSProducer producer = null;
-    
     private static final int KREIRAJ_KATEGORIJU = 5;
     private static final int KREIRAJ_ARTIKL = 6;
     private static final int MENJAJ_CENU = 7;
@@ -48,11 +44,10 @@ public class podsistem2Endpoints {
     private Response posaljiZahtev(Zahtev zahtev)
     {
         try {
-            if(context == null){
-                context = connectionFactory.createContext();
-                consumer=context.createConsumer(myTopic, "id=0");
-                producer = context.createProducer();
-            }
+            JMSContext context = connectionFactory.createContext();
+            JMSConsumer consumer=context.createConsumer(myTopic, "id=0");
+            JMSProducer producer = context.createProducer();
+            
             System.out.println("Server zahtev " + Integer.toString(zahtev.getBrZahteva()) + " pokrenut");
             
             ObjectMessage objMsg = context.createObjectMessage(zahtev);

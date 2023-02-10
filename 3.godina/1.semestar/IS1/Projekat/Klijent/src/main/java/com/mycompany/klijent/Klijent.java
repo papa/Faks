@@ -9,7 +9,7 @@ public class Klijent {
             "11. Plaćanje, koje obuhvata kreiranje transakcije, kreiranje narudžbine sa njenim stavkama, i brisanje sadržaja iz korpe\n" +"12. Dohvatanje svih gradova\n" +
             "13. Dohvatanje svih korisnika\n" +"14. Dohvatanje svih kategorija\n" +"15. Dohvatanje svih artikala koje prodaje korisnik koji je poslao zahtev\n" +
             "16. Dohvatanje sadržaja korpe korisnika koji je poslao zahtev\n" +"17. Dohvatanje svih narudžbina korisnika koji je poslao zahtev\n" +"18. Dohvatanje svih narudžbina\n" +
-            "19. Dohvatanje svih transakcija\n" + "20. Izlogujte se\n";
+            "19. Dohvatanje svih transakcija\n";
     
     private static final int KREIRAJ_GRAD = 1;
     private static final int KREIRAJ_KORISNIKA = 2;
@@ -30,19 +30,11 @@ public class Klijent {
     private static final int KORISNIK_NARUDZBINE = 17;
     private static final int SVE_NARUDZBINE = 18;
     private static final int SVE_TRANSKACIJE = 19;
-    private static final int LOGOUT = 20;
-    
-    private static int korisnikId = -1;
     
     public static void main(String[] args) {
         System.out.println("Krenuo");
         while(true)
         {
-            while(korisnikId == -1)
-            {
-                korisnikId = Podsistem1Handler.zahtevLogin();
-                if(korisnikId == -1) System.out.println("NEUSPESNO LOGOVANJE");
-            }
             System.out.println(menu);
             System.out.println("Izaberite jedan od zahteva: ");
             int izbor = -1;
@@ -67,22 +59,22 @@ public class Klijent {
                     Podsistem2Handler.zahtev5Handler();
                     break;   
                 case KREIRAJ_ARTIKL:
-                    Podsistem2Handler.zahtev6Handler(korisnikId);
+                    Podsistem2Handler.zahtev6Handler();
                     break;
                 case MENJAJ_CENU:
-                    Podsistem2Handler.zahtev7Handler(korisnikId);
+                    Podsistem2Handler.zahtev7Handler();
                     break;
                 case POSTAVI_POPUST:
-                    Podsistem2Handler.zahtev8Handler(korisnikId);
+                    Podsistem2Handler.zahtev8Handler();
                     break;
                 case DODAJ_ARTIKL_KORPA:
-                    Podsistem2Handler.zahtev9Handler(korisnikId);
+                    Podsistem2Handler.zahtev9Handler();
                     break;
                 case BRISI_ARTIKL_KORPA:
-                    Podsistem2Handler.zahtev10Handler(korisnikId);
+                    Podsistem2Handler.zahtev10Handler();
                     break;
                 case PLACANJE:
-                    Podsistem3Handler.zahtev11Handler(korisnikId);
+                    Podsistem3Handler.zahtev11Handler();
                     break;
                 case SVI_GRADOVI:
                     Podsistem1Handler.zahtev12Handler();
@@ -94,23 +86,19 @@ public class Klijent {
                     Podsistem2Handler.zahtev14Handler();
                     break;
                 case SVI_ARTIKLI_KORISNIK:
-                    Podsistem2Handler.zahtev15Handler(korisnikId);
+                    Podsistem2Handler.zahtev15Handler();
                     break;
                 case KORISNIK_KORPA:
-                    Podsistem2Handler.zahtev16Handler(korisnikId);
+                    Podsistem2Handler.zahtev16Handler();
                     break;
                 case KORISNIK_NARUDZBINE:
-                    Podsistem3Handler.zahtev17Handler(korisnikId);
+                    Podsistem3Handler.zahtev17Handler();
                     break;
                 case SVE_NARUDZBINE:
                     Podsistem3Handler.zahtev18Handler();
                     break;
                 case SVE_TRANSKACIJE:
                     Podsistem3Handler.zahtev19Handler();
-                    break;
-                case LOGOUT:
-                    System.out.println("Logging out...");
-                    korisnikId = -1;
                     break;
             }
             
