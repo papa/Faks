@@ -28,6 +28,10 @@ public class Main extends Thread{
     @Resource(lookup="topicServer")
     private static Topic myTopic;
     
+    JMSConsumer consumer = null;
+    JMSProducer producer = null;
+    JMSContext context = null;
+    
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
     EntityManager em = emf.createEntityManager();
     //@PersistenceContext(unitName = "Podsistem1PU")
@@ -142,9 +146,12 @@ public class Main extends Thread{
     @Override
     public void run() {
         System.out.println("Started podsistem1...");
-        JMSContext context=connectionFactory.createContext();
-        JMSConsumer consumer=context.createConsumer(myTopic, "id=1");
-        JMSProducer producer = context.createProducer();
+        if(context == null)
+        {
+            context=connectionFactory.createContext();
+            consumer=context.createConsumer(myTopic, "id=1");
+            producer = context.createProducer();
+        }
         ObjectMessage objMsgSend = context.createObjectMessage();
         Odgovor odgovor = null;
         ArrayList<Object> params = null;

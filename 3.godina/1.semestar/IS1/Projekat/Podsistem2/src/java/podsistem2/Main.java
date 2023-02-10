@@ -40,6 +40,10 @@ public class Main extends Thread {
     @Resource(lookup = "topicServer")
     private static Topic myTopic;
 
+    JMSConsumer consumer = null;
+    JMSProducer producer = null;
+    JMSContext context = null;
+    
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
     EntityManager em = emf.createEntityManager();
 
@@ -242,6 +246,9 @@ public class Main extends Thread {
             return new Odgovor(0, "SVE OK", k);
         } else {
             List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
+            System.out.println("OVDE SAM");
+            Korpa k = korpe.get(0);
+            k.setSadrziList(null);
             for (Sadrzi s : sadrziList) 
             {
                 Artikl a = s.getArtikl();
@@ -249,6 +256,11 @@ public class Main extends Thread {
                 a.setSadrziList(null);
                 a.getIDKat().setArtiklList(null);
                 a.getIDKat().setKategorijaList(null);
+                if(a.getIDKat().getNadKat() != null)
+                {
+                   a.getIDKat().getNadKat().setArtiklList(null);
+                   a.getIDKat().getNadKat().setKategorijaList(null);
+                }
             }
             return new Odgovor(0, "SVE OK", sadrziList);
         }
@@ -258,9 +270,12 @@ public class Main extends Thread {
     public void run() {
 
         System.out.println("Started podsistem2...");
-        JMSContext context = connectionFactory.createContext();
-        JMSConsumer consumer = context.createConsumer(myTopic, "id=2");
-        JMSProducer producer = context.createProducer();
+        if(context == null)
+        {
+            context = connectionFactory.createContext();
+            consumer = context.createConsumer(myTopic, "id=2");
+            producer = context.createProducer();
+        }
         ObjectMessage objMsgSend = context.createObjectMessage();
         Odgovor odgovor = null;
         ArrayList<Object> params = null;

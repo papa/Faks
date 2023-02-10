@@ -67,22 +67,22 @@ public class Klijent {
                     Podsistem2Handler.zahtev5Handler();
                     break;   
                 case KREIRAJ_ARTIKL:
-                    Podsistem2Handler.zahtev6Handler();
+                    Podsistem2Handler.zahtev6Handler(korisnikId);
                     break;
                 case MENJAJ_CENU:
-                    Podsistem2Handler.zahtev7Handler();
+                    Podsistem2Handler.zahtev7Handler(korisnikId);
                     break;
                 case POSTAVI_POPUST:
-                    Podsistem2Handler.zahtev8Handler();
+                    Podsistem2Handler.zahtev8Handler(korisnikId);
                     break;
                 case DODAJ_ARTIKL_KORPA:
-                    Podsistem2Handler.zahtev9Handler();
+                    Podsistem2Handler.zahtev9Handler(korisnikId);
                     break;
                 case BRISI_ARTIKL_KORPA:
-                    Podsistem2Handler.zahtev10Handler();
+                    Podsistem2Handler.zahtev10Handler(korisnikId);
                     break;
                 case PLACANJE:
-                    Podsistem3Handler.zahtev11Handler();
+                    Podsistem3Handler.zahtev11Handler(korisnikId);
                     break;
                 case SVI_GRADOVI:
                     Podsistem1Handler.zahtev12Handler();
@@ -94,13 +94,13 @@ public class Klijent {
                     Podsistem2Handler.zahtev14Handler();
                     break;
                 case SVI_ARTIKLI_KORISNIK:
-                    Podsistem2Handler.zahtev15Handler();
+                    Podsistem2Handler.zahtev15Handler(korisnikId);
                     break;
                 case KORISNIK_KORPA:
-                    Podsistem2Handler.zahtev16Handler();
+                    Podsistem2Handler.zahtev16Handler(korisnikId);
                     break;
                 case KORISNIK_NARUDZBINE:
-                    Podsistem3Handler.zahtev17Handler();
+                    Podsistem3Handler.zahtev17Handler(korisnikId);
                     break;
                 case SVE_NARUDZBINE:
                     Podsistem3Handler.zahtev18Handler();
