@@ -56,10 +56,6 @@ public class Komunikacija23 extends Thread{
         Zahtev z = new Zahtev();
         z.postaviBrZahteva(0);
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
-        k.setUkupnaCena(0);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
         
         for(Sadrzi s : sadrziList)
         {
@@ -67,6 +63,12 @@ public class Komunikacija23 extends Thread{
             em.remove(s);
             em.flush();
         }
+        
+        k.setUkupnaCena(0);
+        k.setSadrziList(null);
+        em.joinTransaction();
+        em.persist(k);
+        em.flush();
         
         return z;
     }

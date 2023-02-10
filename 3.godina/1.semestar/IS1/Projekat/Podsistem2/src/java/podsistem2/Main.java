@@ -280,8 +280,8 @@ public class Main extends Thread {
             return new Odgovor(0, "SVE OK", k);
         } else {
             List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
-            //Korpa k = korpe.get(0);
-            //k.setSadrziList(null);
+            Korpa k = korpe.get(0);
+            k.setSadrziList(null);
             for (Sadrzi s : sadrziList) 
             {
                 Artikl a = s.getArtikl();
@@ -289,6 +289,11 @@ public class Main extends Thread {
                 a.setSadrziList(null);
                 a.getIDKat().setArtiklList(null);
                 a.getIDKat().setKategorijaList(null);
+                if(a.getIDKat().getNadKat() != null)
+                {
+                    a.getIDKat().getNadKat().setArtiklList(null);
+                    a.getIDKat().getNadKat().setKategorijaList(null);
+                }
             }
             return new Odgovor(0, "SVE OK", sadrziList);
         }
