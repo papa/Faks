@@ -19,7 +19,7 @@
         - cleanup
 
         -->
-<project xmlns:carproject="http://www.netbeans.org/ns/car-project/1" basedir=".." default="default" name="Podsistem2-impl">
+<project xmlns:carproject="http://www.netbeans.org/ns/car-project/1" basedir=".." default="default" name="ApplicationClient2-impl">
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -400,7 +400,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     </fileset>
                 </union>
                 <taskdef classname="org.testng.TestNGAntTask" classpath="${run.test.classpath}" name="testng"/>
-                <testng classfilesetref="test.set" failureProperty="tests.failed" listeners="org.testng.reporters.VerboseReporter" methods="${testng.methods.arg}" mode="${testng.mode}" outputdir="${build.test.results.dir}" suitename="Podsistem2" testname="TestNG tests" workingDir="${work.dir}">
+                <testng classfilesetref="test.set" failureProperty="tests.failed" listeners="org.testng.reporters.VerboseReporter" methods="${testng.methods.arg}" mode="${testng.mode}" outputdir="${build.test.results.dir}" suitename="ApplicationClient2" testname="TestNG tests" workingDir="${work.dir}">
                     <xmlfileset dir="${build.test.classes.dir}" includes="@{testincludes}"/>
                     <propertyset>
                         <propertyref prefix="test-sys-prop."/>
@@ -544,7 +544,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                 <condition else="-testclass @{testClass}" property="test.class.or.method" value="-methods @{testClass}.@{testMethod}">
                     <isset property="test.method"/>
                 </condition>
-                <condition else="-suitename Podsistem2 -testname @{testClass} ${test.class.or.method}" property="testng.cmd.args" value="@{testClass}">
+                <condition else="-suitename ApplicationClient2 -testname @{testClass} ${test.class.or.method}" property="testng.cmd.args" value="@{testClass}">
                     <matches pattern=".*\.xml" string="@{testClass}"/>
                 </condition>
                 <delete dir="${build.test.results.dir}" quiet="true"/>
@@ -743,7 +743,7 @@ exists or setup the property manually. For example like this:
             -->
     <target name="-check-main-class">
         <fail>
-                    Main class must be set. Go to Podsistem2 project properties -&gt; Run and set the main class there.
+                    Main class must be set. Go to ApplicationClient2 project properties -&gt; Run and set the main class there.
                     <condition>
                 <not>
                     <or>
@@ -766,21 +766,15 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="compile" if="is.server.weblogic" name="library-inclusion-in-archive">
         <basename file="${libs.eclipselink.classpath}" property="manifest.libs.eclipselink.classpath"/>
-        <basename file="${libs.javaee-api-8.0.classpath}" property="manifest.libs.javaee-api-8.0.classpath"/>
-        <basename file="${file.reference.mysql-connector-java-8.0.22.jar}" property="manifest.file.reference.mysql-connector-java-8.0.22.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 "/>
+            <attribute name="Extension-List" value="jar-1 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.libs.eclipselink.classpath}"/>
-            <attribute name="jar-2-Extension-Name" value="${manifest.libs.javaee-api-8.0.classpath}"/>
-            <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.mysql-connector-java-8.0.22.jar}"/>
         </manifest>
     </target>
     <target depends="compile" if="dist.ear.dir" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.eclipselink.classpath}" manifestproperty="manifest.libs.eclipselink.classpath" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.javaee-api-8.0.classpath}" manifestproperty="manifest.libs.javaee-api-8.0.classpath" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.mysql-connector-java-8.0.22.jar}" manifestproperty="manifest.file.reference.mysql-connector-java-8.0.22.jar" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.eclipselink.classpath} lib/${manifest.libs.eclipselink.classpath} ${manifest.libs.javaee-api-8.0.classpath} lib/${manifest.libs.javaee-api-8.0.classpath} ${manifest.file.reference.mysql-connector-java-8.0.22.jar} lib/${manifest.file.reference.mysql-connector-java-8.0.22.jar} "/>
+            <attribute name="Class-Path" value="${manifest.libs.eclipselink.classpath} lib/${manifest.libs.eclipselink.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -935,17 +929,17 @@ exists or setup the property manually. For example like this:
         </macrodef>
     </target>
     <target if="j2ee.appclient.mainclass.args" name="-as-retrieve-option-workaround" unless="j2ee.clientName">
-        <property name="client.jar" value="${dist.dir}/Podsistem2Client.jar"/>
+        <property name="client.jar" value="${dist.dir}/ApplicationClient2Client.jar"/>
         <sleep seconds="3"/>
-        <copy failonerror="false" file="${wa.copy.client.jar.from}/Podsistem2/Podsistem2Client.jar" todir="${dist.dir}"/>
+        <copy failonerror="false" file="${wa.copy.client.jar.from}/ApplicationClient2/ApplicationClient2Client.jar" todir="${dist.dir}"/>
         <copy failonerror="false" flatten="true" todir="${dist.dir}/">
-            <fileset dir="${wa.copy.client.jar.from}/Podsistem2" includes="**/Podsistem2Client.jar"/>
+            <fileset dir="${wa.copy.client.jar.from}/ApplicationClient2" includes="**/ApplicationClient2Client.jar"/>
         </copy>
-        <copy flatten="true" todir="${dist.dir}/Podsistem2Client">
-            <fileset dir="${wa.copy.client.jar.from}/Podsistem2" includes="**/*.*ar"/>
+        <copy flatten="true" todir="${dist.dir}/ApplicationClient2Client">
+            <fileset dir="${wa.copy.client.jar.from}/ApplicationClient2" includes="**/*.*ar"/>
         </copy>
-        <copy failonerror="false" flatten="false" todir="${dist.dir}/Podsistem2Client">
-            <fileset dir="${dist.dir}/gfdeploy/Podsistem2" includes="**/*.jar"/>
+        <copy failonerror="false" flatten="false" todir="${dist.dir}/ApplicationClient2Client">
+            <fileset dir="${dist.dir}/gfdeploy/ApplicationClient2" includes="**/*.jar"/>
         </copy>
     </target>
     <target name="pre-run-deploy">

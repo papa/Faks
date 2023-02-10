@@ -47,9 +47,11 @@ public class Main extends Thread{
     
     private void persistObject(Object o)
     {
-        em.joinTransaction();
+        em.getTransaction().begin();
         em.persist(o);
         em.flush();
+        em.clear();
+        em.getTransaction().commit();
     }
     
      //zahtev 1
@@ -145,6 +147,7 @@ public class Main extends Thread{
     
     @Override
     public void run() {
+        new Komunikacija13(connectionFactory, myTopic, em).start();
         System.out.println("Started podsistem1...");
         if(context == null)
         {
@@ -233,7 +236,7 @@ public class Main extends Thread{
     
     public static void main(String[] args) {
         new Main().start();
-        new Komunikacija13(connectionFactory, myTopic).start();
+        
         while(true){}
     }
 }

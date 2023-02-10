@@ -26,15 +26,34 @@ public class Komunikacija23 extends Thread{
     JMSContext context = null;
     JMSConsumer consumer=null;
     JMSProducer producer = null;
-    
-    public Komunikacija23(ConnectionFactory cf, Topic t)
+    EntityManager em = null;
+    public Komunikacija23(ConnectionFactory cf, Topic t, EntityManager em)
     {
         connectionFactory = cf;
         myTopic = t;
+        this.em = em;
     }
     
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
-    EntityManager em = emf.createEntityManager();
+    private void persistObject(Object o)
+    {
+        em.getTransaction().begin();
+        em.persist(o);
+        em.flush();
+        em.clear();
+        em.getTransaction().commit();
+    }
+    
+    private void removeObject(Object o)
+    {
+        em.getTransaction().begin();
+        em.remove(o);
+        //em.flush();
+        em.clear();
+        em.getTransaction().commit();
+    }
+    
+//    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
+    
     //@PersistenceContext(unitName = "Podsistem1PU")
     //EntityManager em;
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
@@ -62,16 +81,19 @@ public class Komunikacija23 extends Thread{
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
         for(Sadrzi s : sadrziList)
         {
-            em.joinTransaction();
-            em.remove(s);
-            em.flush();
+//            em.joinTransaction();
+//            em.remove(s);
+//            em.flush();
+            removeObject(s);
         }
         
         k.setUkupnaCena(0);
         k.setSadrziList(null);
-        em.joinTransaction();
-        em.persist(k);
-        em.flush();
+//        em.joinTransaction();
+//        em.persist(k);
+//        em.flush();
+        
+        persistObject(k);
         
         return z;
     }

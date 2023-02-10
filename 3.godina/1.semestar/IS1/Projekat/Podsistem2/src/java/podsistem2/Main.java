@@ -49,16 +49,20 @@ public class Main extends Thread {
 
     private void persistObject(Object o)
     {
-        em.joinTransaction();
+        em.getTransaction().begin();
         em.persist(o);
         em.flush();
+        em.clear();
+        em.getTransaction().commit();
     }
     
     private void removeObject(Object o)
     {
-        em.joinTransaction();
+        em.getTransaction().begin();
         em.remove(o);
         em.flush();
+        em.clear();
+        em.getTransaction().commit();
     }
     
     //zahtev 14
@@ -119,8 +123,11 @@ public class Main extends Thread {
         }
 
         Artikl a = artikli.get(0);
+        em.getTransaction().begin();
         a.setCena(cena);
-        persistObject(a);
+        em.flush();
+        em.getTransaction().commit();
+        //persistObject(a);
         return new Odgovor(0, "USPESNO POSTAVLJENA CENA");
     }
 
@@ -268,7 +275,7 @@ public class Main extends Thread {
 
     @Override
     public void run() {
-
+        new Komunikacija23(connectionFactory, myTopic, em).start();
         System.out.println("Started podsistem2...");
         if(context == null)
         {
@@ -375,7 +382,6 @@ public class Main extends Thread {
 
     public static void main(String[] args) {
         new Main().start();
-        new Komunikacija23(connectionFactory, myTopic).start();
         while (true) {
         }
     }

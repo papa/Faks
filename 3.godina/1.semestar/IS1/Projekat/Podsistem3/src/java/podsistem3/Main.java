@@ -55,9 +55,11 @@ public class Main extends Thread{
     
     private void persistObject(Object o)
     {
-        em.joinTransaction();
+        em.getTransaction().begin();
         em.persist(o);
         em.flush();
+        em.clear();
+        em.getTransaction().commit();
     }
     
     private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
