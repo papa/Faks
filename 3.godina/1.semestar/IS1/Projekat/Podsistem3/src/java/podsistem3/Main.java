@@ -31,6 +31,12 @@ public class Main extends Thread{
     @Resource(lookup="topicServer")
     private static Topic myTopic;
     
+    JMSConsumer consumer = null;
+    JMSProducer producer = null;
+    JMSContext context = null;
+    JMSConsumer consumerPlacanje= null;
+    JMSProducer producerPlacanje = null;
+    
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem3PU");
     EntityManager em = emf.createEntityManager();
     //@PersistenceContext(unitName = "Podsistem1PU")
@@ -47,6 +53,13 @@ public class Main extends Thread{
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
     private static final int ISPRAZNI_KORPU = 122;
     
+    private void persistObject(Object o)
+    {
+        em.joinTransaction();
+        em.persist(o);
+        em.flush();
+    }
+    
     private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
     {
         double totCena = 0;
@@ -58,38 +71,19 @@ public class Main extends Thread{
         if(novacKorisnik < totCena)
             return -1;
         
-        Narudzbina nar = new Narudzbina();
-        nar.setIDNar(0);
-        nar.setIDGrad(idGrad);
-        nar.setIDKor(idKor);
-        nar.setAdresa(adresa);
-        nar.setUkupnaCena(totCena);
-        nar.setVremeKreiranja(new Date());
-        em.joinTransaction();
-        em.persist(nar);
-        em.flush();
+        Narudzbina nar = new Narudzbina(0,totCena,new Date(),adresa,idGrad,idKor);
+        persistObject(nar);
         
-        Transakcija t = new Transakcija();
-        t.setIDTrans(0);
+        Transakcija t = new Transakcija(0,totCena,new Date());
         t.setIDNar(nar);
-        t.setSuma(totCena);
-        t.setVremePlacanja(new Date());
-        em.joinTransaction();
-        em.persist(t);
-        em.flush();
+        persistObject(t);
         
         for(Object o : artikliPaketi)
         {
             PaketArtikl pArt = (PaketArtikl)o;
-            Stavka s = new Stavka();
-            s.setIDArt(pArt.getIdArt());
-            s.setKolicina(pArt.getKolicina());
+            Stavka s = new Stavka(0, pArt.getIdArt(), pArt.getKolicina(), pArt.getCena());
             s.setIDNar(nar);
-            s.setIDStavka(0);
-            s.setCena(pArt.getCena());
-            em.joinTransaction();
-            em.persist(s);
-            em.flush();
+            persistObject(s);
         }
         
         return totCena;
@@ -100,10 +94,11 @@ public class Main extends Thread{
     private Odgovor placanje(int idKor)
     {
         try {
-            JMSContext context=connectionFactory.createContext();
-            JMSConsumer consumer=context.createConsumer(myTopic, "id=13");
-            JMSProducer producer = context.createProducer();
-            
+            if(consumerPlacanje == null)
+            {
+                consumerPlacanje=context.createConsumer(myTopic, "id=13");
+                producerPlacanje = context.createProducer();
+            }
             ObjectMessage objMsgSend = context.createObjectMessage();
             objMsgSend.setIntProperty("id", 11);
             Zahtev zahtev = new Zahtev();
@@ -111,10 +106,10 @@ public class Main extends Thread{
             zahtev.dodajParam(idKor);
             objMsgSend.setObject(zahtev);
             
-            producer.send(myTopic, objMsgSend);
+            producerPlacanje.send(myTopic, objMsgSend);
             System.out.println("Poslao zahtev podsistemu 1");
             
-            ObjectMessage objMsgRcv = (ObjectMessage)consumer.receive();
+            ObjectMessage objMsgRcv = (ObjectMessage)consumerPlacanje.receive();
             System.out.println("Primio odgovor od podsistema 1");
             Zahtev z = (Zahtev)objMsgRcv.getObject();
             String adresa = (String)z.getParametri().get(0);
@@ -128,10 +123,10 @@ public class Main extends Thread{
             zahtev2.dodajParam(idKor);
             objMsgSend2.setObject(zahtev2);
             
-            producer.send(myTopic, objMsgSend2);
+            producerPlacanje.send(myTopic, objMsgSend2);
             System.out.println("Poslao zahtev podsistemu 2");
             
-            ObjectMessage objMsgRcv2 = (ObjectMessage)consumer.receive();
+            ObjectMessage objMsgRcv2 = (ObjectMessage)consumerPlacanje.receive();
             System.out.println("Primio odgovor od podsistema 2");
             Zahtev z2 = (Zahtev)objMsgRcv2.getObject();
             if(z2.getBrZahteva() == -1)
@@ -151,9 +146,9 @@ public class Main extends Thread{
             zahtev.dodajParam(ok);
             objMsgSend.setObject(zahtev);
             
-            producer.send(myTopic, objMsgSend);
+            producerPlacanje.send(myTopic, objMsgSend);
             System.out.println("Poslao zahtev podsistemu 1");
-            consumer.receive();
+            consumerPlacanje.receive();
             System.out.println("Primio zahtev od podsistema 1");
              
             objMsgSend2 = context.createObjectMessage();
@@ -163,9 +158,9 @@ public class Main extends Thread{
             zahtev2.dodajParam(idKor);
             objMsgSend2.setObject(zahtev2);
             
-            producer.send(myTopic, objMsgSend2);
+            producerPlacanje.send(myTopic, objMsgSend2);
             
-            consumer.receive();
+            consumerPlacanje.receive();
             System.out.println("Primi zahtev od podsistema 2");
             
             
@@ -216,9 +211,12 @@ public class Main extends Thread{
     @Override
     public void run() {
         System.out.println("Started podsistem3...");
-        JMSContext context=connectionFactory.createContext();
-        JMSConsumer consumer=context.createConsumer(myTopic, "id=3");
-        JMSProducer producer = context.createProducer();
+        if(context == null)
+        {
+            context=connectionFactory.createContext();
+            consumer=context.createConsumer(myTopic, "id=3");
+            producer = context.createProducer();
+        }
         ObjectMessage objMsgSend = context.createObjectMessage();
         Odgovor odgovor = null;
         ArrayList<Object> params = null;

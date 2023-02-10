@@ -89,14 +89,14 @@ public class Podsistem2Handler {
         komunikacija(URL, "POST");
     }
      
-    public static void zahtev6Handler()
+    public static void zahtev6Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev6";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         unesiParam("naziv artikla", "nazivArt");
         unesiParam("opis", "opis");
         unesiParam("cenu", "cena");
@@ -106,56 +106,56 @@ public class Podsistem2Handler {
         komunikacija(URL, "POST");
     }
     
-    public static void zahtev7Handler()
+    public static void zahtev7Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev7";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         unesiParam("naziv artikla", "nazivArt");
         unesiParam("novu cenu", "novaCena");
         
         komunikacija(URL, "POST");
     }
     
-    public static void zahtev8Handler()
+    public static void zahtev8Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev8";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         unesiParam("naziv artikla", "nazivArt");
         unesiParam("popust", "popust");
         
         komunikacija(URL, "POST");
     }
     
-    public static void zahtev9Handler()
+    public static void zahtev9Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev9";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         unesiParam("id artikla", "idArt");
         unesiParam("koliko artikla zelite", "brArt");
         
         komunikacija(URL, "POST");
     }
     
-    public static void zahtev10Handler()
+    public static void zahtev10Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev10";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         unesiParam("id artikla", "idArt");
         unesiParam("koliko artikla zelite da izbacite", "brArt");
         
@@ -171,26 +171,26 @@ public class Podsistem2Handler {
         komunikacija(URL, "GET");
     }
     
-    public static void zahtev15Handler()
+    public static void zahtev15Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev15";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         
         komunikacija(URL, "GET");
     }
     
-    public static void zahtev16Handler()
+    public static void zahtev16Handler(int idKor)
     {
         URL = URL_CON;
         URL = URL + "/zahtev16";
         URL = URL + "?";
         count = 0;
         
-        unesiParam("id korisnika", "idKor");
+        dodajNaLink("idKor", Integer.toString(idKor));
         
         komunikacija(URL, "GET");
     }

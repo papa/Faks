@@ -21,6 +21,10 @@ public class Komunikacija13 extends Thread{
     private  ConnectionFactory connectionFactory;
     private Topic myTopic;
     
+    JMSContext context = null;
+    JMSConsumer consumer=null;
+    JMSProducer producer = null;
+    
     public Komunikacija13(ConnectionFactory cf, Topic t)
     {
         connectionFactory = cf;
@@ -34,6 +38,7 @@ public class Komunikacija13 extends Thread{
     
     private static final int GET_GRAD_ADRESA = 101;
     private static final int SMANJI_NOVAC = 111; 
+    
     private Zahtev getAdresaGradNovac(int idKor)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
@@ -62,9 +67,12 @@ public class Komunikacija13 extends Thread{
     @Override
     public void run() {
         System.out.println("Started podsistem1 komunikacija 13...");
-        JMSContext context=connectionFactory.createContext();
-        JMSConsumer consumer=context.createConsumer(myTopic, "id=11");
-        JMSProducer producer = context.createProducer();
+        if(context == null)
+        {
+            context=connectionFactory.createContext();
+            consumer=context.createConsumer(myTopic, "id=11");
+            producer = context.createProducer();
+        }
         ObjectMessage objMsgSend = context.createObjectMessage();
         int idKor = 0;
         double novac = 0;
