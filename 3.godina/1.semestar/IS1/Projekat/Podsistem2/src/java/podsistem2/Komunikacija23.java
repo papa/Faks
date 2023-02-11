@@ -33,19 +33,12 @@ public class Komunikacija23 extends Thread{
         myTopic = t;
         this.em = em;
     }
-    
-    private void persistObject(Object o)
-    {
-        em.getTransaction().begin();
-        em.persist(o);
-        em.flush();
-        em.clear();
-        em.getTransaction().commit();
-    }
-    
+   
     private void removeObject(Object o)
     {
         em.getTransaction().begin();
+        if(!em.contains(o))
+            o = em.merge(o);
         em.remove(o);
         em.flush();
         em.getTransaction().commit();
@@ -83,6 +76,7 @@ public class Komunikacija23 extends Thread{
         for(int i = 0; i < 10;i++){
             em.getTransaction().begin();
             k.setUkupnaCena(0);
+            em.merge(k);
             em.flush();
             em.getTransaction().commit();
             em.clear();
