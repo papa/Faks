@@ -80,12 +80,10 @@ public class Main {
             removeObject(s);
         }
         
-//        for(int i = 0; i < 10;i++){
         em.getTransaction().begin();
         k.setUkupnaCena(0);
         em.flush();
         em.getTransaction().commit();
-//        }
         
         return z;
     }
@@ -310,33 +308,32 @@ public class Main {
     //zahtev 16
     private static Odgovor getKorpa(int idKor) {
         List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        Korpa k = null;
         if (korpe.isEmpty()) {
-            Korpa k = new Korpa();
+            k = new Korpa();
             k.setIDKorpa(idKor);
             k.setUkupnaCena(0);
-            k.setSadrziList(null); // todo da li treba 
+//            k.setSadrziList(null); // todo da li treba 
             persistObject(k);
-            return new Odgovor(0, "SVE OK", k);
         } else {
-            List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", korpe.get(0).getIDKorpa()).getResultList();
-            System.out.println("OVDE SAM");
-            Korpa k = korpe.get(0);
-            k.setSadrziList(null);
-            for (Sadrzi s : sadrziList) 
-            {
-                Artikl a = s.getArtikl();
-                a.setRecenzijaList(null);
-                a.setSadrziList(null);
-                a.getIDKat().setArtiklList(null);
-                a.getIDKat().setKategorijaList(null);
-                if(a.getIDKat().getNadKat() != null)
-                {
-                   a.getIDKat().getNadKat().setArtiklList(null);
-                   a.getIDKat().getNadKat().setKategorijaList(null);
-                }
-            }
-            return new Odgovor(0, "SVE OK", sadrziList);
+            k = korpe.get(0);
         }
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+
+        for (Sadrzi s : sadrziList) 
+        {
+            Artikl a = s.getArtikl();
+            a.setRecenzijaList(null);
+            a.setSadrziList(null);
+            a.getIDKat().setArtiklList(null);
+            a.getIDKat().setKategorijaList(null);
+            if(a.getIDKat().getNadKat() != null)
+            {
+                a.getIDKat().getNadKat().setArtiklList(null);
+                a.getIDKat().getNadKat().setKategorijaList(null);
+            }
+        }
+        return new Odgovor(0, "SVE OK", sadrziList);
     }
 
     

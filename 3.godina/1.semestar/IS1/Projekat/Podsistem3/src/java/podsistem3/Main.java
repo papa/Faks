@@ -91,6 +91,8 @@ public class Main {
     {
         try {
             ObjectMessage objMsgSend = context.createObjectMessage();
+            
+            //----------------------------ka podsistemu 1
             objMsgSend.setIntProperty("id", 1);
             Zahtev zahtev = new Zahtev();
             zahtev.postaviBrZahteva(GET_GRAD_ADRESA);
@@ -127,6 +129,7 @@ public class Main {
             if(ok == -1)
                 return new Odgovor(-1, "KORISNIK NEMA DOVOLJNO NOVCA");
             
+            //------------------------------ka podsistemu 1
             objMsgSend = context.createObjectMessage();
             objMsgSend.setIntProperty("id", 1);
             zahtev = new Zahtev();
@@ -140,6 +143,7 @@ public class Main {
             consumer.receive();
             System.out.println("Primio zahtev od podsistema 1");
              
+            //-----------------------------ka podsistemu 2
             objMsgSend2 = context.createObjectMessage();
             objMsgSend2.setIntProperty("id", 2);
             zahtev2 = new Zahtev();
