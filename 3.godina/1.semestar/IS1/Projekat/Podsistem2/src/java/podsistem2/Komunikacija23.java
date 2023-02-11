@@ -47,15 +47,11 @@ public class Komunikacija23 extends Thread{
     {
         em.getTransaction().begin();
         em.remove(o);
-        //em.flush();
-        em.clear();
+        em.flush();
         em.getTransaction().commit();
+        em.clear();
     }
     
-//    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
-    
-    //@PersistenceContext(unitName = "Podsistem1PU")
-    //EntityManager em;
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
     private static final int ISPRAZNI_KORPU = 122;
     
@@ -81,19 +77,16 @@ public class Komunikacija23 extends Thread{
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
         for(Sadrzi s : sadrziList)
         {
-//            em.joinTransaction();
-//            em.remove(s);
-//            em.flush();
             removeObject(s);
         }
         
-        k.setUkupnaCena(0);
-        k.setSadrziList(null);
-//        em.joinTransaction();
-//        em.persist(k);
-//        em.flush();
-        
-        persistObject(k);
+        for(int i = 0; i < 10;i++){
+            em.getTransaction().begin();
+            k.setUkupnaCena(0);
+            em.flush();
+            em.getTransaction().commit();
+            em.clear();
+        }
         
         return z;
     }

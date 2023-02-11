@@ -33,11 +33,6 @@ public class Komunikacija13 extends Thread{
         this.em = em;
     }
     
-    //EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
-    
-    //@PersistenceContext(unitName = "Podsistem1PU")
-    //EntityManager em;
-    
     private static final int GET_GRAD_ADRESA = 101;
     private static final int SMANJI_NOVAC = 111; 
     
@@ -46,8 +41,8 @@ public class Komunikacija13 extends Thread{
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
-        em.clear();
         em.getTransaction().commit();
+        em.clear();
     }
     
     private Zahtev getAdresaGradNovac(int idKor)
@@ -66,8 +61,10 @@ public class Komunikacija13 extends Thread{
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
         Korisnik k = korisnici.get(0);
+        em.getTransaction().begin();
         k.setNovac(k.getNovac() - novac);
-        persistObject(k);
+        em.flush();
+        em.getTransaction().commit();
         Zahtev z = new Zahtev();
         z.postaviBrZahteva(0);
         return z;

@@ -52,8 +52,8 @@ public class Main extends Thread {
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
-        em.clear();
         em.getTransaction().commit();
+        em.clear();
     }
     
     private void removeObject(Object o)
@@ -61,8 +61,8 @@ public class Main extends Thread {
         em.getTransaction().begin();
         em.remove(o);
         em.flush();
-        em.clear();
         em.getTransaction().commit();
+        em.clear();
     }
     
     //zahtev 14
@@ -140,8 +140,10 @@ public class Main extends Thread {
             return new Odgovor(-1, "KORISNIK NEMA ARTIKL DATOG NAZIVA");
         
         Artikl a = artikli.get(0);
+        em.getTransaction().begin();
         a.setPopust(popust);
-        persistObject(a);
+        em.flush();
+        em.getTransaction().commit();
         return new Odgovor(0, "USPESNO POSTAVLJEN POPUST");
     }
 
@@ -158,8 +160,6 @@ public class Main extends Thread {
         Korpa k = null;
         if (korpe.isEmpty()) {
             k = new Korpa(idKor, 0);
-            k.setSadrziList(null); // todo da li treba 
-            persistObject(k);
         } else {
             k = korpe.get(0);
         }
@@ -167,19 +167,34 @@ public class Main extends Thread {
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDArtIDKorpa").setParameter("iDArt", idArt).setParameter("iDKorpa", k.getIDKorpa()).getResultList();
         Sadrzi s = null;
         if (sadrziList.isEmpty()) {
+            double cena = a.getCena() - a.getCena() * a.getPopust() / 100;
+            em.getTransaction().begin();
+            k.setUkupnaCena(k.getUkupnaCena() + koliko * cena);
+            if(korpe.isEmpty())
+            {
+                System.out.println("Persist za korpu");
+                em.persist(k);
+            }
+            em.flush();
+            em.clear();
+            em.getTransaction().commit();
+            
             s = new Sadrzi(idArt, idKor);
-            s.setKolicina(koliko); s.setCena(a.getCena() - a.getCena() * a.getPopust() / 100); s.setArtikl(a); s.setKorpa(k);
+            s.setKolicina(koliko); s.setCena(cena); s.setArtikl(a); s.setKorpa(k);
             persistObject(s);
-
-            k.setUkupnaCena(k.getUkupnaCena() + koliko * s.getCena());
-            persistObject(k);
-        } else {
+        } 
+        else 
+        {
             s = sadrziList.get(0);
+            em.getTransaction().begin();
             s.setKolicina(s.getKolicina() + koliko);
-            persistObject(s);
-
+            em.flush();
+            em.getTransaction().commit();
+            
+            em.getTransaction().begin();
             k.setUkupnaCena(k.getUkupnaCena() + koliko * s.getCena());
-            persistObject(k);
+            em.flush();
+            em.getTransaction().commit();
         }
 
         return new Odgovor(0, "SVE OK");
@@ -215,11 +230,15 @@ public class Main extends Thread {
             if (s.getKolicina() < koliko) {
                 return new Odgovor(-1, "IMATE MANJE ARTIKALA OD ONOGA STO ZELITE DA IZBACITE");
             }
+            em.getTransaction().begin();
             s.setKolicina(s.getKolicina() - koliko);
-            persistObject(s);
+            em.flush();
+            em.getTransaction().commit();
 
+            em.getTransaction().begin();
             k.setUkupnaCena(k.getUkupnaCena() - koliko * s.getCena());
-            persistObject(k);
+            em.flush();
+            em.getTransaction().commit();
 
             if (s.getKolicina() == 0) {
                 removeObject(s);

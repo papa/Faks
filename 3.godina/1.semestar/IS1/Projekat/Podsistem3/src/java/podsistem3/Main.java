@@ -58,8 +58,8 @@ public class Main extends Thread{
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
-        em.clear();
         em.getTransaction().commit();
+        em.clear();
     }
     
     private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)

@@ -34,8 +34,6 @@ public class Main extends Thread{
     
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
     EntityManager em = emf.createEntityManager();
-    //@PersistenceContext(unitName = "Podsistem1PU")
-    //EntityManager em;
     
     private static final int KREIRAJ_GRAD = 1;
     private static final int KREIRAJ_KORISNIKA = 2;
@@ -50,8 +48,8 @@ public class Main extends Thread{
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
-        em.clear();
         em.getTransaction().commit();
+        em.clear();
     }
     
      //zahtev 1
@@ -92,8 +90,11 @@ public class Main extends Thread{
             return new Odgovor(-1, "NE POSTOJI KORISNIK " + username);
         
         Korisnik k = korisnici.get(0);
+        
+        em.getTransaction().begin();
         k.setNovac(k.getNovac() + novac);
-        persistObject(k);
+        em.flush();
+        em.getTransaction().commit();
         return new Odgovor(0, "USPESNO DODAT NOVAC KORISNIKU");
     }
     
@@ -109,10 +110,11 @@ public class Main extends Thread{
         if(gradovi.isEmpty())
             return new Odgovor(-1, "NE POSTOJI GRAD SA DATIM NAZIVOM");
         Grad g = gradovi.get(0);
-        
+        em.getTransaction().begin();
         k.setAdresa(adresa);
         k.setIDGrad(g);
-        persistObject(k);
+        em.flush();
+        em.getTransaction().commit();
         return new Odgovor(0, "USPESNO PROMENJENI ADRESA I GRAD");
     }
     
