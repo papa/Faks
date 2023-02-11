@@ -23,7 +23,7 @@ import utility.Odgovor;
 import utility.PaketArtikl;
 import utility.Zahtev;
 
-public class Main extends Thread{
+public class Main {
 
     @Resource(lookup="projConnFactory")
     private static ConnectionFactory connectionFactory;
@@ -31,38 +31,32 @@ public class Main extends Thread{
     @Resource(lookup="topicServer")
     private static Topic myTopic;
     
-    JMSConsumer consumer = null;
-    JMSProducer producer = null;
-    JMSContext context = null;
-    JMSConsumer consumerPlacanje= null;
-    JMSProducer producerPlacanje = null;
+    private static JMSConsumer consumer = null;
+    private static JMSProducer producer = null;
+    private static JMSContext context = null;
     
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem3PU");
-    EntityManager em = emf.createEntityManager();
-    //@PersistenceContext(unitName = "Podsistem1PU")
-    //EntityManager em;
-    
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem3PU");
+    private static EntityManager em = emf.createEntityManager();
+  
     private static final int PLACANJE = 11;
     private static final int KORISNIK_NARUDZBINE = 17;
     private static final int SVE_NARUDZBINE = 18;
     private static final int SVE_TRANSKACIJE = 19;
     
     private static final int GET_GRAD_ADRESA = 101;
-    private static final int SMANJI_NOVAC = 111; 
-    
+    private static final int SMANJI_NOVAC = 111;
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
     private static final int ISPRAZNI_KORPU = 122;
     
-    private void persistObject(Object o)
+    private static void persistObject(Object o)
     {
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
         em.getTransaction().commit();
-        em.clear();
     }
     
-    private double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
+    private static double izvrsiPlacanje(int idKor, double novacKorisnik, String adresa, int idGrad, ArrayList<Object> artikliPaketi)
     {
         double totCena = 0;
         for(Object o : artikliPaketi)
@@ -93,25 +87,20 @@ public class Main extends Thread{
     
     //id 13 da tu prima poruke na topicu
     //zahtev 11
-    private Odgovor placanje(int idKor)
+    private static Odgovor placanje(int idKor)
     {
         try {
-            if(consumerPlacanje == null)
-            {
-                consumerPlacanje=context.createConsumer(myTopic, "id=13");
-                producerPlacanje = context.createProducer();
-            }
             ObjectMessage objMsgSend = context.createObjectMessage();
-            objMsgSend.setIntProperty("id", 11);
+            objMsgSend.setIntProperty("id", 1);
             Zahtev zahtev = new Zahtev();
             zahtev.postaviBrZahteva(GET_GRAD_ADRESA);
             zahtev.dodajParam(idKor);
             objMsgSend.setObject(zahtev);
             
-            producerPlacanje.send(myTopic, objMsgSend);
+            producer.send(myTopic, objMsgSend);
             System.out.println("Poslao zahtev podsistemu 1");
             
-            ObjectMessage objMsgRcv = (ObjectMessage)consumerPlacanje.receive();
+            ObjectMessage objMsgRcv = (ObjectMessage)consumer.receive();
             System.out.println("Primio odgovor od podsistema 1");
             Zahtev z = (Zahtev)objMsgRcv.getObject();
             String adresa = (String)z.getParametri().get(0);
@@ -119,16 +108,16 @@ public class Main extends Thread{
             double novac = (double)z.getParametri().get(2);
             //----------------------------- ka podsistemu 2
             ObjectMessage objMsgSend2 = context.createObjectMessage();
-            objMsgSend2.setIntProperty("id", 12);
+            objMsgSend2.setIntProperty("id", 2);
             Zahtev zahtev2 = new Zahtev();
             zahtev2.postaviBrZahteva(CISTI_KORPA_GET_ARTIKLI);
             zahtev2.dodajParam(idKor);
             objMsgSend2.setObject(zahtev2);
             
-            producerPlacanje.send(myTopic, objMsgSend2);
+            producer.send(myTopic, objMsgSend2);
             System.out.println("Poslao zahtev podsistemu 2");
             
-            ObjectMessage objMsgRcv2 = (ObjectMessage)consumerPlacanje.receive();
+            ObjectMessage objMsgRcv2 = (ObjectMessage)consumer.receive();
             System.out.println("Primio odgovor od podsistema 2");
             Zahtev z2 = (Zahtev)objMsgRcv2.getObject();
             if(z2.getBrZahteva() == -1)
@@ -136,36 +125,32 @@ public class Main extends Thread{
             
             double ok = izvrsiPlacanje(idKor, novac, adresa, idGrad, z2.getParametri());
             if(ok == -1)
-            {
                 return new Odgovor(-1, "KORISNIK NEMA DOVOLJNO NOVCA");
-            }
             
             objMsgSend = context.createObjectMessage();
-            objMsgSend.setIntProperty("id", 11);
+            objMsgSend.setIntProperty("id", 1);
             zahtev = new Zahtev();
             zahtev.postaviBrZahteva(SMANJI_NOVAC);
             zahtev.dodajParam(idKor);
             zahtev.dodajParam(ok);
             objMsgSend.setObject(zahtev);
             
-            producerPlacanje.send(myTopic, objMsgSend);
+            producer.send(myTopic, objMsgSend);
             System.out.println("Poslao zahtev podsistemu 1");
-            consumerPlacanje.receive();
+            consumer.receive();
             System.out.println("Primio zahtev od podsistema 1");
              
             objMsgSend2 = context.createObjectMessage();
-            objMsgSend2.setIntProperty("id", 12);
+            objMsgSend2.setIntProperty("id", 2);
             zahtev2 = new Zahtev();
             zahtev2.postaviBrZahteva(ISPRAZNI_KORPU);
             zahtev2.dodajParam(idKor);
             objMsgSend2.setObject(zahtev2);
             
-            producerPlacanje.send(myTopic, objMsgSend2);
+            producer.send(myTopic, objMsgSend2);
             
-            consumerPlacanje.receive();
+            consumer.receive();
             System.out.println("Primi zahtev od podsistema 2");
-            
-            
         } catch (JMSException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -174,7 +159,7 @@ public class Main extends Thread{
     }
     
     //zahtev 17
-    private Odgovor getKorisnikNarudzbine(int idKor)
+    private static Odgovor getKorisnikNarudzbine(int idKor)
     {
         List<Narudzbina> narudzbine = em.createNamedQuery("Narudzbina.findByIDKor").setParameter("iDKor", idKor).getResultList();
         for(Narudzbina n : narudzbine)
@@ -186,7 +171,7 @@ public class Main extends Thread{
     }
     
     //zahtev 18
-    private Odgovor getSveNarudzbine()
+    private static Odgovor getSveNarudzbine()
     {
         List<Narudzbina> narudzbine = em.createNamedQuery("Narudzbina.findAll").getResultList();
         for(Narudzbina n : narudzbine)
@@ -198,7 +183,7 @@ public class Main extends Thread{
     }
     
     //zahtev 19
-    private Odgovor getSveTranskacije()
+    private static Odgovor getSveTranskacije()
     {
         List<Transakcija> transakcije = em.createNamedQuery("Transakcija.findAll").getResultList();
         for(Transakcija t : transakcije)
@@ -210,8 +195,7 @@ public class Main extends Thread{
         return new Odgovor(0, "SVE OK", transakcije);
     }
     
-    @Override
-    public void run() {
+    public static void run() {
         System.out.println("Started podsistem3...");
         if(context == null)
         {
@@ -268,7 +252,6 @@ public class Main extends Thread{
     }
     
     public static void main(String[] args) {
-        new Main().start();
-        while(true){}
+        run();
     }
 }

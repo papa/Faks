@@ -20,7 +20,7 @@ import javax.persistence.Persistence;
 import utility.Odgovor;
 import utility.Zahtev;
 
-public class Main extends Thread{
+public class Main {
 
     @Resource(lookup="projConnFactory")
     private static ConnectionFactory connectionFactory;
@@ -28,12 +28,12 @@ public class Main extends Thread{
     @Resource(lookup="topicServer")
     private static Topic myTopic;
     
-    JMSConsumer consumer = null;
-    JMSProducer producer = null;
-    JMSContext context = null;
+    private static JMSConsumer consumer = null;
+    private static JMSProducer producer = null;
+    private static JMSContext context = null;
     
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
-    EntityManager em = emf.createEntityManager();
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem1PU");
+    private static EntityManager em = emf.createEntityManager();
     
     private static final int KREIRAJ_GRAD = 1;
     private static final int KREIRAJ_KORISNIKA = 2;
@@ -41,19 +41,47 @@ public class Main extends Thread{
     private static final int PROMENA_ADRESA_GRAD = 4;
     private static final int SVI_GRADOVI = 12;
     private static final int SVI_KORISNICI = 13;
+    private static final int GET_GRAD_ADRESA = 101;
+    private static final int SMANJI_NOVAC = 111; 
     private static final int LOGIN = 50;
     
-    private void persistObject(Object o)
+    private static int ID_SEND = 0;
+    
+    private static void persistObject(Object o)
     {
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
         em.getTransaction().commit();
-        em.clear();
+    }
+    
+    private static Zahtev getAdresaGradNovac(int idKor)
+    {
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
+        Korisnik k = korisnici.get(0);
+        Zahtev z = new Zahtev();
+        z.postaviBrZahteva(0);
+        z.dodajParam(k.getAdresa());
+        z.dodajParam(k.getIDGrad().getIDGrad());
+        z.dodajParam(k.getNovac());
+        return z;
+    }
+    
+    private static Zahtev smanjiNovac(int idKor, double novac)
+    {
+        List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByIDKor").setParameter("iDKor", idKor).getResultList();
+        Korisnik k = korisnici.get(0);
+        em.getTransaction().begin();
+        k.setNovac(k.getNovac() - novac);
+        em.flush();
+        em.getTransaction().commit();
+        Zahtev z = new Zahtev();
+        z.postaviBrZahteva(0);
+        return z;
     }
     
      //zahtev 1
-    private Odgovor kreirajGrad(String naziv)
+    private static Odgovor kreirajGrad(String naziv)
     {
         List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", naziv).getResultList();
         if(!gradovi.isEmpty())
@@ -65,7 +93,7 @@ public class Main extends Thread{
     }
     
     //zahtev2
-    private Odgovor kreirajKorisnika(String username, String ime, String prezime, String sifra, String adresa,double novac, String nazivGrada)
+    private static Odgovor kreirajKorisnika(String username, String ime, String prezime, String sifra, String adresa,double novac, String nazivGrada)
     {
         List<Grad> gradovi = em.createNamedQuery("Grad.findByNaziv").setParameter("naziv", nazivGrada).getResultList();
         if(gradovi.isEmpty())
@@ -83,7 +111,7 @@ public class Main extends Thread{
     }
     
     //zahtev3
-    private Odgovor dodajNovac(String username, double novac)
+    private static Odgovor dodajNovac(String username, double novac)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
         if(korisnici.isEmpty())
@@ -99,7 +127,7 @@ public class Main extends Thread{
     }
     
     //zahtev4
-    private Odgovor promeniAdresuGrad(String username, String adresa, String nazivGrada)
+    private static Odgovor promeniAdresuGrad(String username, String adresa, String nazivGrada)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
         if(korisnici.isEmpty())
@@ -119,7 +147,7 @@ public class Main extends Thread{
     }
     
     //zahtev 12
-    private List<Grad> getSviGradovi()
+    private static List<Grad> getSviGradovi()
     {
         List<Grad> gradovi =  em.createNamedQuery("Grad.findAll").getResultList();
         for(Grad g : gradovi)
@@ -128,13 +156,13 @@ public class Main extends Thread{
     }
     
     //zahtev 13
-    private List<Korisnik> getSviKorisnici()
+    private static List<Korisnik> getSviKorisnici()
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();
         return korisnici;
     }
     
-    private Odgovor login(String username, String sifra)
+    private static Odgovor login(String username, String sifra)
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findByUsername").setParameter("username", username).getResultList();
         if(korisnici.isEmpty())
@@ -146,10 +174,7 @@ public class Main extends Thread{
         
         return new Odgovor(0, Integer.toString(k.getIDKor()));
     }
-    
-    @Override
-    public void run() {
-        new Komunikacija13(connectionFactory, myTopic, em).start();
+    public static void run() {
         System.out.println("Started podsistem1...");
         if(context == null)
         {
@@ -164,15 +189,17 @@ public class Main extends Thread{
         String adresa = null;
         double novac = 0;
         String nazivGrada = null;
+        Zahtev zahtevOdg = null;
         
         while(true)
         {
-            System.out.println("Cekam na zahtev od servera...");
+            ID_SEND = 0;
+            System.out.println("Cekam na zahtev...");
             try {
                 
                 ObjectMessage objMsg = (ObjectMessage)consumer.receive();
                 Zahtev zahtev = (Zahtev)objMsg.getObject();
-                System.out.println("Primio zahtev od servera");
+                System.out.println("Primio zahtev...");
                 switch(zahtev.getBrZahteva())
                 {
                     case KREIRAJ_GRAD:
@@ -224,12 +251,25 @@ public class Main extends Thread{
                         odgovor = login(username,sifra);
                         objMsgSend.setObject(odgovor);
                         break;
+                    case GET_GRAD_ADRESA:
+                        int idKor = (int)zahtev.getParametri().get(0);
+                        zahtevOdg = getAdresaGradNovac(idKor);
+                        objMsgSend.setObject(zahtevOdg);
+                        ID_SEND = 3;
+                        break;
+                    case SMANJI_NOVAC:
+                        idKor = (int)zahtev.getParametri().get(0);
+                        novac = (double)zahtev.getParametri().get(1);
+                        zahtevOdg = smanjiNovac(idKor, novac);
+                        objMsgSend.setObject(zahtevOdg);
+                        ID_SEND = 3;
+                        break;
                         
                 }
 
-                objMsgSend.setIntProperty("id", 0);
+                objMsgSend.setIntProperty("id", ID_SEND);
                 producer.send(myTopic, objMsgSend);
-                System.out.println("Poslao serveru");
+                System.out.println("Poslao...");
             } catch (JMSException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -237,8 +277,6 @@ public class Main extends Thread{
     }
     
     public static void main(String[] args) {
-        new Main().start();
-        
-        while(true){}
+        run();
     }
 }

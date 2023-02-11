@@ -20,10 +20,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import utility.Odgovor;
+import utility.PaketArtikl;
 import utility.Zahtev;
 
-public class Main extends Thread {
-
+public class Main {
     private static final int KREIRAJ_KATEGORIJU = 5;
     private static final int KREIRAJ_ARTIKL = 6;
     private static final int MENJAJ_CENU = 7;
@@ -34,39 +34,83 @@ public class Main extends Thread {
     private static final int SVI_ARTIKLI_KORISNIK = 15;
     private static final int KORISNIK_KORPA = 16;
 
+    private static final int CISTI_KORPA_GET_ARTIKLI = 102;
+    private static final int ISPRAZNI_KORPU = 122;
+    
+    private static int ID_SEND = 0;
+    
     @Resource(lookup = "projConnFactory")
     private static ConnectionFactory connectionFactory;
 
     @Resource(lookup = "topicServer")
     private static Topic myTopic;
 
-    JMSConsumer consumer = null;
-    JMSProducer producer = null;
-    JMSContext context = null;
+    private static JMSConsumer consumer = null;
+    private static JMSProducer producer = null;
+    private static JMSContext context = null;
     
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
-    EntityManager em = emf.createEntityManager();
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem2PU");
+    private static EntityManager em = emf.createEntityManager();
 
-    private void persistObject(Object o)
+    private static void persistObject(Object o)
     {
         em.getTransaction().begin();
         em.persist(o);
         em.flush();
         em.getTransaction().commit();
-        em.clear();
     }
     
-    private void removeObject(Object o)
+    private static void removeObject(Object o)
     {
         em.getTransaction().begin();
         em.remove(o);
         em.flush();
         em.getTransaction().commit();
-        em.clear();
+    }
+    
+    private static Zahtev isprazniKorpu(int idKor)
+    {
+        List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        Korpa k = korpe.get(0);
+        Zahtev z = new Zahtev();
+        z.postaviBrZahteva(0);
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
+        for(Sadrzi s : sadrziList)
+        {
+            removeObject(s);
+        }
+        
+        for(int i = 0; i < 10;i++){
+            em.getTransaction().begin();
+            k.setUkupnaCena(0);
+            em.flush();
+            em.getTransaction().commit();
+        }
+        
+        return z;
+    }
+    
+    private static Zahtev getArtikliKorpa(int idKor)
+    {
+        List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
+        if(sadrziList.isEmpty())
+        {
+            Zahtev z = new Zahtev();
+            z.postaviBrZahteva(-1);
+            return z;
+        }
+        Zahtev z = new Zahtev();
+        z.postaviBrZahteva(0);
+        for(Sadrzi s : sadrziList)
+        {
+            PaketArtikl pArt = new PaketArtikl(s.getArtikl().getIDArt(), s.getKolicina(), s.getCena()*s.getKolicina());
+            z.dodajParam(pArt);
+        }
+        return z;
     }
     
     //zahtev 14
-    private List<Kategorija> getSveKategorije() {
+    private static List<Kategorija> getSveKategorije() {
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findAll").getResultList();
         for (Kategorija k : kategorije) {
             k.setArtiklList(null);
@@ -77,7 +121,7 @@ public class Main extends Thread {
 
     //TODO da li je ok da postoji kategorija istog naziva sa istom nadkategorijom
     //zahtev 5
-    private Odgovor kreirajKategoriju(String naziv, String nazivNad) {
+    private static Odgovor kreirajKategoriju(String naziv, String nazivNad) {
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findByNaziv").setParameter("naziv", nazivNad).getResultList();
         if (kategorije.isEmpty() && nazivNad != null) 
             return new Odgovor(-1, "NE POSTOJI KATEGORIJA SA DATIM NAZIVOM NADKATEGORIJE");
@@ -96,7 +140,7 @@ public class Main extends Thread {
     }
 
     //zahtev 6
-    private Odgovor kreirajArtikl(int idKor, String nazivArt, String opis, double cena, double popust, String nazivKategorije) {
+    private static Odgovor kreirajArtikl(int idKor, String nazivArt, String opis, double cena, double popust, String nazivKategorije) {
         if (popust < 0 || popust > 100)
             return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.findByNaziv").setParameter("naziv", nazivKategorije).getResultList();
@@ -116,7 +160,7 @@ public class Main extends Thread {
     }
 
     //zahtev 7
-    private Odgovor menjajCenu(int idKor, String nazivArt, double cena) {
+    private static Odgovor menjajCenu(int idKor, String nazivArt, double cena) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
         if (artikli.isEmpty()) {
             return new Odgovor(-1, "KORISNIK NEMA ARTIKL DATOG NAZIVA");
@@ -127,12 +171,11 @@ public class Main extends Thread {
         a.setCena(cena);
         em.flush();
         em.getTransaction().commit();
-        //persistObject(a);
         return new Odgovor(0, "USPESNO POSTAVLJENA CENA");
     }
 
     //zahtev 8
-    private Odgovor postaviPopust(int idKor, String nazivArt, double popust) {
+    private static Odgovor postaviPopust(int idKor, String nazivArt, double popust) {
         if (popust < 0 || popust > 100) 
             return new Odgovor(-1, "POPUST MORA BITI U OPSEGU 0-100");
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKorNaziv").setParameter("iDKor", idKor).setParameter("naziv", nazivArt).getResultList();
@@ -148,7 +191,7 @@ public class Main extends Thread {
     }
 
     //zahtev 9
-    private Odgovor dodajArtikle(int idKor, int idArt, int koliko) {
+    private static Odgovor dodajArtikle(int idKor, int idArt, int koliko) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
         if (artikli.isEmpty()) 
             return new Odgovor(-1, "NE POSTOJI ARTIKL SA DATIM ID");
@@ -176,7 +219,6 @@ public class Main extends Thread {
                 em.persist(k);
             }
             em.flush();
-            em.clear();
             em.getTransaction().commit();
             
             s = new Sadrzi(idArt, idKor);
@@ -201,7 +243,7 @@ public class Main extends Thread {
     }
 
     //zahtev
-    private Odgovor izbaciArtikle(int idKor, int idArt, int koliko) {
+    private static Odgovor izbaciArtikle(int idKor, int idArt, int koliko) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDArt").setParameter("iDArt", idArt).getResultList();
         if (artikli.isEmpty()) 
             return new Odgovor(-1, "NE POSTOJI ARTIKL SA DATIM ID");
@@ -249,7 +291,7 @@ public class Main extends Thread {
     }
     
      //zahtev 15
-    private Odgovor getArtikliKorisnik(int idKor) {
+    private static Odgovor getArtikliKorisnik(int idKor) {
         List<Artikl> artikli = em.createNamedQuery("Artikl.findByIDKor").setParameter("iDKor", idKor).getResultList();
         for (Artikl a : artikli) {
             a.setRecenzijaList(null);
@@ -261,7 +303,7 @@ public class Main extends Thread {
     }
 
     //zahtev 16
-    private Odgovor getKorpa(int idKor) {
+    private static Odgovor getKorpa(int idKor) {
         List<Korpa> korpe = em.createNamedQuery("Korpa.findByIDKorpa").setParameter("iDKorpa", idKor).getResultList();
         if (korpe.isEmpty()) {
             Korpa k = new Korpa();
@@ -292,9 +334,9 @@ public class Main extends Thread {
         }
     }
 
-    @Override
-    public void run() {
-        new Komunikacija23(connectionFactory, myTopic, em).start();
+    
+    public static void run() 
+    {
         System.out.println("Started podsistem2...");
         if(context == null)
         {
@@ -303,23 +345,15 @@ public class Main extends Thread {
             producer = context.createProducer();
         }
         ObjectMessage objMsgSend = context.createObjectMessage();
-        Odgovor odgovor = null;
-        ArrayList<Object> params = null;
-        String nazivKategorije = null;
-        int idKor = 0;
-        String nazivArt = null;
-        String opis = null;
-        double cena = 0;
-        double popust = 0;
-        int idArt = 0;
-        int koliko = 0;
+        Odgovor odgovor = null;ArrayList<Object> params = null;String nazivKategorije = null;int idKor = 0;String nazivArt = null;String opis = null;double cena = 0;double popust = 0;int idArt = 0;int koliko = 0;Zahtev zahtevOdg = null;
         while (true) {
-            System.out.println("Cekam na zahtev od servera...");
+            ID_SEND = 0;
+            System.out.println("Cekam na zahtev ...");
             try {
 
                 ObjectMessage objMsg = (ObjectMessage) consumer.receive();
                 Zahtev zahtev = (Zahtev) objMsg.getObject();
-                System.out.println("Primio zahtev od servera");
+                System.out.println("Primio zahtev...");
                 switch (zahtev.getBrZahteva()) {
                     case Main.KREIRAJ_KATEGORIJU:
                         params = zahtev.getParametri();
@@ -388,11 +422,23 @@ public class Main extends Thread {
                         odgovor = getKorpa(idKor);
                         objMsgSend.setObject(odgovor);
                         break;
+                    case CISTI_KORPA_GET_ARTIKLI:
+                        idKor = (int)zahtev.getParametri().get(0);
+                        zahtevOdg = getArtikliKorpa(idKor);
+                        objMsgSend.setObject(zahtevOdg);
+                        ID_SEND = 3;
+                        break;
+                    case ISPRAZNI_KORPU:
+                        idKor = (int)zahtev.getParametri().get(0);
+                        zahtevOdg = isprazniKorpu(idKor);
+                        objMsgSend.setObject(zahtevOdg);
+                        ID_SEND = 3;
+                        break;
                 }
 
-                objMsgSend.setIntProperty("id", 0);
+                objMsgSend.setIntProperty("id", ID_SEND);
                 producer.send(myTopic, objMsgSend);
-                System.out.println("Poslao serveru");
+                System.out.println("Poslao...");
             } catch (JMSException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -400,9 +446,7 @@ public class Main extends Thread {
     }
 
     public static void main(String[] args) {
-        new Main().start();
-        while (true) {
-        }
+        run();
     }
 
 }
