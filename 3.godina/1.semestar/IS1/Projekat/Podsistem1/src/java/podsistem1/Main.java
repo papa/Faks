@@ -183,13 +183,6 @@ public class Main {
             producer = context.createProducer();
         }
         ObjectMessage objMsgSend = context.createObjectMessage();
-        Odgovor odgovor = null;
-        ArrayList<Object> params = null;
-        String username = null;
-        String adresa = null;
-        double novac = 0;
-        String nazivGrada = null;
-        Zahtev zahtevOdg = null;
         
         while(true)
         {
@@ -203,18 +196,18 @@ public class Main {
                 switch(zahtev.getBrZahteva())
                 {
                     case KREIRAJ_GRAD:
-                        nazivGrada = (String)zahtev.getParametri().get(0);
-                        odgovor = kreirajGrad(nazivGrada);
+                        String nazivGrada = (String)zahtev.getParametri().get(0);
+                        Odgovor odgovor = kreirajGrad(nazivGrada);
                         objMsgSend.setObject(odgovor);
                         break;
                     case KREIRAJ_KORISNIKA: 
-                        params = zahtev.getParametri();
-                        username = (String)params.get(0);
+                        ArrayList<Object> params = zahtev.getParametri();
+                        String username = (String)params.get(0);
                         String ime = (String)params.get(1);
                         String prezime = (String)params.get(2);
                         String sifra = (String)params.get(3);
-                        adresa = (String)params.get(4);
-                        novac = (double)params.get(5);
+                        String adresa = (String)params.get(4);
+                        double novac = (double)params.get(5);
                         nazivGrada = (String)params.get(6);
                         odgovor = kreirajKorisnika(username, ime, prezime, sifra, adresa, novac, nazivGrada);
                         objMsgSend.setObject(odgovor);
@@ -253,7 +246,7 @@ public class Main {
                         break;
                     case GET_GRAD_ADRESA:
                         int idKor = (int)zahtev.getParametri().get(0);
-                        zahtevOdg = getAdresaGradNovac(idKor);
+                        Zahtev zahtevOdg = getAdresaGradNovac(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
                         break;

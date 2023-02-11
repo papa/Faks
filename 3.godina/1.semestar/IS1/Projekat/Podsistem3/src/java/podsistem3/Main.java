@@ -204,9 +204,6 @@ public class Main {
             producer = context.createProducer();
         }
         ObjectMessage objMsgSend = context.createObjectMessage();
-        Odgovor odgovor = null;
-        ArrayList<Object> params = null;
-        int idKor = 0;
         
         while(true)
         {
@@ -219,9 +216,9 @@ public class Main {
                 switch(zahtev.getBrZahteva())
                 {
                     case PLACANJE:
-                        params = zahtev.getParametri();
-                        idKor = (int)params.get(0);
-                        odgovor = placanje(idKor);
+                        ArrayList<Object> params = zahtev.getParametri();
+                        int idKor = (int)params.get(0);
+                        Odgovor odgovor = placanje(idKor);
                         objMsgSend.setObject(odgovor);
                         break;
                     case KORISNIK_NARUDZBINE: 

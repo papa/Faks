@@ -80,12 +80,12 @@ public class Main {
             removeObject(s);
         }
         
-        for(int i = 0; i < 10;i++){
-            em.getTransaction().begin();
-            k.setUkupnaCena(0);
-            em.flush();
-            em.getTransaction().commit();
-        }
+//        for(int i = 0; i < 10;i++){
+        em.getTransaction().begin();
+        k.setUkupnaCena(0);
+        em.flush();
+        em.getTransaction().commit();
+//        }
         
         return z;
     }
@@ -298,6 +298,11 @@ public class Main {
             a.setSadrziList(null);
             a.getIDKat().setArtiklList(null);
             a.getIDKat().setKategorijaList(null);
+            if(a.getIDKat().getNadKat() != null)
+            {
+                a.getIDKat().getNadKat().setArtiklList(null);
+                a.getIDKat().getNadKat().setKategorijaList(null);
+            }
         }
         return new Odgovor(0, "SVE OK", artikli);
     }
@@ -345,7 +350,7 @@ public class Main {
             producer = context.createProducer();
         }
         ObjectMessage objMsgSend = context.createObjectMessage();
-        Odgovor odgovor = null;ArrayList<Object> params = null;String nazivKategorije = null;int idKor = 0;String nazivArt = null;String opis = null;double cena = 0;double popust = 0;int idArt = 0;int koliko = 0;Zahtev zahtevOdg = null;
+       
         while (true) {
             ID_SEND = 0;
             System.out.println("Cekam na zahtev ...");
@@ -356,19 +361,19 @@ public class Main {
                 System.out.println("Primio zahtev...");
                 switch (zahtev.getBrZahteva()) {
                     case Main.KREIRAJ_KATEGORIJU:
-                        params = zahtev.getParametri();
-                        nazivKategorije = (String) params.get(0);
+                        ArrayList<Object> params = zahtev.getParametri();
+                        String nazivKategorije = (String) params.get(0);
                         String nazivNadKat = (String) params.get(1);
-                        odgovor = kreirajKategoriju(nazivKategorije, nazivNadKat);
+                        Odgovor odgovor = kreirajKategoriju(nazivKategorije, nazivNadKat);
                         objMsgSend.setObject(odgovor);
                         break;
                     case Main.KREIRAJ_ARTIKL:
                         params = zahtev.getParametri();
-                        idKor = (int) params.get(0);
-                        nazivArt = (String) params.get(1);
-                        opis = (String) params.get(2);
-                        cena = (double) params.get(3);
-                        popust = (double) params.get(4);
+                        int idKor = (int) params.get(0);
+                        String nazivArt = (String) params.get(1);
+                        String opis = (String) params.get(2);
+                        double cena = (double) params.get(3);
+                        double popust = (double) params.get(4);
                         nazivKategorije = (String) params.get(5);
                         odgovor = kreirajArtikl(idKor, nazivArt, opis, cena, popust, nazivKategorije);
                         objMsgSend.setObject(odgovor);
@@ -392,8 +397,8 @@ public class Main {
                     case Main.DODAJ_ARTIKL_KORPA:
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
-                        idArt = (int) params.get(1);
-                        koliko = (int) params.get(2);
+                        int idArt = (int) params.get(1);
+                        int koliko = (int) params.get(2);
                         odgovor = dodajArtikle(idKor, idArt, koliko);
                         objMsgSend.setObject(odgovor);
                         break;
@@ -424,7 +429,7 @@ public class Main {
                         break;
                     case CISTI_KORPA_GET_ARTIKLI:
                         idKor = (int)zahtev.getParametri().get(0);
-                        zahtevOdg = getArtikliKorpa(idKor);
+                        Zahtev zahtevOdg = getArtikliKorpa(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
                         break;
