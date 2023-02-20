@@ -171,6 +171,10 @@ public class Main {
     private static List<Korisnik> getSviKorisnici()
     {
         List<Korisnik> korisnici = em.createNamedQuery("Korisnik.findAll").getResultList();
+        for(Korisnik k : korisnici)
+        {
+            k.getIDGrad().setKorisnikList(null);
+        }
         return korisnici;
     }
     

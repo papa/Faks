@@ -113,6 +113,13 @@ public class Main {
         for (Kategorija k : kategorije) {
             k.setArtiklList(null);
             k.setKategorijaList(null);
+            Kategorija k2 = k.getNadKat();
+            while(k2 != null)
+            {
+                k2.setArtiklList(null);
+                k2.setKategorijaList(null);
+                k2 = k2.getNadKat();
+            }
         }
         return kategorije;
     }
@@ -237,7 +244,7 @@ public class Main {
             em.getTransaction().commit();
         }
 
-        return new Odgovor(0, "SVE OK");
+        return new Odgovor(0, "ARTIKLI USPESNO UBACENI U KORPU");
     }
 
     //zahtev
@@ -285,7 +292,7 @@ public class Main {
             }
         }
 
-        return new Odgovor(0, "SVE OK");
+        return new Odgovor(0, "ARTIKLI USPESNO IZBACENI IZ KORPE");
     }
     
      //zahtev 15
@@ -294,12 +301,12 @@ public class Main {
         for (Artikl a : artikli) {
             a.setRecenzijaList(null);
             a.setSadrziList(null);
-            a.getIDKat().setArtiklList(null);
-            a.getIDKat().setKategorijaList(null);
-            if(a.getIDKat().getNadKat() != null)
+            Kategorija k2 = a.getIDKat();
+            while(k2 != null)
             {
-                a.getIDKat().getNadKat().setArtiklList(null);
-                a.getIDKat().getNadKat().setKategorijaList(null);
+                k2.setArtiklList(null);
+                k2.setKategorijaList(null);
+                k2 = k2.getNadKat();
             }
         }
         return new Odgovor(0, "SVE OK", artikli);
@@ -324,12 +331,12 @@ public class Main {
             Artikl a = s.getArtikl();
             a.setRecenzijaList(null);
             a.setSadrziList(null);
-            a.getIDKat().setArtiklList(null);
-            a.getIDKat().setKategorijaList(null);
-            if(a.getIDKat().getNadKat() != null)
+            Kategorija k2 = a.getIDKat();
+            while(k2 != null)
             {
-                a.getIDKat().getNadKat().setArtiklList(null);
-                a.getIDKat().getNadKat().setKategorijaList(null);
+                k2.setArtiklList(null);
+                k2.setKategorijaList(null);
+                k2 = k2.getNadKat();
             }
         }
         return new Odgovor(0, "SVE OK", sadrziList);
