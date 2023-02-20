@@ -90,7 +90,7 @@ public class Klijent {
                 case SVI_KORISNICI:
                     Podsistem1Handler.zahtev13Handler();
                     break;
-                case SVE_KATEGORIJE:
+                case SVE_KATEGORIJE: 
                     Podsistem2Handler.zahtev14Handler();
                     break;
                 case SVI_ARTIKLI_KORISNIK:

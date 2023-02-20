@@ -101,7 +101,7 @@ public class Main {
         z.postaviBrZahteva(0);
         for(Sadrzi s : sadrziList)
         {
-            PaketArtikl pArt = new PaketArtikl(s.getArtikl().getIDArt(), s.getKolicina(), s.getCena()*s.getKolicina());
+            PaketArtikl pArt = new PaketArtikl(s.getArtikl().getIDArt(), s.getKolicina(), s.getCena()*s.getKolicina(), s.getArtikl().getIDKor());
             z.dodajParam(pArt);
         }
         return z;
@@ -313,13 +313,12 @@ public class Main {
             k = new Korpa();
             k.setIDKorpa(idKor);
             k.setUkupnaCena(0);
-//            k.setSadrziList(null); // todo da li treba 
             persistObject(k);
         } else {
             k = korpe.get(0);
         }
         List<Sadrzi> sadrziList = em.createNamedQuery("Sadrzi.findByIDKorpa").setParameter("iDKorpa", k.getIDKorpa()).getResultList();
-
+        k.setSadrziList(null);
         for (Sadrzi s : sadrziList) 
         {
             Artikl a = s.getArtikl();

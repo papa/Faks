@@ -1,17 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package utility;
 
 import java.io.Serializable;
 
+/**
+ *
+ * @author Jelena
+ */
 public class PaketArtikl implements Serializable{
     private int idArt;
     private int kolicina;
     private double cena;
+    private int idKor;
     
-    public PaketArtikl(int idArt, int kolicina, double cena)
+    public PaketArtikl(int idArt, int kolicina, double cena, int idKor)
     {
         this.idArt = idArt;
         this.kolicina=  kolicina;
         this.cena = cena;
+        this.idKor = idKor;
     }
 
     public int getIdArt() {
@@ -24,5 +35,10 @@ public class PaketArtikl implements Serializable{
 
     public double getCena() {
         return cena;
+    }
+    
+    public int getIdKor()
+    {
+        return idKor;
     }
 }

@@ -48,6 +48,8 @@ public class Main {
     private static final int CISTI_KORPA_GET_ARTIKLI = 102;
     private static final int ISPRAZNI_KORPU = 122;
     
+    private static final int DODAJ_NOVAC_PLACANJE = 1111;
+    
     private static void persistObject(Object o)
     {
         em.getTransaction().begin();
@@ -142,7 +144,24 @@ public class Main {
             System.out.println("Poslao zahtev podsistemu 1");
             consumer.receive();
             System.out.println("Primio zahtev od podsistema 1");
-             
+            
+            ArrayList<Object> pArtList = z2.getParametri();
+            for(Object obj : pArtList)
+            {
+                PaketArtikl pArt = (PaketArtikl)obj;
+                zahtev = new Zahtev();
+                zahtev.postaviBrZahteva(DODAJ_NOVAC_PLACANJE);
+                zahtev.dodajParam(pArt.getIdKor());
+                zahtev.dodajParam(pArt.getCena()*pArt.getKolicina());
+                objMsgSend = context.createObjectMessage();
+                objMsgSend.setIntProperty("id", 1);
+                objMsgSend.setObject(zahtev);
+                producer.send(myTopic, objMsgSend);
+                System.out.println("Poslao zahtev podsistemu 1 za uvecanje");
+                consumer.receive();
+                System.out.println("Primio zahtev od podsistema 1");
+            }
+            
             //-----------------------------ka podsistemu 2
             objMsgSend2 = context.createObjectMessage();
             objMsgSend2.setIntProperty("id", 2);

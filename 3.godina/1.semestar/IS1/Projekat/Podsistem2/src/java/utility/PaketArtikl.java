@@ -15,12 +15,14 @@ public class PaketArtikl implements Serializable{
     private int idArt;
     private int kolicina;
     private double cena;
+    private int idKor;
     
-    public PaketArtikl(int idArt, int kolicina, double cena)
+    public PaketArtikl(int idArt, int kolicina, double cena, int idKor)
     {
         this.idArt = idArt;
         this.kolicina=  kolicina;
         this.cena = cena;
+        this.idKor = idKor;
     }
 
     public int getIdArt() {
@@ -33,5 +35,10 @@ public class PaketArtikl implements Serializable{
 
     public double getCena() {
         return cena;
+    }
+    
+    public int getIdKor()
+    {
+        return idKor;
     }
 }

@@ -43,6 +43,7 @@ public class Main {
     private static final int SVI_KORISNICI = 13;
     private static final int GET_GRAD_ADRESA = 101;
     private static final int SMANJI_NOVAC = 111; 
+    private static final int DODAJ_NOVAC_PLACANJE = 1111;
     private static final int LOGIN = 50;
     
     private static int ID_SEND = 0;
@@ -108,6 +109,17 @@ public class Main {
         k.setIme(ime); k.setPrezime(prezime); k.setSifra(sifra); k.setAdresa(adresa); k.setIDGrad(g);
         persistObject(k);
         return new Odgovor(0, "USPESNO KREIRAN KORISNIK");
+    }
+    
+     private static Zahtev dodajNovacPlacanje(int idKor, double novac)
+    {
+        Korisnik k = em.find(Korisnik.class, idKor);
+        
+        em.getTransaction().begin();
+        k.setNovac(k.getNovac() + novac);
+        em.flush();
+        em.getTransaction().commit();
+        return new Zahtev();
     }
     
     //zahtev3
@@ -254,6 +266,13 @@ public class Main {
                         idKor = (int)zahtev.getParametri().get(0);
                         novac = (double)zahtev.getParametri().get(1);
                         zahtevOdg = smanjiNovac(idKor, novac);
+                        objMsgSend.setObject(zahtevOdg);
+                        ID_SEND = 3;
+                        break;
+                    case DODAJ_NOVAC_PLACANJE:
+                        idKor = (int)zahtev.getParametri().get(0);
+                        novac = (double)zahtev.getParametri().get(1);
+                        zahtevOdg = dodajNovacPlacanje(idKor, novac);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
                         break;
