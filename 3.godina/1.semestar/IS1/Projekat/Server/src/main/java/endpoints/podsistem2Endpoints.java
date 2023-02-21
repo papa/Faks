@@ -66,6 +66,13 @@ public class podsistem2Endpoints {
             Odgovor odgovor = (Odgovor)objMsgRec.getObject();
             System.out.println("Primio odgovor od podsistema 2");    
             
+            if(context != null)
+            {
+                consumer.close();
+                context.close();
+                context = null;
+            }
+            
             if(odgovor.getObjekat() == null)
                 return Response.status(Response.Status.OK).entity(odgovor.getPoruka()).build();
             else 
