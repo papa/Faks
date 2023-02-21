@@ -239,32 +239,41 @@ public class Main {
                 switch(zahtev.getBrZahteva())
                 {
                     case PLACANJE:
+                        System.out.println("Zahtev placanje...");
                         ArrayList<Object> params = zahtev.getParametri();
                         int idKor = (int)params.get(0);
                         Odgovor odgovor = placanje(idKor);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case KORISNIK_NARUDZBINE: 
+                        System.out.println("Zahtev dohvatanje narudzbina korisnika...");
                         params = zahtev.getParametri();
                         idKor = (int)params.get(0);
                         odgovor = getKorisnikNarudzbine(idKor);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case SVE_NARUDZBINE:
+                        System.out.println("Zahtev dohvatanje svih narudzbina...");
                         params = zahtev.getParametri();
                         odgovor = getSveNarudzbine();
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case SVE_TRANSKACIJE:
+                        System.out.println("Zahtev dohvatanje svih transakcija...");
                         params = zahtev.getParametri();
                         odgovor = getSveTranskacije();
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                 }
 
                 objMsgSend.setIntProperty("id", 0);
                 producer.send(myTopic, objMsgSend);
                 System.out.println("Poslao serveru");
+                System.out.println("------------------------------------------------------------------------");
             } catch (JMSException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

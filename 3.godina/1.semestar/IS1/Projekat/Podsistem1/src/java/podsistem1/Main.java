@@ -212,11 +212,14 @@ public class Main {
                 switch(zahtev.getBrZahteva())
                 {
                     case KREIRAJ_GRAD:
+                        System.out.println("Zahtev od servera kreiranje grada...");
                         String nazivGrada = (String)zahtev.getParametri().get(0);
                         Odgovor odgovor = kreirajGrad(nazivGrada);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case KREIRAJ_KORISNIKA: 
+                        System.out.println("Zahtev od servera kreiranje korisnika...");
                         ArrayList<Object> params = zahtev.getParametri();
                         String username = (String)params.get(0);
                         String ime = (String)params.get(1);
@@ -227,58 +230,74 @@ public class Main {
                         nazivGrada = (String)params.get(6);
                         odgovor = kreirajKorisnika(username, ime, prezime, sifra, adresa, novac, nazivGrada);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case DODAJ_NOVAC:
+                        System.out.println("Zahtev od servera dodavanje novca...");
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         novac = (double)params.get(1);
                         odgovor = dodajNovac(username, novac);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case PROMENA_ADRESA_GRAD:
+                        System.out.println("Zahtev od servera promena adrese i grada...");
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         adresa = (String)params.get(1);
                         nazivGrada = (String)params.get(2);
                         odgovor = promeniAdresuGrad(username, adresa, nazivGrada);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case SVI_GRADOVI:
+                        System.out.println("Zahtev od servera dohvatanje svih gradova...");
                         List<Grad> gradovi = getSviGradovi();
                         odgovor = new Odgovor(0, "SVE OK", gradovi);
                         objMsgSend.setObject(odgovor);
                         break;
                     case SVI_KORISNICI:
+                        System.out.println("Zahtev od servera dohvatanje svih korisnika...");
                         List<Korisnik> sviKorisnici = getSviKorisnici();
                         odgovor = new Odgovor(0, "SVE OK", sviKorisnici);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case LOGIN:
+                        System.out.println("Zahtev od servera login...");
                         params = zahtev.getParametri();
                         username = (String)params.get(0);
                         sifra = (String)params.get(1);
                         odgovor = login(username,sifra);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case GET_GRAD_ADRESA:
+                        System.out.println("Zahtev od podsistema 3 dohvatanja grada i adrese korisnika...");
                         int idKor = (int)zahtev.getParametri().get(0);
                         Zahtev zahtevOdg = getAdresaGradNovac(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case SMANJI_NOVAC:
+                        System.out.println("Zahtev od podsistema 3 smanjenje novca korisniku...");
                         idKor = (int)zahtev.getParametri().get(0);
                         novac = (double)zahtev.getParametri().get(1);
                         zahtevOdg = smanjiNovac(idKor, novac);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case DODAJ_NOVAC_PLACANJE:
+                        System.out.println("Zahtev od podsistema 3 povecanje novca pri kupovini...");
                         idKor = (int)zahtev.getParametri().get(0);
                         novac = (double)zahtev.getParametri().get(1);
                         zahtevOdg = dodajNovacPlacanje(idKor, novac);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
+                        System.out.println("Obradjen zahtev...");
                         break;
                         
                 }
@@ -286,6 +305,7 @@ public class Main {
                 objMsgSend.setIntProperty("id", ID_SEND);
                 producer.send(myTopic, objMsgSend);
                 System.out.println("Poslao...");
+                System.out.println("------------------------------------------------------------------------");
             } catch (JMSException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

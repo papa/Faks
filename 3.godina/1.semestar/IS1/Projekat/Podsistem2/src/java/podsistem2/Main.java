@@ -364,13 +364,16 @@ public class Main {
                 System.out.println("Primio zahtev...");
                 switch (zahtev.getBrZahteva()) {
                     case Main.KREIRAJ_KATEGORIJU:
+                        System.out.println("Zahtev od servera kreiranje kategorije...");
                         ArrayList<Object> params = zahtev.getParametri();
                         String nazivKategorije = (String) params.get(0);
                         String nazivNadKat = (String) params.get(1);
                         Odgovor odgovor = kreirajKategoriju(nazivKategorije, nazivNadKat);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.KREIRAJ_ARTIKL:
+                        System.out.println("Zahtev od servera kreiranje artikla...");
                         params = zahtev.getParametri();
                         int idKor = (int) params.get(0);
                         String nazivArt = (String) params.get(1);
@@ -380,73 +383,93 @@ public class Main {
                         nazivKategorije = (String) params.get(5);
                         odgovor = kreirajArtikl(idKor, nazivArt, opis, cena, popust, nazivKategorije);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.MENJAJ_CENU:
+                        System.out.println("Zahtev od servera menjanje cene artikla...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         nazivArt = (String) params.get(1);
                         cena = (double) params.get(2);
                         odgovor = menjajCenu(idKor, nazivArt, cena);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.POSTAVI_POPUST:
+                        System.out.println("Zahtev od servera postavljanje popusta artiklu...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         nazivArt = (String) params.get(1);
                         popust = (double) params.get(2);
                         odgovor = postaviPopust(idKor, nazivArt, popust);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.DODAJ_ARTIKL_KORPA:
+                        System.out.println("Zahtev od servera dodavanje artikla u korpu...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         int idArt = (int) params.get(1);
                         int koliko = (int) params.get(2);
                         odgovor = dodajArtikle(idKor, idArt, koliko);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.BRISI_ARTIKL_KORPA:
+                        System.out.println("Zahtev od servera izbacivanje artikla iz korpe...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         idArt = (int) params.get(1);
                         koliko = (int) params.get(2);
                         odgovor = izbaciArtikle(idKor, idArt, koliko);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.SVE_KATEGORIJE:
+                        System.out.println("Zahtev od servera dohvatanje svih kategorija...");
                         List<Kategorija> kategorije = getSveKategorije();
                         odgovor = new Odgovor(0, "SVE OK", kategorije);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.SVI_ARTIKLI_KORISNIK:
+                        System.out.println("Zahtev od servera dohvatanje artikla korisnika...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         odgovor = getArtikliKorisnik(idKor);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case Main.KORISNIK_KORPA:
+                        System.out.println("Zahtev od servera korpe korisnika...");
                         params = zahtev.getParametri();
                         idKor = (int) params.get(0);
                         odgovor = getKorpa(idKor);
                         objMsgSend.setObject(odgovor);
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case CISTI_KORPA_GET_ARTIKLI:
+                        System.out.println("Zahtev od podsistema 3 dohvatanje artikla iz korpe...");
                         idKor = (int)zahtev.getParametri().get(0);
                         Zahtev zahtevOdg = getArtikliKorpa(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
+                        System.out.println("Obradjen zahtev...");
                         break;
                     case ISPRAZNI_KORPU:
+                        System.out.println("Zahtev od podsistema 3 praznjenje korpe...");
                         idKor = (int)zahtev.getParametri().get(0);
                         zahtevOdg = isprazniKorpu(idKor);
                         objMsgSend.setObject(zahtevOdg);
                         ID_SEND = 3;
+                        System.out.println("Obradjen zahtev...");
                         break;
                 }
 
                 objMsgSend.setIntProperty("id", ID_SEND);
                 producer.send(myTopic, objMsgSend);
                 System.out.println("Poslao...");
+                System.out.println("------------------------------------------------------------------------");
             } catch (JMSException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
