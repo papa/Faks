@@ -102,10 +102,10 @@ public class Main {
             objMsgSend.setObject(zahtev);
             
             producer.send(myTopic, objMsgSend);
-            System.out.println("Poslao zahtev podsistemu 1");
+            System.out.println("Poslao zahtev podsistemu 1 za dohvatanje info o korisniku...");
             
             ObjectMessage objMsgRcv = (ObjectMessage)consumer.receive();
-            System.out.println("Primio odgovor od podsistema 1");
+            System.out.println("Primio odgovor od podsistema 1...");
             Zahtev z = (Zahtev)objMsgRcv.getObject();
             String adresa = (String)z.getParametri().get(0);
             int idGrad = (int)z.getParametri().get(1);
@@ -119,10 +119,10 @@ public class Main {
             objMsgSend2.setObject(zahtev2);
             
             producer.send(myTopic, objMsgSend2);
-            System.out.println("Poslao zahtev podsistemu 2");
+            System.out.println("Poslao zahtev podsistemu 2 za dohvatanje artikala iz korpe...");
             
             ObjectMessage objMsgRcv2 = (ObjectMessage)consumer.receive();
-            System.out.println("Primio odgovor od podsistema 2");
+            System.out.println("Primio odgovor od podsistema 2...");
             Zahtev z2 = (Zahtev)objMsgRcv2.getObject();
             if(z2.getBrZahteva() == -1)
                 return new Odgovor(-1, "KORISNIKU JE PRAZNA KORPA");
@@ -141,7 +141,7 @@ public class Main {
             objMsgSend.setObject(zahtev);
             
             producer.send(myTopic, objMsgSend);
-            System.out.println("Poslao zahtev podsistemu 1");
+            System.out.println("Poslao zahtev podsistemu 1 za smanjenje novca kupcu...");
             consumer.receive();
             System.out.println("Primio zahtev od podsistema 1");
             
@@ -157,7 +157,7 @@ public class Main {
                 objMsgSend.setIntProperty("id", 1);
                 objMsgSend.setObject(zahtev);
                 producer.send(myTopic, objMsgSend);
-                System.out.println("Poslao zahtev podsistemu 1 za uvecanje");
+                System.out.println("Poslao zahtev podsistemu 1 za uvecanje novca prodavcu...");
                 consumer.receive();
                 System.out.println("Primio zahtev od podsistema 1");
             }
@@ -173,7 +173,7 @@ public class Main {
             producer.send(myTopic, objMsgSend2);
             
             consumer.receive();
-            System.out.println("Primi zahtev od podsistema 2");
+            System.out.println("Primio zahtev od podsistema 2");
         } catch (JMSException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
